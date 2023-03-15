@@ -1,4 +1,4 @@
-!(.assets/banner.png)
+![](.assets/banner.png)
 ## About
 Asterisk is an operating system written in C. It uses some code from the discontinued project [soso](https://github.com/ozkl/soso), and currently only supports `i386+` processors.
 ## Building
