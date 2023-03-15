@@ -5,7 +5,7 @@
 #include <sys/select.h>
 #include <sys/time.h>
 
-#include <soso.h>
+#include <asterisk.h>
 
 #define BUFFER_SIZE 128
 

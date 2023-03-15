@@ -1,11 +1,10 @@
 SOURCES_C=$(patsubst %.c,%.o,$(wildcard *.c))
 SOURCES_ASM=$(patsubst %.asm,%.o,$(wildcard *.asm))
 
-
 CC=i686-elf-gcc
 LD=i686-elf-ld
 CFLAGS=-c
-LDFLAGS=-T../link.ld
+LDFLAGS=-Tlink.ld
 ASFLAGS=-felf
 
 OBJ = $(SOURCES_ASM) $(SOURCES_C)

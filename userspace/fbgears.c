@@ -8,7 +8,7 @@
 #include <GL/gl.h>
 #include <zbuffer.h>
 
-#include <soso.h>
+#include <asterisk.h>
 
 #ifndef M_PI
 #  define M_PI 3.14159265

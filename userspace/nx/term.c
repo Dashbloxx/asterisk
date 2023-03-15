@@ -1,6 +1,6 @@
 /*   
  * taken from nxterm - terminal emulator for Nano-X
- * ported to soso
+ * ported to asterisk
  */
 
 #define GR_COLOR_WHITESMOKE MWRGB(245,245,245)
@@ -18,7 +18,7 @@
 #define MWINCLUDECOLORS
 #include "nano-X.h"
 
-#include <soso.h>
+#include <asterisk.h>
 
 static char termtype_string[] = "TERM=ngterm";
 static char termcap_string[1024] =

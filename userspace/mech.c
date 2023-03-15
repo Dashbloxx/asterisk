@@ -1743,7 +1743,7 @@ extern int count_triangles;
 
 int __errno = 0;
 
-#include <soso.h>
+#include <asterisk.h>
 
 int
 main(int argc, char **argv)

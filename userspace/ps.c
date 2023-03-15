@@ -3,7 +3,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdint.h>
-#include <soso.h>
+#include <asterisk.h>
 
 int get_process_cpu_usage(uint32_t pid, ThreadInfo* threads, uint32_t count)
 {

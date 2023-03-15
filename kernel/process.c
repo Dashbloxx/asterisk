@@ -74,7 +74,7 @@ void tasking_initialize()
     thread_resume(thread);
     thread->birth_time = get_uptime_milliseconds();
 
-    thread->message_queue = fifobuffer_create(sizeof(SosoMessage) * MESSAGE_QUEUE_SIZE);
+    thread->message_queue = fifobuffer_create(sizeof(AsteriskMessage) * MESSAGE_QUEUE_SIZE);
     spinlock_init(&(thread->message_queue_lock));
 
     thread->signals = fifobuffer_create(SIGNAL_QUEUE_SIZE);
@@ -117,7 +117,7 @@ void thread_create_kthread(Function0 func)
 
     thread->birth_time = get_uptime_milliseconds();
 
-    thread->message_queue = fifobuffer_create(sizeof(SosoMessage) * MESSAGE_QUEUE_SIZE);
+    thread->message_queue = fifobuffer_create(sizeof(AsteriskMessage) * MESSAGE_QUEUE_SIZE);
     spinlock_init(&(thread->message_queue_lock));
 
     thread->signals = fifobuffer_create(SIGNAL_QUEUE_SIZE);
@@ -358,8 +358,8 @@ Process* process_create_ex(const char* name, uint32_t process_id, uint32_t threa
 
     Process* process = (Process*)kmalloc(sizeof(Process));
     memset((uint8_t*)process, 0, sizeof(Process));
-    strncpy(process->name, name, SOSO_PROCESS_NAME_MAX);
-    process->name[SOSO_PROCESS_NAME_MAX - 1] = 0;
+    strncpy(process->name, name, ASTERISK_PROCESS_NAME_MAX);
+    process->name[ASTERISK_PROCESS_NAME_MAX - 1] = 0;
     process->pid = process_id;
     process->pd = vmm_acquire_page_directory();
     process->working_directory = fs_get_root_node();
@@ -377,7 +377,7 @@ Process* process_create_ex(const char* name, uint32_t process_id, uint32_t threa
 
     thread->birth_time = get_uptime_milliseconds();
 
-    thread->message_queue = fifobuffer_create(sizeof(SosoMessage) * MESSAGE_QUEUE_SIZE);
+    thread->message_queue = fifobuffer_create(sizeof(AsteriskMessage) * MESSAGE_QUEUE_SIZE);
     spinlock_init(&(thread->message_queue_lock));
 
     thread->signals = fifobuffer_create(SIGNAL_QUEUE_SIZE);
@@ -590,7 +590,7 @@ void process_destroy(Process* process)
     }
 
     //Cleanup opened files
-    for (int i = 0; i < SOSO_MAX_OPENED_FILES; ++i)
+    for (int i = 0; i < ASTERISK_MAX_OPENED_FILES; ++i)
     {
         if (process->fd[i] != NULL)
         {
@@ -768,7 +768,7 @@ int32_t process_get_empty_fd(Process* process)
 
     begin_critical_section();
 
-    for (int i = 0; i < SOSO_MAX_OPENED_FILES; ++i)
+    for (int i = 0; i < ASTERISK_MAX_OPENED_FILES; ++i)
     {
         if (process->fd[i] == NULL)
         {
@@ -790,7 +790,7 @@ int32_t process_add_file(Process* process, File* file)
 
     //Screen_PrintF("process_add_file: pid:%d\n", process->pid);
 
-    for (int i = 0; i < SOSO_MAX_OPENED_FILES; ++i)
+    for (int i = 0; i < ASTERISK_MAX_OPENED_FILES; ++i)
     {
         //Screen_PrintF("process_add_file: i:%d fd[%d]:%x\n", i, i, process->fd[i]);
         if (process->fd[i] == NULL)
@@ -813,7 +813,7 @@ int32_t process_remove_file(Process* process, File* file)
 
     begin_critical_section();
 
-    for (int i = 0; i < SOSO_MAX_OPENED_FILES; ++i)
+    for (int i = 0; i < ASTERISK_MAX_OPENED_FILES; ++i)
     {
         if (process->fd[i] == file)
         {
@@ -832,7 +832,7 @@ File* process_find_file(Process* process, FileSystemNode* node)
 {
     File* result = NULL;
 
-    for (int i = 0; i < SOSO_MAX_OPENED_FILES; ++i)
+    for (int i = 0; i < ASTERISK_MAX_OPENED_FILES; ++i)
     {
         if (process->fd[i] && process->fd[i]->node == node)
         {

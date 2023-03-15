@@ -8,7 +8,7 @@
 
 #include <nano-X.h>
 
-#include <soso.h>
+#include <asterisk.h>
 
 static int get_process_cpu_usage(uint32_t pid, ThreadInfo* threads, uint32_t count)
 {

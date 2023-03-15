@@ -4,7 +4,7 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 
-#include <soso.h>
+#include <asterisk.h>
 
 int main(int argc, char** argv)
 {

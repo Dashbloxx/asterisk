@@ -24,9 +24,9 @@ typedef struct ProcInfo
 {
     uint32_t process_id;
     int32_t parent_process_id;
-    uint32_t fd[SOSO_MAX_OPENED_FILES];
+    uint32_t fd[ASTERISK_MAX_OPENED_FILES];
 
-    char name[SOSO_PROCESS_NAME_MAX];
+    char name[ASTERISK_PROCESS_NAME_MAX];
     char tty[128];
     char working_directory[128];
 } ProcInfo;

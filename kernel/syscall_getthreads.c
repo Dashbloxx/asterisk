@@ -90,7 +90,7 @@ int32_t syscall_getprocs(ProcInfo* procs, uint32_t max_count, uint32_t flags)
                 info->parent_process_id = process->parent->pid;
             }
 
-            for (uint32_t k = 0; k < SOSO_MAX_OPENED_FILES; ++k)
+            for (uint32_t k = 0; k < ASTERISK_MAX_OPENED_FILES; ++k)
             {
                 File* file = process->fd[k];
                 if (file && file->node)
@@ -99,7 +99,7 @@ int32_t syscall_getprocs(ProcInfo* procs, uint32_t max_count, uint32_t flags)
                 }
             }
 
-            memcpy((uint8_t*)info->name, process->name, SOSO_PROCESS_NAME_MAX);
+            memcpy((uint8_t*)info->name, process->name, ASTERISK_PROCESS_NAME_MAX);
 
             //TODO: tty, working_directory
 

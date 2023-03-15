@@ -99,7 +99,7 @@ int syscall_getdents(int fd, char *buf, int nbytes);
 int syscall_getcwd(char *buf, size_t size);
 int syscall_chdir(const char *path);
 int syscall_manage_pipe(const char *pipe_name, int operation, int data);
-int syscall_soso_read_dir(int fd, void *dirent, int index);
+int syscall_asterisk_read_dir(int fd, void *dirent, int index);
 uint32_t syscall_get_uptime_ms();
 int syscall_sleep_ms(int ms);
 int syscall_execute_on_tty(const char *path, char *const argv[], char *const envp[], const char *tty_path);
@@ -162,7 +162,7 @@ void syscalls_initialize()
     g_syscall_table[SYS_getcwd] = syscall_getcwd;
     g_syscall_table[SYS_chdir] = syscall_chdir;
     g_syscall_table[SYS_manage_pipe] = syscall_manage_pipe;
-    g_syscall_table[SYS_soso_read_dir] = syscall_soso_read_dir;
+    g_syscall_table[SYS_asterisk_read_dir] = syscall_asterisk_read_dir;
     g_syscall_table[SYS_get_uptime_ms] = syscall_get_uptime_ms;
     g_syscall_table[SYS_sleep_ms] = syscall_sleep_ms;
     g_syscall_table[SYS_execute_on_tty] = syscall_execute_on_tty;
@@ -307,7 +307,7 @@ int syscall_close(int fd)
     Process* process = thread_get_current()->owner;
     if (process)
     {
-        if (fd < SOSO_MAX_OPENED_FILES)
+        if (fd < ASTERISK_MAX_OPENED_FILES)
         {
             File* file = process->fd[fd];
 
@@ -347,7 +347,7 @@ int syscall_read(int fd, void *buf, int nbytes)
     Process* process = thread_get_current()->owner;
     if (process)
     {
-        if (fd < SOSO_MAX_OPENED_FILES)
+        if (fd < ASTERISK_MAX_OPENED_FILES)
         {
             File* file = process->fd[fd];
 
@@ -394,7 +394,7 @@ int syscall_write(int fd, void *buf, int nbytes)
     {
         //Screen_PrintF("syscall_write() called from process: %d. fd:%d\n", process->pid, fd);
 
-        if (fd < SOSO_MAX_OPENED_FILES)
+        if (fd < ASTERISK_MAX_OPENED_FILES)
         {
             File* file = process->fd[fd];
 
@@ -515,7 +515,7 @@ int syscall_lseek(int fd, int offset, int whence)
     Process* process = thread_get_current()->owner;
     if (process)
     {
-        if (fd < SOSO_MAX_OPENED_FILES)
+        if (fd < ASTERISK_MAX_OPENED_FILES)
         {
             File* file = process->fd[fd];
 
@@ -614,7 +614,7 @@ int syscall_fstat(int fd, struct stat *buf)
     Process* process = thread_get_current()->owner;
     if (process)
     {
-        if (fd < SOSO_MAX_OPENED_FILES)
+        if (fd < ASTERISK_MAX_OPENED_FILES)
         {
             File* file = process->fd[fd];
 
@@ -651,7 +651,7 @@ int syscall_ioctl(int fd, int32_t request, void *arg)
     {
         //serial_printf("syscall_ioctl fd:%d request:%d(%x) arg:%d(%x) pid:%d\n", fd, request, request, arg, arg, process->pid);
 
-        if (fd < SOSO_MAX_OPENED_FILES)
+        if (fd < ASTERISK_MAX_OPENED_FILES)
         {
             File* file = process->fd[fd];
 
@@ -1183,7 +1183,7 @@ int syscall_getdents(int fd, char *buf, int nbytes)
     Process* process = thread_get_current()->owner;
     if (process)
     {
-        if (fd < SOSO_MAX_OPENED_FILES)
+        if (fd < ASTERISK_MAX_OPENED_FILES)
         {
             File* file = process->fd[fd];
 
@@ -1226,7 +1226,7 @@ int syscall_getdents(int fd, char *buf, int nbytes)
     return -1;//on error
 }
 
-int syscall_soso_read_dir(int fd, void *dirent, int index)
+int syscall_asterisk_read_dir(int fd, void *dirent, int index)
 {
     if (!check_user_access(dirent))
     {
@@ -1236,7 +1236,7 @@ int syscall_soso_read_dir(int fd, void *dirent, int index)
     Process* process = thread_get_current()->owner;
     if (process)
     {
-        if (fd < SOSO_MAX_OPENED_FILES)
+        if (fd < ASTERISK_MAX_OPENED_FILES)
         {
             File* file = process->fd[fd];
 
@@ -1375,12 +1375,12 @@ int syscall_manage_message(int command, void* message)
         result = message_get_queue_count(thread);
         break;
     case 1:
-        message_send(thread, (SosoMessage*)message);
+        message_send(thread, (AsteriskMessage*)message);
         result = 0;
         break;
     case 2:
         //make blocking
-        result = message_get_next(thread, (SosoMessage*)message);
+        result = message_get_next(thread, (AsteriskMessage*)message);
         break;
     default:
         break;
@@ -1449,7 +1449,7 @@ void* syscall_mmap(void *addr, int length, int flags, int prot, int fd, int offs
         }
         else
         {
-            if (fd < SOSO_MAX_OPENED_FILES)
+            if (fd < ASTERISK_MAX_OPENED_FILES)
             {
                 File* file = process->fd[fd];
 
@@ -1559,7 +1559,7 @@ int syscall_statx(int dirfd, const char *pathname, int flags, unsigned int mask,
                 {
                     node = fs_get_node_relative_to_node(pathname, process->working_directory);
                 }
-                else if (dirfd >= 0 && dirfd < SOSO_MAX_OPENED_FILES)
+                else if (dirfd >= 0 && dirfd < ASTERISK_MAX_OPENED_FILES)
                 {
                     File* dir_fd_dir = process->fd[dirfd];
                     if ((dir_fd_dir->node->node_type & FT_DIRECTORY) == FT_DIRECTORY) //pathname is relative to the directory that dirfd refers to
@@ -1573,7 +1573,7 @@ int syscall_statx(int dirfd, const char *pathname, int flags, unsigned int mask,
         {
             if ((flags & AT_EMPTY_PATH) == AT_EMPTY_PATH)
             {
-                if (dirfd >= 0 && dirfd < SOSO_MAX_OPENED_FILES)
+                if (dirfd >= 0 && dirfd < ASTERISK_MAX_OPENED_FILES)
                 {
                     node = process->fd[dirfd]->node;
                 }
@@ -1667,7 +1667,7 @@ int syscall_ftruncate(int fd, int size)
     Process* process = thread_get_current()->owner;
     if (process)
     {
-        if (fd < SOSO_MAX_OPENED_FILES)
+        if (fd < ASTERISK_MAX_OPENED_FILES)
         {
             File* file = process->fd[fd];
 
@@ -1729,7 +1729,7 @@ int syscall_shmget(int32_t key, size_t size, int flag)
         if (process)
         {
             BOOL already_opened = FALSE;
-            for (size_t i = 0; i < SOSO_MAX_OPENED_FILES; i++)
+            for (size_t i = 0; i < ASTERISK_MAX_OPENED_FILES; i++)
             {
                 File* file = process->fd[i];
 
@@ -1777,7 +1777,7 @@ void * syscall_shmat(int shmid, const void *shmaddr, int shmflg)
         Process* process = thread_get_current()->owner;
         if (process)
         {
-            for (size_t i = 0; i < SOSO_MAX_OPENED_FILES; i++)
+            for (size_t i = 0; i < ASTERISK_MAX_OPENED_FILES; i++)
             {
                 File* file = process->fd[i];
 
@@ -1842,7 +1842,7 @@ int syscall_ptsname_r(int fd, char *buf, int buflen)
     Process* process = thread_get_current()->owner;
     if (process)
     {
-        if (fd < SOSO_MAX_OPENED_FILES)
+        if (fd < ASTERISK_MAX_OPENED_FILES)
         {
             File* file = process->fd[fd];
 

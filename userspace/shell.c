@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include <termios.h>
 
-#include <soso.h>
+#include <asterisk.h>
 
 
 static void listDirectory(const char* path)
@@ -26,7 +26,7 @@ static void listDirectory(const char* path)
     memset(&dirEntry, 0, sizeof(FileSystemDirent));
 
     int index = 0;
-    while (soso_read_dir(fd, &dirEntry, index++) != -1)
+    while (asterisk_read_dir(fd, &dirEntry, index++) != -1)
     {
         char pathBuffer[128];
 
