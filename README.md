@@ -9,5 +9,7 @@ After building the kernel and making the CD-ROM image, you can test asterisk:
 ```
 make test
 ```
+## Screenshot
+![](.assets/screenshot0.png)
 ## License
 Asterisk is licensed under the BSD-2-Clause license.
