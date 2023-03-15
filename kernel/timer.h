@@ -1,5 +1,4 @@
-#ifndef TIMER_H
-#define TIMER_H
+#pragma once
 
 #include "common.h"
 #include "time.h"
@@ -19,5 +18,3 @@ void scheduler_disable();
 int32_t clock_getres64(int32_t clockid, struct timespec *res);
 int32_t clock_gettime64(int32_t clockid, struct timespec *tp);
 int32_t clock_settime64(int32_t clockid, const struct timespec *tp);
-
-#endif

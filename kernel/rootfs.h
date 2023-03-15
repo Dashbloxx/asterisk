@@ -1,8 +1,5 @@
-#ifndef ROOTFS_H
-#define ROOTFS_H
+#pragma once
 
 #include "fs.h"
 
 FileSystemNode* rootfs_initialize();
-
-#endif // ROOTFS_H

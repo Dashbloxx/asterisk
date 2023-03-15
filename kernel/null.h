@@ -1,6 +1,3 @@
-#ifndef NULL_H
-#define NULL_H
+#pragma once
 
 void null_initialize();
-
-#endif // NULL_H

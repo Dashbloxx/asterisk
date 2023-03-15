@@ -1,5 +1,4 @@
-#ifndef MULTIBOOT_H
-#define MULTIBOOT_H
+#pragma once
 
 #include "common.h"
 
@@ -41,5 +40,3 @@ struct Multiboot
     uint8_t framebuffer_bpp;
     uint8_t framebuffer_type;
 }  __attribute__((packed));
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef SPINLOCK_H
-#define SPINLOCK_H
+#pragma once
 
 #include "common.h"
 
@@ -9,5 +8,3 @@ void spinlock_init(Spinlock* spinlock);
 void spinlock_lock(Spinlock* spinlock);
 BOOL spinlock_try_lock(Spinlock* spinlock);
 void spinlock_unlock(Spinlock* spinlock);
-
-#endif // SPINLOCK_H

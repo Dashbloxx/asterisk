@@ -1,5 +1,4 @@
-#ifndef CONSOLE_H
-#define CONSOLE_H
+#pragma once
 
 #include "common.h"
 
@@ -24,5 +23,3 @@ Terminal* console_get_terminal(uint32_t index);
 Terminal* console_get_terminal_by_master(FileSystemNode* master_node);
 
 Terminal* console_get_terminal_by_slave(FileSystemNode* slave_node);
-
-#endif // CONSOLE_H

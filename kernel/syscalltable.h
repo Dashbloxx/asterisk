@@ -1,5 +1,4 @@
-#ifndef SYSCALLTABLE_H
-#define SYSCALLTABLE_H
+#pragma once
 
 //This file will also be included by C library.
 enum
@@ -87,5 +86,3 @@ enum
 
     SYSCALL_COUNT
 };
-
-#endif // SYSCALLTABLE_H

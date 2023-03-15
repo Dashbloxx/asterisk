@@ -1,8 +1,5 @@
-#ifndef UNIX_SOCKET_H
-#define UNIX_SOCKET_H
+#pragma once
 
 #include "socket.h"
 
 void unixsocket_setup(Socket* socket);
-
-#endif //UNIX_SOCKET_H

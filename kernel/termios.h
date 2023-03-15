@@ -1,5 +1,4 @@
-#ifndef TERMIOS_H
-#define TERMIOS_H
+#pragma once
 
 //This file will also be included by C library.
 
@@ -194,5 +193,3 @@ struct termios
 
 #define TIOCGPGRP	0x540F
 #define TIOCSPGRP	0x5410
-
-#endif // TERMIOS_H

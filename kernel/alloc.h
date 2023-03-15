@@ -1,5 +1,4 @@
-#ifndef ALLOC_H
-#define ALLOC_H
+#pragma once
 
 #include "common.h"
 #include "process.h"
@@ -21,5 +20,3 @@ struct MallocHeader
 } __attribute__ ((packed));
 
 typedef struct MallocHeader MallocHeader;
-
-#endif // ALLOC_H

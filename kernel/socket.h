@@ -1,5 +1,4 @@
-#ifndef SOCKET_H
-#define SOCKET_H
+#pragma once
 
 #include "stdint.h"
 #include "common.h"
@@ -365,5 +364,3 @@ typedef struct Socket
 typedef struct List List;
 
 extern List* g_socket_list;
-
-#endif //SOCKET_H

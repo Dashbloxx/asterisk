@@ -1,6 +1,3 @@
-#ifndef KEYBOARD_H
-#define KEYBOARD_H
+#pragma once
 
 void keyboard_initialize();
-
-#endif // KEYBOARD_H

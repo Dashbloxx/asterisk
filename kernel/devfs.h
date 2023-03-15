@@ -1,5 +1,4 @@
-#ifndef DEVFS_H
-#define DEVFS_H
+#pragma once
 
 #include "device.h"
 #include "fs.h"
@@ -7,5 +6,3 @@
 
 void devfs_initialize();
 FileSystemNode* devfs_register_device(Device* device);
-
-#endif // DEVFS_H

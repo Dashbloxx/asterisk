@@ -1,5 +1,4 @@
-#ifndef ISR_H
-#define ISR_H
+#pragma once
 
 #include "common.h"
 
@@ -39,6 +38,3 @@ extern uint32_t g_isr_count;
 extern uint32_t g_irq_count;
 
 void interrupt_register(uint8_t n, IsrFunction handler);
-
-
-#endif //ISR_H

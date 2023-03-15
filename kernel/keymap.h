@@ -1,5 +1,4 @@
-#ifndef KEYMAP_H
-#define KEYMAP_H
+#pragma once
 
 #include "common.h"
 
@@ -58,5 +57,3 @@ enum
 
 extern uint8_t g_key_map[256];
 extern uint8_t g_key_shift_map[256];
-
-#endif //KEYMAP_H

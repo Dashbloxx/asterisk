@@ -109,7 +109,6 @@ int kmain(struct Multiboot *mboot_ptr)
         gfx_initialize((uint32_t*)(uint32_t)mboot_ptr->framebuffer_addr, mboot_ptr->framebuffer_width, mboot_ptr->framebuffer_height, mboot_ptr->framebuffer_bpp / 8, mboot_ptr->framebuffer_pitch);
     }
 
-
     console_initialize(graphics_mode);
 
     printkf("Kernel built on %s %s\n", __DATE__, __TIME__);

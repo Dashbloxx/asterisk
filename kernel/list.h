@@ -1,5 +1,4 @@
-#ifndef LIST_H
-#define LIST_H
+#pragma once
 
 #include "common.h"
 
@@ -58,5 +57,3 @@ void queue_destroy(Queue* queue);
 BOOL queue_is_empty(Queue* queue);
 void queue_enqueue(Queue* queue, void* data);
 void* queue_dequeue(Queue* queue);
-
-#endif // LIST_H

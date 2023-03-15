@@ -1,5 +1,4 @@
-#ifndef SYSCALL_SELECT_H
-#define SYSCALL_SELECT_H
+#pragma once
 
 #include "common.h"
 #include "time.h"
@@ -20,5 +19,3 @@ typedef struct {
 void select_update(Thread* thread);
 
 int syscall_select(int n, fd_set* rfds, fd_set* wfds, fd_set* efds, struct timeval* tv);
-
-#endif //SYSCALL_SELECT_H

@@ -1,5 +1,4 @@
-#ifndef PROCESS_H
-#define PROCESS_H
+#pragma once
 
 #define KERNELMODE	0
 #define USERMODE	1
@@ -173,5 +172,3 @@ uint32_t get_system_context_switch_count();
 
 extern Thread* g_current_thread;
 extern Thread* g_previous_scheduled_thread;
-
-#endif // PROCESS_H

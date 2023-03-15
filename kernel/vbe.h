@@ -1,5 +1,4 @@
-#ifndef VBE_H
-#define VBE_H
+#pragma once
 
 typedef struct {
   /*  Mandatory information for all VBE revisions */
@@ -59,5 +58,3 @@ typedef struct {
   uint32_t MaxPixelClock; 	         /* maximum pixel clock (in Hz) for graphics mode */
   uint8_t Reserved4[190]; 		 /* remainder of ModeInfoBlock */
 } __attribute__((packed)) vbe_mode_info_t;
-
-#endif // VBE_H

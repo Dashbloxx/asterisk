@@ -1,5 +1,4 @@
-#ifndef FIFOBUFFER_H
-#define FIFOBUFFER_H
+#pragma once
 
 #include "common.h"
 
@@ -22,5 +21,3 @@ uint32_t fifobuffer_get_free(FifoBuffer* fifo_buffer);
 int32_t fifobuffer_enqueue(FifoBuffer* fifo_buffer, uint8_t* data, uint32_t size);
 int32_t fifobuffer_dequeue(FifoBuffer* fifo_buffer, uint8_t* data, uint32_t size);
 int32_t fifobuffer_enqueue_from_other(FifoBuffer* fifo_buffer, FifoBuffer* other);
-
-#endif // FIFOBUFFER_H

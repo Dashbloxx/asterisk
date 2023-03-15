@@ -1,5 +1,4 @@
-#ifndef GFX_H
-#define GFX_H
+#pragma once
 
 #include "common.h"
 
@@ -20,5 +19,3 @@ uint16_t gfx_get_width();
 uint16_t gfx_get_height();
 uint16_t gfx_get_bytes_per_pixel();
 void gfx_fill(uint32_t color);
-
-#endif // GFX_H

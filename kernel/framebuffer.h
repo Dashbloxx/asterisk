@@ -1,5 +1,4 @@
-#ifndef FRAMEBUFFER_H
-#define FRAMEBUFFER_H
+#pragma once
 
 #include "common.h"
 
@@ -11,5 +10,3 @@ enum EnFrameBuferIoctl
 };
 
 void framebuffer_initialize(uint8_t* p_address, uint8_t* v_address);
-
-#endif // FRAMEBUFFER_H

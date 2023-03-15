@@ -1,5 +1,4 @@
-#ifndef COMMON_H
-#define COMMON_H
+#pragma once
 
 #include "stdint.h"
 
@@ -123,5 +122,3 @@ BOOL check_user_access_string_array(char *const array[]);
 #define iscntrl(a) ((unsigned)a < 0x20 || a == 0x7f)
 #define tolower(a) ((a)|0x20)
 #define toupper(a) ((a)&0x5f)
-
-#endif // COMMON_H

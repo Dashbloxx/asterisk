@@ -1,5 +1,4 @@
-#ifndef ERRNO_H
-#define ERRNO_H
+#pragma once
 
 #define	EPERM		 1	/* Operation not permitted */
 #define	ENOENT		 2	/* No such file or directory */
@@ -136,5 +135,3 @@
 #define ENOTRECOVERABLE 131
 #define ERFKILL         132
 #define EHWPOISON       133
-
-#endif //ERRNO_H

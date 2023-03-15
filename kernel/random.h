@@ -1,6 +1,3 @@
-#ifndef RANDOM_H
-#define RANDOM_H
+#pragma once
 
 void random_initialize();
-
-#endif // RANDOM_H

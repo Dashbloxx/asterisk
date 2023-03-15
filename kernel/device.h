@@ -1,5 +1,4 @@
-#ifndef DEVICE_H
-#define DEVICE_H
+#pragma once
 
 #include "common.h"
 #include "fs.h"
@@ -22,5 +21,3 @@ typedef struct Device
     MunmapFunction munmap;
     void * private_data;
 } Device;
-
-#endif // DEVICE_H

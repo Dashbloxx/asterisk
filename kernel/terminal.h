@@ -1,5 +1,4 @@
-#ifndef TERMINAL_H
-#define TERMINAL_H
+#pragma once
 
 #include "common.h"
 #include "fs.h"
@@ -40,5 +39,3 @@ void terminal_move_cursor(Terminal* terminal, uint16_t line, uint16_t column);
 void terminal_scroll_up(Terminal* terminal);
 
 void terminal_send_key(Terminal* terminal, uint8_t modifier, uint8_t character);
-
-#endif // TERMINAL_H

@@ -1,5 +1,4 @@
-#ifndef TTYDEV_H
-#define TTYDEV_H
+#pragma once
 
 #include "common.h"
 #include "spinlock.h"
@@ -50,5 +49,3 @@ typedef struct TtyDev
 FileSystemNode* ttydev_create();
 
 int32_t ttydev_master_read_nonblock(File *file, uint32_t size, uint8_t *buffer);
-
-#endif //TTYDEV_H

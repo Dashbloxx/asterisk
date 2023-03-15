@@ -1,5 +1,4 @@
-#ifndef SYSCALL_GETTHREADS_H
-#define SYSCALL_GETTHREADS_H
+#pragma once
 
 #include "stdint.h"
 #include "process.h"
@@ -33,5 +32,3 @@ typedef struct ProcInfo
 
 int32_t syscall_getthreads(ThreadInfo* threads, uint32_t max_count, uint32_t flags);
 int32_t syscall_getprocs(ProcInfo* procs, uint32_t max_count, uint32_t flags);
-
-#endif //SYSCALL_GETTHREADS_H

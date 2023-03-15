@@ -1,5 +1,4 @@
-#ifndef IPC_H
-#define IPC_H
+#pragma once
 
 #include "stdint.h"
 
@@ -12,5 +11,3 @@
 #define IPC_INFO 3
 
 #define IPC_PRIVATE ((int32_t) 0)
-
-#endif //IPC_H

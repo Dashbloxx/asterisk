@@ -1,5 +1,4 @@
-#ifndef SIGNAL_H
-#define SIGNAL_H
+#pragma once
 
 #define SIGHUP    1
 #define SIGINT    2
@@ -37,5 +36,3 @@
 #define SIGUNUSED SIGSYS
 
 #define SIGNAL_COUNT 32
-
-#endif //SIGNAL_H

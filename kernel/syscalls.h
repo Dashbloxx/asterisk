@@ -1,6 +1,3 @@
-#ifndef SYSCALLS_H
-#define SYSCALLS_H
+#pragma once
 
 void syscalls_initialize();
-
-#endif // SYSCALLS_H

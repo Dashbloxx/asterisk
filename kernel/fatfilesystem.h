@@ -1,6 +1,3 @@
-#ifndef FATFILESYSTEM_H
-#define FATFILESYSTEM_H
+#pragma once
 
 void fatfs_initialize();
-
-#endif // FATFILESYSTEM_H

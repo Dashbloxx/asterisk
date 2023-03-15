@@ -4,10 +4,13 @@
 #include "process.h"
 #include "log.h"
 
+/*
+ *  These functions are from `gdt.asm`. Some functions may be hard or impossible to be written in C, so they are written in assembly language. In this case, the
+ *  assembler being used is NASM.
+ */
 extern void flush_gdt(uint32_t);
 extern void flush_idt(uint32_t);
 extern void flush_tss();
-
 
 static void gdt_initialize();
 static void idt_initialize();
@@ -23,6 +26,9 @@ Tss g_tss;
 static void handle_double_fault(Registers *regs);
 static void handle_general_protection_fault(Registers *regs);
 
+/*
+ *  Initialize both the GDT (global descriptor table) and the IDT (interrupt descriptor table)
+ */
 void descriptor_tables_initialize()
 {
     gdt_initialize();

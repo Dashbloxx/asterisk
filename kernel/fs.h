@@ -1,5 +1,4 @@
-#ifndef FS_H
-#define FS_H
+#pragma once
 
 #include "common.h"
 
@@ -165,5 +164,3 @@ FileSystemNode* fs_get_node_relative_to_node(const char* path, FileSystemNode* r
 BOOL fs_register(FileSystem* fs);
 BOOL fs_mount(const char *source, const char *target, const char *fsType, uint32_t flags, void *data);
 BOOL fs_check_mount(const char *source, const char *target, const char *fsType, uint32_t flags, void *data);
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef TIME_H
-#define TIME_H
+#pragma once
 
 #include "common.h"
 
@@ -18,5 +17,3 @@ struct timeval
     uint32_t tv_sec;         /* seconds */
     uint32_t tv_usec;        /* microseconds */
 };
-
-#endif //TIME_H
