@@ -11,5 +11,6 @@ make test
 ```
 ## Screenshot
 ![](.assets/screenshot0.png)
+*Asterisk running with soso's initrd!*
 ## License
 Asterisk is licensed under the BSD-2-Clause license.
