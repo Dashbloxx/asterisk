@@ -28,6 +28,9 @@
 #include "terminal.h"
 #include "socket.h"
 
+/* Uncomment the line below if you choose to boot with a window system (microwindows/Nano-X) */
+//#define START_WITH_NX
+
 extern uint32_t _start;
 extern uint32_t _end;
 uint32_t g_physical_kernel_start_address = (uint32_t)&_start;
@@ -179,6 +182,7 @@ int kmain(struct Multiboot *mboot_ptr)
             execute_file("/initrd/shell", argv, envp, fs_get_node("/dev/ptty3"));
             execute_file("/initrd/shell", argv, envp, fs_get_node("/dev/ptty4"));
 
+#if defined(START_WITH_NX)
             FileSystemNode* tty_node_x = fs_get_node("/dev/ptty7");
             Terminal* terminal_x = console_get_terminal_by_slave(tty_node_x);
             if (terminal_x)
@@ -189,10 +193,13 @@ int kmain(struct Multiboot *mboot_ptr)
             }
             execute_file("/initrd/nano-X", argv, envp, tty_node_x);
             execute_file("/initrd/tasks", argv, envp, fs_get_node("/dev/null"));
+#else
+            execute_file("/initrd/shell", argv, envp, fs_get_node("/dev/ptty7"));
+#endif
         }
         else
         {
-            printkf("Mounting initrd failed!\n");
+            PANIC("Mounting initrd failed!\n");
         }
     }
 
@@ -201,6 +208,8 @@ int kmain(struct Multiboot *mboot_ptr)
     scheduler_enable();
 
     enable_interrupts();
+
+    printkf("Halting the CPU...\n");
 
     while(TRUE)
     {

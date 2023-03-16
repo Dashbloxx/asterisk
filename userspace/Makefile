@@ -1,10 +1,10 @@
 SOURCES_C=$(patsubst %.c,%.o,$(wildcard ./*.c))
 
 
-CC=asterisk-clang
-LD=ld
-CFLAGS=-c -O3
-LDFLAGS=-T./link.ld -m elf_i386 ../root/lib/crt1.o -L../root/lib -lTinyGL -lc -L/usr/lib/llvm-10/lib/clang/10.0.0/lib/linux -lclang_rt.builtins-i386
+CC=i686-elf-gcc
+LD=i686-elf-ld
+CFLAGS=-std=gnu99 -O2 -Wall -Wextra
+LDFLAGS=-O2 -nostdlib
 
 OBJ = $(SOURCES_C)
 
@@ -16,5 +16,6 @@ clean:
 
 %.o:%.c
 	mkdir -p bin
-	$(CC) $(CFLAGS) $< -o $@
+	$(CC) -c $< -o $@ $(CFLAGS)
+	$(LD) -Tlink.ld -o bin/$* $(LDFLAGS) $@
 	$(LD) $@ $(LDFLAGS) -o bin/$*
