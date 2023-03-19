@@ -11,6 +11,11 @@ make test
 ```
 ## Screenshot
 ![](.assets/screenshot0.png)
-*Asterisk running with soso's initrd!*
+*Asterisk running with [soso](https://github.com/ozkl/soso)'s initrd!*
+## Contributors
+When I took code from [soso](https://github.com/ozkl/soso), I also took some code from the pull requests that fixed different aspects of the kernel. Although they may not show up in the GitHub repository's contributor list, I will still add them here:
+* (Dashbloxx)[https://github.com/Dashbloxx]
+* (rilysh)[https://github.com/rilysh] [for this](https://github.com/ozkl/soso/pull/10)
+* (sk-io)[https://github.com/sk-io] [for this](https://github.com/ozkl/soso/pull/19)
 ## License
 Asterisk is licensed under the BSD-2-Clause license.
