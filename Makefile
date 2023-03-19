@@ -1,5 +1,7 @@
 all:
 	make -C kernel all
+	make -C userspace all
+	sudo scripts/initrd.sh
 	cp kernel.bin bootdisk-root/boot/
 	cp initrd.fat bootdisk-root/boot/
 	grub-mkrescue -o asterisk.iso bootdisk-root
@@ -20,10 +22,6 @@ iso:
 
 userspace:
 	make -C userspace all
-
-libc:
-	rm libc.a
-	make -C libc all
 
 test:
 	qemu-system-i386 -kernel kernel.bin -initrd initrd.fat

@@ -1,21 +1,15 @@
-SOURCES_C=$(patsubst %.c,%.o,$(wildcard ./*.c))
+OBJ = libc/syscall.o test.o
 
-
-CC=i686-elf-gcc
-LD=i686-elf-ld
-CFLAGS=-std=gnu99 -O2 -Wall -Wextra
-LDFLAGS=-O2 -nostdlib
-
-OBJ = $(SOURCES_C) crt0.o
+CC = i686-elf-gcc
+LD = i686-elf-ld
+CFLAGS = -nostdinc
+LDFLAGS = -Tlink.ld
 
 all: $(OBJ)
+	$(LD) $(LDFLAGS) -o bin/test $(OBJ)
 
-clean:
-	-rm *.o
-	-rm -rf bin
+libc/syscall.o: libc/syscall.c libc/syscall.h
+	$(CC) $(CFLAGS) -c libc/syscall.c -o libc/syscall.o
 
-%.o:%.c
-	mkdir -p bin
-	$(CC) -c $< -o $@ $(CFLAGS)
-	$(LD) -Tlink.ld -o bin/$* $(LDFLAGS) $@
-	$(LD) $@ $(LDFLAGS) -o bin/$*
+test.o: test.c libc/syscall.h
+	$(CC) $(CFLAGS) -c test.c -o test.o
