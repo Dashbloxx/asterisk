@@ -1,8 +1,5 @@
 all:
 	make -C kernel all
-	rm libc.a
-	make -C libc all
-	make -C userspace all
 	cp kernel.bin bootdisk-root/boot/
 	cp initrd.fat bootdisk-root/boot/
 	grub-mkrescue -o asterisk.iso bootdisk-root

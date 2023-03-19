@@ -6,7 +6,7 @@ LD=i686-elf-ld
 CFLAGS=-std=gnu99 -O2 -Wall -Wextra
 LDFLAGS=-O2 -nostdlib
 
-OBJ = $(SOURCES_C)
+OBJ = $(SOURCES_C) crt0.o
 
 all: $(OBJ)
 

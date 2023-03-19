@@ -209,8 +209,6 @@ int kmain(struct Multiboot *mboot_ptr)
 
     enable_interrupts();
 
-    printkf("Halting the CPU...\n");
-
     while(TRUE)
     {
         //Idle thread
