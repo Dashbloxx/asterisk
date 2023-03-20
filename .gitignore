@@ -1,2 +1,4 @@
 asterisk.iso
 kernel.bin
+kernel/*.o
+userspace/*.o
