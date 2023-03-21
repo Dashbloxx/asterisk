@@ -3,6 +3,6 @@
 #include "libc/stdio.h"
 
 void _start(int argc, char* const argv[], char* const envp[]) {
-    putc('\n');
+    printf("Hello, world!\nThis is a number: %x\n", 3);
     _exit();
 }

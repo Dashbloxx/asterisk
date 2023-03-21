@@ -10,4 +10,4 @@ char *strncpy(char *dst, const char *src, size_t n);
 char *strcat(char *s1, const char *s2);
 char *strncat(char *s1, const char *s2, size_t n);
 void *memset(void *b, int c, int len);
-void itoa(int num, char *number);
+void itoa(char *buf, int base, int d);
