@@ -118,9 +118,7 @@ int syscall_writev(int fd, const struct iovec *iovs, int iovcnt);
 int syscall_set_thread_area(void *p);
 int syscall_set_tid_address(void* p);
 int syscall_exit_group(int status);
-int syscall_llseek(unsigned int fd, unsigned int offset_high,
-            unsigned int offset_low, int64_t *result,
-            unsigned int whence);
+int syscall_llseek(unsigned int fd, unsigned int offset_high, unsigned int offset_low, int64_t *result, unsigned int whence);
 
 int syscall_statx(int dirfd, const char *pathname, int flags, unsigned int mask, struct statx *statxbuf);
 int syscall_wait4(int pid, int *wstatus, int options, struct rusage *rusage);
