@@ -93,30 +93,63 @@ int execute_file(const char *path, char *const argv[], char *const envp[], FileS
     return result;
 }
 
+/*
+ *  Here we're using the multiboot protocol, which most bootloaders support. Multiboot allows us to have the
+ *  bootloader fetch us some information (which we can't get as the kernel) while jumping to the kernel.
+ */
 int kmain(struct Multiboot *mboot_ptr)
 {
     int stack = 5;
 
+    /*
+     *  Initialize the GDT (Global Descriptor Table), and other descriptor tables. These allow the kernel to
+     *  describe certain segments of memory & other stuff to the CPU.
+     */
     descriptor_tables_initialize();
 
     uint32_t memory_kb = mboot_ptr->mem_upper;//96*1024;
     vmm_initialize(memory_kb);
 
+    /*
+     *  Initialize the general filesystem-related stuff, and initialize devfs, which are files that don't
+     *  contain anything, but allow us to recieve and send data to...
+     */
     fs_initialize();
     devfs_initialize();
 
+    /*
+     *  Determine if we're able to use graphics...
+     *  If we're testing with QEMU, we won't have graphics, but if a bootloader is combined, we most likely
+     *  will have some sort of graphics...
+     */
     BOOL graphics_mode = (MULTIBOOT_FRAMEBUFFER_TYPE_RGB == mboot_ptr->framebuffer_type);
 
+    /*
+     *  If graphics are available, let's initialize kernel's side of graphics handling...
+     */
     if (graphics_mode)
     {
         gfx_initialize((uint32_t*)(uint32_t)mboot_ptr->framebuffer_addr, mboot_ptr->framebuffer_width, mboot_ptr->framebuffer_height, mboot_ptr->framebuffer_bpp / 8, mboot_ptr->framebuffer_pitch);
     }
 
+    /*
+     *  Let's initialize the console, and while doing that let's pass whether or not graphics are available
+     *  to the console, so that it can do it's own thing. See `console.c` & `console.h`...
+     */
     console_initialize(graphics_mode);
 
+    /*
+     *  Let's print out when the kernel was built. GCC's preprocessor sets these values right before compiling
+     *  the kernel...
+     */
     printkf("Kernel built on %s %s\n", __DATE__, __TIME__);
     
+    /*
+     *  Let's initialize `systemfs`. See `systemfs.c` & `systemfs.h` for the code regarding systemfs. I am
+     *  still reading this code, and will later document what it does.
+     */
     systemfs_initialize();
+    
     pipe_initialize();
     sharedmemory_initialize();
 
