@@ -28,9 +28,6 @@
 #include "terminal.h"
 #include "socket.h"
 
-/* Uncomment the line below if you choose to boot with a window system (microwindows/Nano-X) */
-//#define START_WITH_NX
-
 extern uint32_t _start;
 extern uint32_t _end;
 uint32_t g_physical_kernel_start_address = (uint32_t)&_start;
@@ -219,27 +216,19 @@ int kmain(struct Multiboot *mboot_ptr)
 
         if (mountSuccess)
         {
-            printkf("Starting shell on TTYs\n");
-
+            /*
+             *  Run a shell for each open TTY...
+             */
             execute_file("/initrd/shell", argv, envp, fs_get_node("/dev/ptty1"));
             execute_file("/initrd/shell", argv, envp, fs_get_node("/dev/ptty2"));
             execute_file("/initrd/shell", argv, envp, fs_get_node("/dev/ptty3"));
             execute_file("/initrd/shell", argv, envp, fs_get_node("/dev/ptty4"));
-
-#if defined(START_WITH_NX)
-            FileSystemNode* tty_node_x = fs_get_node("/dev/ptty7");
-            Terminal* terminal_x = console_get_terminal_by_slave(tty_node_x);
-            if (terminal_x)
-            {
-                terminal_x->disabled = TRUE;
-
-                console_set_active_terminal(terminal_x);
-            }
-            execute_file("/initrd/nano-X", argv, envp, tty_node_x);
-            execute_file("/initrd/tasks", argv, envp, fs_get_node("/dev/null"));
-#else
             execute_file("/initrd/shell", argv, envp, fs_get_node("/dev/ptty7"));
-#endif
+
+            /*
+             *  Let's run our logging service on the COM1 serial port so that we can see some logs through QEMU!
+             */
+            execute_file("/initrd/log", argv, envp, fs_get_node("/dev/com1"));
         }
         else
         {
