@@ -149,12 +149,19 @@ int kmain(struct Multiboot *mboot_ptr)
      *  still reading this code, and will later document what it does.
      */
     systemfs_initialize();
-    
+
     pipe_initialize();
     sharedmemory_initialize();
 
     tasking_initialize();
 
+    /*
+     *  Initialize syscalls. Syscalls are useful, because they allow userspace binaries to call certain
+     *  functions from the kernel while running with limited permissions.
+     *  See `syscalls.c` & `syscalls.h` aswell as `syscalltable.h`. The first two files contain code defining
+     *  basic syscalls, and the third file contains a list of syscalls. Reading this code will make the process
+     *  of porting a libc thousands of times easier...
+     */
     syscalls_initialize();
 
     timer_initialize();
@@ -181,6 +188,10 @@ int kmain(struct Multiboot *mboot_ptr)
 
     fatfs_initialize();
 
+    /*
+     *  Initialize sockets (UNIX sockets). This allows different processes to communicate with each other. Do
+     *  not confuse this with TCP/IP communication!
+     */
     net_initialize();
 
     printkf("System started!\n");
