@@ -1,3 +1,8 @@
+/*
+ *      This file is very essential; it allows us to map where different aspects of the kernel are placed in memory. It also 
+ *      allows us to set the entry function, which is `_start` (you can find the definition of `_start` in `boot.asm`).
+ */
+
 ENTRY(_start)
 
 SECTIONS

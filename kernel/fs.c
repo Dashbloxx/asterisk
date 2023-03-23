@@ -15,7 +15,15 @@ void fs_initialize()
 
     g_fs_root = rootfs_initialize();
 
+    /*
+     *  Create the directory which contains the character devices. These are files that don't contain actual data, instead
+     *  they allow you to send or recieve data.
+     */
     fs_mkdir(g_fs_root, "dev", 0);
+    
+    /*
+     *  Create a directory which contains basic userland binaries like a shell, a test program & a logger...
+     */
     fs_mkdir(g_fs_root, "initrd", 0);
 }
 

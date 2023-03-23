@@ -5,6 +5,11 @@
 #include "process.h"
 #include "log.h"
 
+/*
+ *  The files `common.c` & `common.h` contains basic utility functions that help with string manipulation, or basic input/output
+ *  operations.
+ */
+
 static BOOL g_interrupts_were_enabled = FALSE;
 
 // Write a byte out to the specified port.
