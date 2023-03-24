@@ -1,0 +1,2 @@
+# **DEV**ice **F**ile**S**ystem
+DevFS (also known as Device filesystem) is a directory in the root of the filesystem called `dev`, which contains other files inside which represent hardware. For example, `/dev/fb0` represents the monitor's framebuffer, which can be used to draw graphics to the screen.
