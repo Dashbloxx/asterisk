@@ -1,5 +1,5 @@
 LIBC_OBJ = libc/syscall.o libc/string.o libc/stdio.o libc/stdint.o libc/crt0.o
-OBJ = $(LIBC_OBJ) test.o log.o
+OBJ = $(LIBC_OBJ) test.o
 
 CC = i686-elf-gcc
 LD = i686-elf-ld
@@ -27,6 +27,3 @@ libc/crt0.o: libc/crt0.c
 
 test.o: test.c
 	$(CC) $(CFLAGS) -c test.c -o test.o
-
-log.o: log.c
-	$(CC) $(CFLAGS) -c log.c -o log.o

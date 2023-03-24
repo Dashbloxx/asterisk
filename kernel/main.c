@@ -173,8 +173,8 @@ int kmain(struct Multiboot *mboot_ptr)
 
     serial_initialize();
 
-    //log_initialize("/dev/com1");
-    log_initialize("/dev/ptty9");
+    log_initialize("/dev/com1");
+    //log_initialize("/dev/ptty9");
 
     log_printf("Kernel built on %s %s\n", __DATE__, __TIME__);
 
