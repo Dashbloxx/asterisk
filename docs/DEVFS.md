@@ -9,3 +9,5 @@ To register devices to the DevFS, you can use the following function:
 ```c
 FileSystemNode* devfs_register_device(Device* device);
 ```
+This will return you the node of the character device that is registered using the device, and therefore it requires a pointer to a struct that is relevant to the device that you register to the DevFS.
+**This page is to be documented more, come back later!**
