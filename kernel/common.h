@@ -2,6 +2,13 @@
 
 #include "stdint.h"
 
+/*
+ *  The lines 8 & 9 below can be changed if you want to run the kernel with debug messages or not. It is highly recommended that EXTRA_DEBUG should be set to 'FALSE'
+ *  because if set to 'TRUE', debug messages can become very, very annoying. Comment 'DEBUG' if you don't want debug messages at all...
+ */
+#define DEBUG
+#define EXTRA_DEBUG FALSE
+
 #define enable_interrupts() asm volatile("sti")
 #define disable_interrupts() asm volatile("cli")
 #define halt() asm volatile("hlt")

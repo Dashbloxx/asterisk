@@ -69,7 +69,9 @@ static BOOL keyboard_open(File *file, uint32_t flags)
     if (flags & O_NONBLOCK)
     {
         reader->read_mode = RM_NON_BLOCKING;
-        //printkf("keyboard opened as non blocking by %d\n", g_current_thread->owner->pid);
+#ifdef DEBUG
+        printkf("keyboard opened as non blocking by %d\n", g_current_thread->owner->pid);
+#endif
     }
 
     if (g_key_buffer_write_index > 0)
@@ -162,7 +164,9 @@ static int32_t keyboard_ioctl(File *file, int32_t request, void * argp)
         else if (cmd == 1)
         {
             reader->read_mode = RM_NON_BLOCKING;
-            //printkf("keyboard set as non blocking by %d\n", g_current_thread->owner->pid);
+#ifdef DEBUG
+            printkf("keyboard set as non blocking by %d\n", g_current_thread->owner->pid);
+#endif
             return 0;
         }
         break;

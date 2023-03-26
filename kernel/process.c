@@ -36,11 +36,19 @@ extern Tss g_tss;
 
 static void fill_auxilary_vector(uint32_t location, void* elfData);
 
+/*
+ *  This function increments an integer by 1, and returns the value of it. This is a good & practical way of generating process IDs, since the integer size is so big
+ *  that it doesn't matter if tons of processes are created, because they will most likely never reach the integer limit.
+ */
 uint32_t generate_process_id()
 {
     return g_process_id_generator++;
 }
 
+/*
+ *  This function increments an integer by 1, and returns the value of it. This is a good & practical way of generating thread IDs, since the integer size is so big
+ *  that it doesn't matter if tons of threads are created, because they will most likely never reach the integer limit.
+ */
 uint32_t generate_thread_id()
 {
     return g_thread_id_generator++;
@@ -51,6 +59,9 @@ uint32_t get_system_context_switch_count()
     return g_system_context_switch_count;
 }
 
+/*
+ *  Initialize multitasking...
+ */
 void tasking_initialize()
 {
     Process* process = (Process*)kmalloc(sizeof(Process));
@@ -210,23 +221,33 @@ static void destroy_string_array(char** array)
 }
 
 //This function must be called within the correct page directory for target process
+/*
+ *  As the function's name implies, this function helps with providing arguments & environment variables to a process. This is useful if you want the process to be
+ *  able to read command-line arguments.
+ *  The creator of soso left a comment here stating that "this function must be called within the correct page directory for target process"...
+ */
 static void copy_argv_env_to_process(uint32_t location, void* elfData, char *const argv[], char *const envp[])
 {
     char** destination = (char**)location;
     int destination_index = 0;
 
-    //printkf("ARGVENV: destination:%x\n", destination);
-
+#ifdef DEBUG
+    printkf("ARGVENV: destination:%x\n", destination);
+#endif
     int argv_count = get_string_array_item_count(argv);
     int envp_count = get_string_array_item_count(envp);
 
-    //printkf("ARGVENV: argv_count:%d envp_count:%d\n", argv_count, envp_count);
+#ifdef DEBUG
+    printkf("ARGVENV: argv_count:%d envp_count:%d\n", argv_count, envp_count);
+#endif
 
     char* string_table = (char*)location + sizeof(char*) * (argv_count + envp_count + 3) + AUX_VECTOR_SIZE_BYTES;
 
     uint32_t aux_vector_location = location + sizeof(char*) * (argv_count + envp_count + 2);
 
-    //printkf("ARGVENV: string_table:%x\n", string_table);
+#ifdef DEBUG
+    printkf("ARGVENV: string_table:%x\n", string_table);
+#endif
 
     for (int i = 0; i < argv_count; ++i)
     {
@@ -261,7 +282,9 @@ static void fill_auxilary_vector(uint32_t location, void* elf_data)
 {
     Elf32_auxv_t* auxv = (Elf32_auxv_t*)location;
 
-    //printkf("auxv:%x\n", auxv);
+#ifdef DEBUG
+    printkf("AUXV: %x\n", auxv);
+#endif
 
     memset((uint8_t*)auxv, 0, AUX_VECTOR_SIZE_BYTES);
 
@@ -459,10 +482,11 @@ Process* process_create_ex(const char* name, uint32_t process_id, uint32_t threa
 
     uint32_t size_in_memory = image_data_end_in_memory - USER_OFFSET;
 
-    //printkf("image size_in_memory:%d\n", size_in_memory);
+#ifdef DEBUG
+    printkf("image size_in_memory:%d\n", size_in_memory);
+#endif
 
     initialize_program_break(process, size_in_memory);
-
 
     const uint32_t stack_page_count = 50;
     char* v_address_stack_page = (char *) (USER_STACK - PAGESIZE_4K * stack_page_count);
@@ -535,7 +559,9 @@ Process* process_create_ex(const char* name, uint32_t process_id, uint32_t threa
     {
         uint32_t start_location = elf_load((char*)elf_data);
 
-        //printkf("process start location:%x\n", start_location);
+#ifdef DEBUG
+        printkf("process start location:%x\n", start_location);
+#endif
 
         /*
          *  If the start location isn't 0 or less, then set the thread's EIP register (used to store the address of the next instruction in memory) to the

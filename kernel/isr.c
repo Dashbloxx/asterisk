@@ -55,7 +55,9 @@ void handle_irq(Registers regs)
     }
     else
     {
-        //printkf("unhandled IRQ: %d\n", regs.interruptNumber);
+#ifdef DEBUG
+        printkf("unhandled IRQ: %d\n", regs.interruptNumber);
+#endif
     }
     
 }
