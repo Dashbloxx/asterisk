@@ -27,9 +27,9 @@ static int32_t unixsocket_fs_write(File *file, uint32_t len, uint8_t *buf);
 
 void unixsocket_setup(Socket* socket)
 {
-#ifdef DEBUG
-    printkf("unixsocket_setup\n");
-#endif
+// #ifdef DEBUG
+//     printkf("unixsocket_setup\n");
+// #endif
 
     UnixSocket* unix_socket = (UnixSocket*)kmalloc(sizeof(UnixSocket));
     memset((uint8_t*)unix_socket, 0, sizeof(UnixSocket));
@@ -52,9 +52,9 @@ void unixsocket_setup(Socket* socket)
 
 static int unixsocket_bind(Socket* socket, int sockfd, const struct sockaddr *addr, socklen_t addrlen)
 {
-#ifdef DEBUG
-    printkf("unixsocket_bind\n");
-#endif
+// #ifdef DEBUG
+//     printkf("unixsocket_bind\n");
+// #endif
 
     UnixSocket* unix_socket = (UnixSocket*)socket->custom_socket;
 
@@ -273,9 +273,9 @@ static ssize_t unixsocket_recv(Socket* socket, int sockfd, void *buf, size_t len
 
 static void unixsocket_closing(Socket* socket)
 {
-#ifdef DEBUG
-    printkf("unixsocket_closing\n");
-#endif
+// #ifdef DEBUG
+//     printkf("unixsocket_closing\n");
+// #endif
 
     UnixSocket* unix_socket = (UnixSocket*)socket->custom_socket;
 

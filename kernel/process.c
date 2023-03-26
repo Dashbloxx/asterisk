@@ -231,23 +231,23 @@ static void copy_argv_env_to_process(uint32_t location, void* elfData, char *con
     char** destination = (char**)location;
     int destination_index = 0;
 
-#ifdef DEBUG
-    printkf("ARGVENV: destination:%x\n", destination);
-#endif
+// #ifdef DEBUG
+//     printkf("ARGVENV: destination:%x\n", destination);
+// #endif
     int argv_count = get_string_array_item_count(argv);
     int envp_count = get_string_array_item_count(envp);
 
-#ifdef DEBUG
-    printkf("ARGVENV: argv_count:%d envp_count:%d\n", argv_count, envp_count);
-#endif
+// #ifdef DEBUG
+//     printkf("ARGVENV: argv_count:%d envp_count:%d\n", argv_count, envp_count);
+// #endif
 
     char* string_table = (char*)location + sizeof(char*) * (argv_count + envp_count + 3) + AUX_VECTOR_SIZE_BYTES;
 
     uint32_t aux_vector_location = location + sizeof(char*) * (argv_count + envp_count + 2);
 
-#ifdef DEBUG
-    printkf("ARGVENV: string_table:%x\n", string_table);
-#endif
+// #ifdef DEBUG
+//     printkf("ARGVENV: string_table:%x\n", string_table);
+// #endif
 
     for (int i = 0; i < argv_count; ++i)
     {
@@ -282,9 +282,9 @@ static void fill_auxilary_vector(uint32_t location, void* elf_data)
 {
     Elf32_auxv_t* auxv = (Elf32_auxv_t*)location;
 
-#ifdef DEBUG
-    printkf("AUXV: %x\n", auxv);
-#endif
+// #ifdef DEBUG
+//     printkf("AUXV: %x\n", auxv);
+// #endif
 
     memset((uint8_t*)auxv, 0, AUX_VECTOR_SIZE_BYTES);
 
@@ -482,9 +482,9 @@ Process* process_create_ex(const char* name, uint32_t process_id, uint32_t threa
 
     uint32_t size_in_memory = image_data_end_in_memory - USER_OFFSET;
 
-#ifdef DEBUG
-    printkf("image size_in_memory:%d\n", size_in_memory);
-#endif
+// #ifdef DEBUG
+//     printkf("image size_in_memory:%d\n", size_in_memory);
+// #endif
 
     initialize_program_break(process, size_in_memory);
 
@@ -559,9 +559,9 @@ Process* process_create_ex(const char* name, uint32_t process_id, uint32_t threa
     {
         uint32_t start_location = elf_load((char*)elf_data);
 
-#ifdef DEBUG
-        printkf("process start location:%x\n", start_location);
-#endif
+// #ifdef DEBUG
+//         printkf("process start location:%x\n", start_location);
+// #endif
 
         /*
          *  If the start location isn't 0 or less, then set the thread's EIP register (used to store the address of the next instruction in memory) to the

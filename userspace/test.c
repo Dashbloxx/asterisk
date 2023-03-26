@@ -4,5 +4,9 @@
 #include "libc/unistd.h"
 
 int main(int argc, char **argv) {
-    putc('n');
+    FILE *fp;
+    fp = fopen("/dev/com1", O_RDWR);
+    write(fp->fd, "Hello, world!\n", strlen("Hello, world!\n"));
+    fclose(fp);
+    return 0;
 }
