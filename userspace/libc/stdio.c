@@ -10,8 +10,8 @@ FILE *fopen(const char *path, const char *mode) {
 
     fp->fd = open(path, O_FLAGS(*mode), 0644);
     fp->flags = *mode;
-    fp->buf = (char *)malloc(BUFSIZ);
-    fp->buf_size = BUFSIZ;
+    fp->buf = (char *)malloc(BUFSIZE);
+    fp->buf_size = BUFSIZE;
     fp->buf_pos = 0;
 
     return fp;
