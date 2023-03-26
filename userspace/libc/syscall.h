@@ -1,14 +1,14 @@
 #pragma once
 
-typedef	char *caddr_t;
-typedef	long clock_t;
-typedef	unsigned int mode_t;
+#include "limits.h"
+#include "time.h"
+#include "sys/types.h"
+#include "stdlib.h"
 
-#define O_RDONLY 00
-#define O_WRONLY 01
-#define O_RDWR 02
-#define O_CREAT 00000100
-#define NULL ( (void *) 0)
+#define O_RDONLY 0
+#define O_WRONLY 1
+#define O_RDWR 2
+#define O_CREAT 100
 
 int syscall0(int num);
 
@@ -48,9 +48,9 @@ int open(const char *name, int flags, ...);
 
 int read(int file, char *ptr, int len);
 
-caddr_t sbrk(int incr);
+char *sbrk(int incr);
 
-clock_t times(struct tms *buf);
+int times(struct tms *buf);
 
 int unlink(char *name);
 

@@ -1,0 +1,95 @@
+#include "stdint.h"
+#include "stdlib.h"
+#include "syscall.h"
+
+#define BLOCK_SIZE sizeof(struct block)
+
+struct block {
+    size_t size;
+    struct block *next;
+    int free;
+};
+
+struct block *head = NULL;
+struct block *tail = NULL;
+
+void *_malloc(size_t size) {
+    struct block *curr;
+    void *ptr;
+
+    if (size == 0) {
+        return NULL;
+    }
+
+    /* Check if there is a free block */
+    for (curr = head; curr != NULL; curr = curr->next) {
+        if (curr->free && curr->size >= size) {
+            curr->free = 0;
+            return (void *)(curr + 1);
+        }
+    }
+
+    /* Allocate a new block */
+    curr = (struct block *)sbrk(BLOCK_SIZE + size);
+    if (curr == (void *)-1) {
+        return NULL;
+    }
+    curr->size = size;
+    curr->next = NULL;
+    curr->free = 0;
+
+    /* Add the block to the end of the list */
+    if (tail == NULL) {
+        head = tail = curr;
+    } else {
+        tail->next = curr;
+        tail = curr;
+    }
+
+    return (void *)(curr + 1);
+}
+
+void _free(void *ptr) {
+    struct block *curr;
+    struct block *prev = NULL;
+
+    if (ptr == NULL) {
+        return;
+    }
+
+    curr = (struct block *)ptr - 1;
+
+    /* Find the block in the list */
+    for (prev = NULL, curr = head; curr != NULL; prev = curr, curr = curr->next) {
+        if (curr == (struct block *)ptr - 1) {
+            break;
+        }
+    }
+
+    if (curr == NULL) {
+        /* Block not found */
+        return;
+    }
+
+    /* Free the block */
+    curr->free = 1;
+
+    /* Merge adjacent free blocks */
+    if (prev != NULL && prev->free) {
+        prev->size += BLOCK_SIZE + curr->size;
+        prev->next = curr->next;
+        curr = prev;
+    }
+    if (curr->next != NULL && curr->next->free) {
+        curr->size += BLOCK_SIZE + curr->next->size;
+        curr->next = curr->next->next;
+    }
+
+    /* Remove the block from the list if it is free */
+    if (curr->free && curr == head) {
+        head = curr->next;
+        if (head == NULL) {
+            tail = NULL;
+        }
+    }
+}
