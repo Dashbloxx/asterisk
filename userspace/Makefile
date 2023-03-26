@@ -8,7 +8,6 @@ LDFLAGS = -Tlink.ld
 
 all: $(OBJ)
 	$(LD) $(LDFLAGS) -o bin/test $(LIBC_OBJ) test.o
-	$(LD) $(LDFLAGS) -o bin/log $(LIBC_OBJ) log.o
 
 libc/syscall.o: libc/syscall.c
 	$(CC) $(CFLAGS) -c libc/syscall.c -o libc/syscall.o

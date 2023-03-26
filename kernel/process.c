@@ -336,6 +336,12 @@ Process* process_create_from_function(const char* name, Function0 func, char *co
     return process_create_ex(name, generate_process_id(), generate_thread_id(), func, NULL, argv, envp, parent, tty);
 }
 
+/*
+ *  This function creates a process. When using this function, make sure that you set either `func` or `elf_data`, not both or none of them. I
+ *  recommend using the functions `process_create_from_elf_data` or `process_create_from_function`. Use the function `process_create_from_elf_data`
+ *  for creating a process using the ELF data (use this if you want to execute an executable stored as a file). You can also create a process using
+ *  the function `process_create_from_function`, which allows you to create a process using a defined function.
+ */
 Process* process_create_ex(const char* name, uint32_t process_id, uint32_t thread_id, Function0 func, uint8_t* elf_data, char *const argv[], char *const envp[], Process* parent, FileSystemNode* tty)
 {
     uint32_t image_data_end_in_memory = elf_get_end_in_memory((char*)elf_data);
