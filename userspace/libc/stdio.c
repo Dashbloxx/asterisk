@@ -3,93 +3,87 @@
 #include "string.h"
 #include "stdarg.h"
 
-void puts(const char *text) {
-    write(1, text, strlen(text));
+#define O_FLAGS(flags) ((flags) == 'r' ? O_RDONLY : ((flags) == 'w' ? O_WRONLY | O_CREAT | O_TRUNC : 0))
+
+FILE *fopen(const char *path, const char *mode) {
+    FILE *fp = (FILE *)malloc(sizeof(FILE));
+
+    fp->fd = open(path, O_FLAGS(*mode), 0644);
+    fp->flags = *mode;
+    fp->buf = (char *)malloc(BUFSIZ);
+    fp->buf_size = BUFSIZ;
+    fp->buf_pos = 0;
+
+    return fp;
 }
 
-void putc(char character) {
-    write(1, &character, 1);
+int fclose(FILE *fp) {
+    int result = close(fp->fd);
+
+    free(fp->buf);
+    free(fp);
+
+    return result;
 }
 
-char getchar() {
-    char c;
-    read(1, &c, 1);
-    return c;
-}
+size_t fread(void *ptr, size_t size, size_t count, FILE *fp) {
+    size_t bytes_to_read = size * count;
+    size_t bytes_read = 0;
 
-void putn(int num) {
-    if (num < 0) {
-        putc('-');
-        num = -num;
-    }
-    if (num == 0) {
-        putc('0');
-        return;
-    }
-    char buf[20];
-    int i = 0;
-    while (num > 0) {
-        buf[i++] = num % 10 + '0';
-        num /= 10;
-    }
-    while (--i >= 0) {
-        putc(buf[i]);
-    }
-}
-
-void printf(const char *format, ...) {
-    char **arg = (char **)&format;
-    int c;
-    char buf[32];
-
-    arg++;
-
-    memset(buf, 0, sizeof(buf));
-    while ((c = *format++) != 0) {
-        if (c != '%')
-            putc(c);
-        else {
-            char *p, *p2;
-            int pad0 = 0, pad = 0;
-
-            c = *format++;
-            if (c == '0') {
-                pad0 = 1;
-                c = *format++;
-            }
-
-            if (c >= '0' && c <= '9') {
-                pad = c - '0';
-                c = *format++;
-            }
-
-            switch (c) {
-                case 'd':
-                case 'u':
-                case 'x':
-                    itoa(buf, c, *((int *)arg++));
-                    p = buf;
-                    goto string;
-                    break;
-
-                case 's':
-                    p = *arg++;
-                    if (!p)
-                        p = "(null)";
-
-                string:
-                    for (p2 = p; *p2; p2++)
-                        ;
-                    for (; p2 < p + pad; p2++)
-                        putc(pad0 ? '0' : ' ');
-                    while (*p)
-                        putc(*p++);
-                    break;
-
-                default:
-                    putc(*((int *)arg++));
-                    break;
-            }
+    if (bytes_to_read < fp->buf_size) {
+        if (fp->buf_pos + bytes_to_read > fp->buf_size) {
+            bytes_to_read = fp->buf_size - fp->buf_pos;
         }
+
+        memcpy(ptr, fp->buf + fp->buf_pos, bytes_to_read);
+        fp->buf_pos += bytes_to_read;
+        bytes_read += bytes_to_read;
     }
+
+    if (bytes_read < size * count) {
+        size_t bytes_remaining = size * count - bytes_read;
+        size_t bytes_read_from_file = read(fp->fd, ptr + bytes_read, bytes_remaining);
+
+        if (bytes_read_from_file < 0) {
+            return bytes_read_from_file;
+        }
+
+        bytes_read += bytes_read_from_file;
+    }
+
+    return bytes_read / size;
+}
+
+size_t fwrite(const void *ptr, size_t size, size_t count, FILE *fp) {
+    size_t bytes_to_write = size * count;
+    size_t bytes_written = 0;
+
+    if (bytes_to_write < fp->buf_size) {
+        if (fp->buf_pos + bytes_to_write > fp->buf_size) {
+            fwrite(fp->buf, 1, fp->buf_pos, fp);
+            fp->buf_pos = 0;
+        }
+
+        memcpy(fp->buf + fp->buf_pos, ptr, bytes_to_write);
+        fp->buf_pos += bytes_to_write;
+        bytes_written += bytes_to_write;
+    }
+
+    if (fp->buf_pos == fp->buf_size) {
+        fwrite(fp->buf, 1, fp->buf_size, fp);
+        fp->buf_pos = 0;
+    }
+
+    if (bytes_written < size * count) {
+        size_t bytes_remaining = size * count - bytes_written;
+        size_t bytes_written_to_file = write(fp->fd, ptr + bytes_written, bytes_remaining);
+
+        if (bytes_written_to_file < 0) {
+            return bytes_written_to_file;
+        }
+
+        bytes_written += bytes_written_to_file;
+    }
+
+    return bytes_written / size;
 }
