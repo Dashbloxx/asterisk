@@ -17,6 +17,26 @@ char getchar() {
     return c;
 }
 
+void putn(int num) {
+    if (num < 0) {
+        putc('-');
+        num = -num;
+    }
+    if (num == 0) {
+        putc('0');
+        return;
+    }
+    char buf[20];
+    int i = 0;
+    while (num > 0) {
+        buf[i++] = num % 10 + '0';
+        num /= 10;
+    }
+    while (--i >= 0) {
+        putc(buf[i]);
+    }
+}
+
 void printf(const char *format, ...) {
     char **arg = (char **)&format;
     int c;

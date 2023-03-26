@@ -326,11 +326,17 @@ static void fill_auxilary_vector(uint32_t location, void* elf_data)
     auxv[17].a_un.a_val = 0;
 }
 
+/*
+ *  Obviously, create a process from ELF binary/executable
+ */
 Process* process_create_from_elf_data(const char* name, uint8_t* elf_data, char *const argv[], char *const envp[], Process* parent, FileSystemNode* tty)
 {
     return process_create_ex(name, generate_process_id(), generate_thread_id(), NULL, elf_data, argv, envp, parent, tty);
 }
 
+/*
+ *  Obviously, create a process from a function
+ */
 Process* process_create_from_function(const char* name, Function0 func, char *const argv[], char *const envp[], Process* parent, FileSystemNode* tty)
 {
     return process_create_ex(name, generate_process_id(), generate_thread_id(), func, NULL, argv, envp, parent, tty);
@@ -352,24 +358,38 @@ Process* process_create_ex(const char* name, uint32_t process_id, uint32_t threa
         return NULL;
     }
 
+    /*
+     *  If the process's ID isn't known, then generate a process ID. In this case, the function `generate_process_id` just increments an integer, and returns that
+     *  integer's value.
+     */
     if (0 == process_id)
     {
         process_id = generate_process_id();
     }
 
+    /*
+     *  Same happens for threads...
+     */
     if (0 == thread_id)
     {
         thread_id = generate_thread_id();
     }
 
+    /*
+     *  Set up the process by allocating memory to it, setting it's PID (Process ID), allocating and setting it's page directory as well as it's working directory.
+     */
     Process* process = (Process*)kmalloc(sizeof(Process));
     memset((uint8_t*)process, 0, sizeof(Process));
     strncpy(process->name, name, ASTERISK_PROCESS_NAME_MAX);
     process->name[ASTERISK_PROCESS_NAME_MAX - 1] = 0;
     process->pid = process_id;
+
     process->pd = vmm_acquire_page_directory();
     process->working_directory = fs_get_root_node();
 
+    /*
+     *  Create a thread for the process, tell the kernel that the thread belongs to the process that it's being made for, and set it's thread ID.
+     */
     Thread* thread = (Thread*)kmalloc(sizeof(Thread));
     memset((uint8_t*)thread, 0, sizeof(Thread));
 
@@ -381,6 +401,9 @@ Process* process_create_ex(const char* name, uint32_t process_id, uint32_t threa
 
     thread_resume(thread);
 
+    /*
+     *  Set the thread's birth time (time when it started) to the current uptime of the kernel.
+     */
     thread->birth_time = get_uptime_milliseconds();
 
     thread->message_queue = fifobuffer_create(sizeof(AsteriskMessage) * MESSAGE_QUEUE_SIZE);
@@ -388,6 +411,9 @@ Process* process_create_ex(const char* name, uint32_t process_id, uint32_t threa
 
     thread->signals = fifobuffer_create(SIGNAL_QUEUE_SIZE);
 
+    /*
+     *  Set the CR3 register (3rd Control Register) to the current thread's page directory address.
+     */
     thread->regs.cr3 = (uint32_t) process->pd;
 
     if (parent)
@@ -481,11 +507,12 @@ Process* process_create_ex(const char* name, uint32_t process_id, uint32_t threa
     thread->regs.fs = selector;
     thread->regs.gs = selector; //48 | 3;
 
+    /*
+     *  Get the stack pointer, and set the thread's stack pointer register (ESP) to `stack_pointer`.
+     */
     uint32_t stack_pointer = USER_STACK - 4;
 
     thread->regs.esp = stack_pointer;
-
-
 
     thread->kstack.ss0 = 0x10;
     uint8_t* stack = (uint8_t*)kmalloc(KERN_STACK_SIZE);
@@ -501,12 +528,19 @@ Process* process_create_ex(const char* name, uint32_t process_id, uint32_t threa
 
     p->next = thread;
 
+    /*
+     *  If we're creating a process from ELF binary, then let's load it...
+     */
     if (elf_data)
     {
         uint32_t start_location = elf_load((char*)elf_data);
 
         //printkf("process start location:%x\n", start_location);
 
+        /*
+         *  If the start location isn't 0 or less, then set the thread's EIP register (used to store the address of the next instruction in memory) to the
+         *  start location of the ELF binary's context (the program's machine code). Makes sense, right?
+         */
         if (start_location > 0)
         {
             thread->regs.eip = start_location;
@@ -516,14 +550,18 @@ Process* process_create_ex(const char* name, uint32_t process_id, uint32_t threa
     //Restore memory view (page directory)
     CHANGE_PD(g_current_thread->regs.cr3);
 
-    fs_open_for_process(thread, process->tty, 0);//0: standard input
-    fs_open_for_process(thread, process->tty, 0);//1: standard output
-    fs_open_for_process(thread, process->tty, 0);//2: standard error
+    fs_open_for_process(thread, process->tty, 0); /* 0, known as standard input or `stdin`... */
+    fs_open_for_process(thread, process->tty, 0); /* 1, known as standard output or `stdout`... */
+    fs_open_for_process(thread, process->tty, 0); /* 2, known as standard error, or `stderr`... */
 
     return process;
 }
 
-//This function should be called in interrupts disabled state
+/*
+ *  As the function name implies, this function destroys a thread, by providing the function with the struct that represents the thread. There was a previous comment
+ *  that was left here by the creator of soso:
+ *  1 |  //This function should be called in interrupts disabled state
+ */
 void thread_destroy(Thread* thread)
 {
     //TODO: signal the process somehow
@@ -555,7 +593,11 @@ void thread_destroy(Thread* thread)
     }
 }
 
-//This function should be called in interrupts disabled state
+/*
+ *  As the function name implies, this function destroys an entire process, by providing the function with the struct that represents the process. There was a previous
+ *  comment that was left here by the creator of soso:
+ *  1 |  //This function should be called in interrupts disabled state
+ */
 void process_destroy(Process* process)
 {
     sharedmemory_unmap_for_process_all(process);

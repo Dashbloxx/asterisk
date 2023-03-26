@@ -5,6 +5,6 @@
 /*
  *  For some reason, when I interact with argc or argv, the process ends unexpectedly... I am trying to fix this currently.
  */
-int main(int argc, char **argv) {
+int main(int argc, char **argv, char **envp) {
     printf("Hello, world!\n");
 }
