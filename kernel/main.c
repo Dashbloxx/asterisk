@@ -176,7 +176,7 @@ int kmain(struct Multiboot *mboot_ptr)
     log_initialize("/dev/com1");
     //log_initialize("/dev/ptty9");
 
-    log_printf("Kernel built on %s %s\n", __DATE__, __TIME__);
+    log_printf("Kernel built on %s %s\r\n", __DATE__, __TIME__);
 
     random_initialize();
     null_initialize();

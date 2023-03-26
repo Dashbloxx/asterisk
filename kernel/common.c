@@ -467,7 +467,7 @@ void panic(const char *message, const char *file, uint32_t line)
 
     printkf("PANIC:%s:%d:%s\n", file, line, message);
 
-    log_printf("PANIC:%s:%d:%s\n", file, line, message);
+    log_printf("PANIC:%s:%d:%s\r\n", file, line, message);
 
     halt();
 }

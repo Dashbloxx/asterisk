@@ -179,7 +179,7 @@ static void handle_double_fault(Registers *regs)
 
 static void handle_general_protection_fault(Registers *regs)
 {
-    log_printf("General protection fault!!! Error code:%d - IP:%x\n", regs->errorCode, regs->eip);
+    log_printf("General protection fault!!! Error code:%d - IP:%x\r\n", regs->errorCode, regs->eip);
 
     Thread* faulting_thread = thread_get_current();
     if (NULL != faulting_thread)
@@ -192,14 +192,14 @@ static void handle_general_protection_fault(Registers *regs)
         }
         else
         {
-            log_printf("Faulting thread is %d and its state is %d\n", faulting_thread->threadId, faulting_thread->state);
+            log_printf("Faulting thread is %d and its state is %d\r\n", faulting_thread->threadId, faulting_thread->state);
 
             if (faulting_thread->user_mode)
             {
                 if (faulting_thread->state == TS_CRITICAL ||
                     faulting_thread->state == TS_UNINTERRUPTIBLE)
                 {
-                    log_printf("CRITICAL!! process %d\n", faulting_thread->owner->pid);
+                    log_printf("CRITICAL!! process %d\r\n", faulting_thread->owner->pid);
 
                     process_change_state(faulting_thread->owner, TS_SUSPEND);
 
@@ -213,14 +213,14 @@ static void handle_general_protection_fault(Registers *regs)
 
                     //TODO: state in RUN?
 
-                    log_printf("General protection fault %d\n", faulting_thread->owner->pid);
+                    log_printf("General protection fault %d\r\n", faulting_thread->owner->pid);
 
                     thread_signal(faulting_thread, SIGILL);
                 }
             }
             else
             {
-                log_printf("Destroying kernel thread %d\n", faulting_thread->threadId);
+                log_printf("Destroying kernel thread %d\r\n", faulting_thread->threadId);
 
                 thread_destroy(faulting_thread);
             }

@@ -421,21 +421,21 @@ static void print_page_fault_info(uint32_t faulting_address, Registers *regs)
     int reserved = regs->errorCode & 0x8;
     int id = regs->errorCode & 0x10;
 
-    log_printf("Page fault!!! When trying to %s %x - IP:%x\n", rw ? "write to" : "read from", faulting_address, regs->eip);
+    log_printf("Page fault!!! When trying to %s %x - IP:%x\r\n", rw ? "write to" : "read from", faulting_address, regs->eip);
 
-    log_printf("The page was %s\n", present ? "present" : "not present");
+    log_printf("The page was %s\r\n", present ? "present" : "not present");
 
     if (reserved)
     {
-        log_printf("Reserved bit was set\n");
+        log_printf("Reserved bit was set\r\n");
     }
 
     if (id)
     {
-        log_printf("Caused by an instruction fetch\n");
+        log_printf("Caused by an instruction fetch\r\n");
     }
 
-    log_printf("CPU was in %s\n", us ? "user-mode" : "supervisor mode");
+    log_printf("CPU was in %s\r\n", us ? "user-mode" : "supervisor mode");
 }
 
 static void handle_page_fault(Registers *regs)
@@ -464,14 +464,14 @@ static void handle_page_fault(Registers *regs)
         {
             print_page_fault_info(faulting_address, regs);
 
-            log_printf("Faulting thread is %d and its state is %d\n", faulting_thread->threadId, faulting_thread->state);
+            log_printf("Faulting thread is %d and its state is %d\r\n", faulting_thread->threadId, faulting_thread->state);
 
             if (faulting_thread->user_mode)
             {
                 if (faulting_thread->state == TS_CRITICAL ||
                     faulting_thread->state == TS_UNINTERRUPTIBLE)
                 {
-                    log_printf("CRITICAL!! process %d\n", faulting_thread->owner->pid);
+                    log_printf("CRITICAL!! process %d\r\n", faulting_thread->owner->pid);
 
                     process_change_state(faulting_thread->owner, TS_SUSPEND);
 
@@ -485,14 +485,14 @@ static void handle_page_fault(Registers *regs)
 
                     //TODO: state in RUN?
 
-                    log_printf("Segmentation fault pid:%d\n", faulting_thread->owner->pid);
+                    log_printf("Segmentation fault pid:%d\r\n", faulting_thread->owner->pid);
 
                     thread_signal(faulting_thread, SIGSEGV);
                 }
             }
             else
             {
-                log_printf("Destroying kernel thread %d\n", faulting_thread->threadId);
+                log_printf("Destroying kernel thread %d\r\n", faulting_thread->threadId);
 
                 thread_destroy(faulting_thread);
             }

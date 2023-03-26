@@ -4,9 +4,9 @@
 #include "libc/unistd.h"
 
 int main(int argc, char **argv) {
-    FILE *fp;
-    fp = fopen("/dev/com1", O_RDWR);
-    write(fp->fd, "Hello, world!\n", strlen("Hello, world!\n"));
-    fclose(fp);
-    return 0;
+    /*
+     *  Remember that if you don't allocate it, the kernel will have an error.
+     */
+    char a = 'a';
+    write(stdout->fd, &a, 1);
 }

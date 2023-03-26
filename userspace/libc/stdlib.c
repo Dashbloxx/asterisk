@@ -1,6 +1,7 @@
 #include "stdint.h"
 #include "stdlib.h"
 #include "syscall.h"
+#include "stdio.h"
 
 #define BLOCK_SIZE sizeof(struct block)
 
@@ -92,4 +93,13 @@ void _free(void *ptr) {
             tail = NULL;
         }
     }
+}
+
+void __init_libc() {
+    stderr = _malloc(sizeof(FILE));
+    stdin = _malloc(sizeof(FILE));
+    stdout = _malloc(sizeof(FILE));
+    stderr->fd = 0;
+    stdin->fd = 1;
+    stdout->fd = 2;
 }

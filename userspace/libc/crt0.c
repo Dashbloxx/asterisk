@@ -15,6 +15,7 @@ extern int main(int argc, char* argv[]);
 
 void _start() {
     char** const argvenv = (char**)(USER_STACK);
+    __init_libc();
     main(COUNT_OF(argvenv), argvenv);
     _exit();
 }

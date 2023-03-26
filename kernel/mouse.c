@@ -210,10 +210,5 @@ static void handle_mouse_interrupt(Registers *regs)
         spinlock_unlock(&g_readers_lock);
     }
 
-/*
- *  With EXTRA_DEBUG set to TRUE, things can get very, very annoying!
- */
-#if defined(DEBUG) && EXTRA_DEBUG == TRUE
-    printkf("MOUSE: %d\n", data);
-#endif
+    //printkf("mouse:%d\n", data);
 }

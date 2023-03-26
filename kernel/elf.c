@@ -42,9 +42,7 @@ uint32_t elf_load(const char *elf_data)
             v_end = p_entry->p_vaddr + p_entry->p_memsz;
             if (v_begin < USER_OFFSET)
             {
-// #ifdef DEBUG
-//                 printkf("INFO: elf_load(): can't load executable below %x. Yours: %x\n", USER_OFFSET, v_begin);
-// #endif
+                //printkf("INFO: elf_load(): can't load executable below %x. Yours: %x\n", USER_OFFSET, v_begin);
                 //return 0;
                 printkf("Warning: skipped to load %d(%x) bytes to %x\n", p_entry->p_filesz, p_entry->p_filesz, v_begin);
                 continue;
@@ -52,18 +50,15 @@ uint32_t elf_load(const char *elf_data)
 
             if (v_end > USER_STACK)
             {
-// #ifdef DEBUG
-//                 printkf("INFO: elf_load(): can't load executable above %x. Yours: %x\n", USER_STACK, v_end);
-// #endif
+                //printkf("INFO: elf_load(): can't load executable above %x. Yours: %x\n", USER_STACK, v_end);
                 //return 0;
 
                 printkf("Warning: skipped to load %d(%x) bytes to %x\n", p_entry->p_filesz, p_entry->p_filesz, v_begin);
                 continue;
             }
 
-// #ifdef DEBUG
-//             printkf("ELF: entry flags: %x (%d)\n", p_entry->p_flags, p_entry->p_flags);
-// #endif
+            //printkf("ELF: entry flags: %x (%d)\n", p_entry->p_flags, p_entry->p_flags);
+
 
             memcpy((uint8_t *) v_begin, (uint8_t *) (elf_data + p_entry->p_offset), p_entry->p_filesz);
             if (p_entry->p_memsz > p_entry->p_filesz)
