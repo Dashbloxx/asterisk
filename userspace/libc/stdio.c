@@ -10,7 +10,7 @@ FILE *stdin;
 FILE *stdout;
 
 FILE *fopen(const char *filename, const char *mode) {
-    FILE *fp = _malloc(sizeof(FILE));
+    FILE *fp = malloc(sizeof(FILE));
     if(mode == "r") {
         fp->fd = open(filename, O_RDONLY);
     }
@@ -81,7 +81,7 @@ int fclose(FILE *stream) {
         result = -1;
     }
 
-    _free(stream);
+    free(stream);
     return result;
 }
 
@@ -145,7 +145,7 @@ static int print_double(int fd, double num) {
     return len;
 }
 
-int _fprintf(FILE *stream, const char *format, ...) {
+int fprintf(FILE *stream, const char *format, ...) {
     int fd = stream->fd;
     char ch;
     int num, len = 0;

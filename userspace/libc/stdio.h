@@ -62,4 +62,4 @@ extern FILE *stdout;
 FILE *fopen(const char *filename, const char *mode);
 int fflush(FILE *stream);
 int fclose(FILE *stream);
-int _fprintf(FILE *stream, const char *format, ...);
+int fprintf(FILE *stream, const char *format, ...);

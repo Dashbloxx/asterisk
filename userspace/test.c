@@ -9,5 +9,5 @@ int main(int argc, char **argv) {
      */
     // char a = 'a';
     // write(stdout->fd, &a, 1);
-    _fprintf(stdout, "Hello, world!\n");
+    fprintf(stdout, "Hello, world!\n");
 }

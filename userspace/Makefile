@@ -3,7 +3,7 @@ OBJ = $(LIBC_OBJ) test.o cat.o
 
 CC = i686-elf-gcc
 LD = i686-elf-ld
-CFLAGS = -nostdinc
+CFLAGS = -nostdinc -std=gnu99 -ffreestanding -O2 -Wall -Wextra
 LDFLAGS = -Tlink.ld
 
 all: $(OBJ)

@@ -14,7 +14,7 @@ struct block {
 struct block *head = NULL;
 struct block *tail = NULL;
 
-void *_malloc(size_t size) {
+void *malloc(size_t size) {
     struct block *curr;
     void *ptr;
 
@@ -50,7 +50,7 @@ void *_malloc(size_t size) {
     return (void *)(curr + 1);
 }
 
-void _free(void *ptr) {
+void free(void *ptr) {
     struct block *curr;
     struct block *prev = NULL;
 
@@ -96,9 +96,9 @@ void _free(void *ptr) {
 }
 
 void __init_libc() {
-    stderr = _malloc(sizeof(FILE));
-    stdin = _malloc(sizeof(FILE));
-    stdout = _malloc(sizeof(FILE));
+    stderr = malloc(sizeof(FILE));
+    stdin = malloc(sizeof(FILE));
+    stdout = malloc(sizeof(FILE));
     stderr->fd = 0;
     stdin->fd = 1;
     stdout->fd = 2;
