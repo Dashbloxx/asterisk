@@ -2,6 +2,7 @@
 #include "syscall.h"
 #include "stdlib.h"
 #include "stdint.h"
+#include "stdarg.h"
 #include "errno.h"
 
 FILE *stderr;
@@ -84,6 +85,102 @@ int fclose(FILE *stream) {
     return result;
 }
 
-size_t fwrite(const void* ptr, size_t size, size_t count, FILE* stream) {
+static int print_int(int fd, int num);
+static int print_double(int fd, double num);
 
+static int print_int(int fd, int num) {
+    int len = 0;
+    char buf[MAX_INT_LEN];
+    int i = 0;
+    if (num < 0) {
+        len += write(fd, "-", 1);
+        num = -num;
+    }
+    do {
+        buf[i++] = num % 10 + '0';
+        num /= 10;
+    } while (num > 0);
+    while (i > 0) {
+        len += write(fd, &buf[--i], 1);
+    }
+    return len;
+}
+
+static int print_double(int fd, double num) {
+    int len = 0;
+    char buf[MAX_DOUBLE_LEN];
+    int i, sign;
+
+    if (num < 0) {
+        len += write(fd, "-", 1);
+        num = -num;
+    }
+
+    int integer = (int)num;
+    double fraction = num - integer;
+
+    i = 0;
+    do {
+        buf[i++] = integer % 10 + '0';
+        integer /= 10;
+    } while (integer > 0);
+    while (i > 0) {
+        len += write(fd, &buf[--i], 1);
+    }
+
+    if (fraction > 0.0) {
+        len += write(fd, ".", 1);
+        i = 0;
+        do {
+            fraction *= 10.0;
+            int digit = (int)fraction;
+            buf[i++] = digit + '0';
+            fraction -= digit;
+        } while (fraction > 0.0);
+        while (i > 0) {
+            len += write(fd, &buf[--i], 1);
+        }
+    }
+
+    return len;
+}
+
+int _fprintf(FILE *stream, const char *format, ...) {
+    int fd = stream->fd;
+    char ch;
+    int num, len = 0;
+    double dnum;
+    char *str;
+    va_list args;
+
+    va_start(args, format);
+
+    while ((ch = *format++) != '\0') {
+        if (ch != '%') {
+            len += write(fd, &ch, 1);
+            continue;
+        }
+        ch = *format++;
+        switch (ch) {
+            case 'd':
+                num = va_arg(args, int);
+                len += print_int(fd, num);
+                break;
+            case 'f':
+                dnum = va_arg(args, double);
+                len += print_double(fd, dnum);
+                break;
+            case 's':
+                str = va_arg(args, char *);
+                len += write(fd, str, strlen(str));
+                break;
+            default:
+                len += write(fd, &ch, 1);
+                break;
+        }
+    }
+
+    va_end(args);
+
+    return len;
 }

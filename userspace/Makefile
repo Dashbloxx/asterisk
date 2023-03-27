@@ -36,3 +36,6 @@ test.o: test.c
 
 cat.o: cat.c
 	$(CC) $(CFLAGS) -c cat.c -o cat.o
+
+clean:
+	rm *.o

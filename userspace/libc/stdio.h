@@ -10,6 +10,9 @@
 #define _IONBF 0
 #define SEEK_CUR 1
 
+#define MAX_INT_LEN 20
+#define MAX_DOUBLE_LEN 32
+
 /*
  *  The reason why the type is in caps instead of lowercase, is because historically it used to be a macro, and all macros usually are capitalized. The type is keps
  *  in all caps for compatibility reasons.
@@ -59,4 +62,4 @@ extern FILE *stdout;
 FILE *fopen(const char *filename, const char *mode);
 int fflush(FILE *stream);
 int fclose(FILE *stream);
-size_t fwrite(const void* ptr, size_t size, size_t count, FILE* stream);
+int _fprintf(FILE *stream, const char *format, ...);
