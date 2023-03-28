@@ -3,6 +3,10 @@
 #include "syscalltable.h"
 #include "string.h"
 
+/*
+ *  This file is to be as much independent as possible (no other headers included). For now though, this isn't a thing.
+ */
+
 int syscall0(int num)
 {
     int a;
@@ -119,6 +123,11 @@ char *sbrk(int incr)
 int wait(int *status)
 {
     return syscall1(SYS_wait, status);
+}
+
+int execute_on_tty(const char *path, char *const argv[], char *const envp[], const char *tty_path)
+{
+    return __syscall(SYS_execute_on_tty, path, argv, envp, tty_path);
 }
 
 int write(int file, char *ptr, int len)
