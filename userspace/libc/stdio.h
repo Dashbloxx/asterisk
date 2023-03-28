@@ -7,16 +7,6 @@
 #define O_WRONLY 1
 #define O_RDWR 2
 
-#define _IONBF 0
-#define SEEK_CUR 1
-
-#define MAX_INT_LEN 20
-#define MAX_DOUBLE_LEN 32
-
-/*
- *  The reason why the type is in caps instead of lowercase, is because historically it used to be a macro, and all macros usually are capitalized. The type is keps
- *  in all caps for compatibility reasons.
- */
 typedef struct {
     /*
      *  The file descriptor. This integer is unique for each open file.
@@ -60,6 +50,3 @@ extern FILE *stdin;
 extern FILE *stdout;
 
 FILE *fopen(const char *filename, const char *mode);
-int fflush(FILE *stream);
-int fclose(FILE *stream);
-int fprintf(FILE *stream, const char *format, ...);
