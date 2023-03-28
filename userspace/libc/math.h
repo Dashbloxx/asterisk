@@ -12,3 +12,9 @@ double sin(double x);
 double cos(double x);
 /* The tangent function */
 double tan(double x);
+/* Inverse sine function */
+double asin(double x);
+/* Inverse cosine function */
+double acos(double x);
+/* Inverse tangent function */
+double atan(double x);
