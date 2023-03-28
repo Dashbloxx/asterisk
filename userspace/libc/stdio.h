@@ -49,9 +49,24 @@ extern FILE *stderr;
 extern FILE *stdin;
 extern FILE *stdout;
 
+/*
+ *  Functions related to file I/O...
+ */
+
 FILE *fopen(const char *filename, const char *mode);
 void fclose(FILE *file);
 size_t fwrite(const void *ptr, size_t size, size_t count, FILE *stream);
 void fread(void *ptr, size_t size, size_t count, FILE *stream);
-void fputc(int c, FILE *stream);
+int fputc(int c, FILE *stream);
 int fgetc(FILE *stream);
+char *fgets(char *str, int n, FILE *stream);
+int fprintf(FILE *stream, const char *format, ...);
+
+/*
+ *  Functions related to terminal I/O...
+ */
+
+int putc(int c);
+int getc();
+int printf(const char *format, ...);
+char *gets(char *str, int n);

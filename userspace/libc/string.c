@@ -1,6 +1,7 @@
 #include "string.h"
 #include "stdint.h"
 #include "stdbool.h"
+#include "stdlib.h"
 
 size_t strlen(const char *s1) {
     size_t i = 0;
@@ -25,6 +26,55 @@ int strncmp(const char *s1, const char *s2, size_t n) {
 
 char *strcpy(char *dst, const char *src) {
     return strncpy(dst, src, SIZE_MAX);
+}
+
+char *strtok(char *str, const char *delim) {
+    static char *saved = NULL;
+
+    if (str) {
+        saved = str;
+    } else if (!saved) {
+        return NULL;
+    }
+
+    char *start = saved;
+
+    while (*saved) {
+        const char *d = delim;
+        while (*d) {
+            if (*saved == *d) {
+                *saved = '\0';
+                saved++;
+                return start;
+            }
+            d++;
+        }
+        saved++;
+    }
+
+    if (start == saved) {
+        return NULL;
+    }
+
+    return start;
+}
+
+char* strstr(const char* haystack, const char* needle) {
+    if (*needle == '\0') {
+        return (char*) haystack;  // empty needle matches any haystack
+    }
+    
+    size_t needle_len = strlen(needle);
+    
+    for (size_t i = 0; haystack[i] != '\0'; ++i) {
+        if (haystack[i] == needle[0]) {
+            if (strncmp(&haystack[i], needle, needle_len) == 0) {
+                return (char*) &haystack[i];  // match found
+            }
+        }
+    }
+    
+    return NULL;  // no match found
 }
 
 char *strncpy(char *dst, const char *src, size_t n) {

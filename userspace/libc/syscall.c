@@ -1,6 +1,7 @@
 #include "stdarg.h"
 #include "syscall.h"
 #include "syscalltable.h"
+#include "string.h"
 
 int syscall0(int num)
 {
@@ -64,7 +65,7 @@ int fork()
     return syscall0(SYS_fork);
 }
 
-/*int fstat(int fd, struct stat *buf)
+int fstat(int fd, struct stat *buf)
 {
     return syscall2(SYS_fstat, fd, buf);
 }
@@ -72,7 +73,7 @@ int fork()
 int stat(const char *path, struct stat *buf)
 {
     return syscall2(SYS_stat, path, buf);
-}*/
+}
 
 int getpid()
 {
@@ -93,13 +94,13 @@ int lseek(int file, int ptr, int dir)
 
 int open(const char *name, int flags, ...)
 {
-    mode_t mode = 0;
+    unsigned short mode = 0;
 
     if (((flags & O_CREAT) == O_CREAT) /*|| ((flags & O_TMPFILE) == O_TMPFILE)*/)
     {
         va_list args;
         va_start(args, flags);
-        mode = (mode_t)(va_arg(args, int));
+        mode = (unsigned short)(va_arg(args, int));
         va_end(args);
     }
     return syscall3(SYS_open, name, flags, mode);
@@ -110,7 +111,7 @@ int read(int file, char *ptr, int len)
     return syscall3(SYS_read, file, ptr, len);
 }
 
-caddr_t sbrk(int incr)
+char *sbrk(int incr)
 {
     return syscall1(SYS_sbrk, incr);
 }
@@ -191,14 +192,4 @@ int execute(const char *path, char *const argv[], char *const envp[])
     }
 
     return -1;
-}*/
-
-/*int getWorkingDirectory(char *buf, int size)
-{
-    return syscall2(SYS_getWorkingDirectory, (int)buf, size);
-}
-
-int setWorkingDirectory(const char *path)
-{
-    return syscall1(SYS_setWorkingDirectory, (int)path);
 }*/
