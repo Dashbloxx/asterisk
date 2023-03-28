@@ -50,3 +50,8 @@ extern FILE *stdin;
 extern FILE *stdout;
 
 FILE *fopen(const char *filename, const char *mode);
+void fclose(FILE *file);
+size_t fwrite(const void *ptr, size_t size, size_t count, FILE *stream);
+void fread(void *ptr, size_t size, size_t count, FILE *stream);
+void fputc(int c, FILE *stream);
+int fgetc(FILE *stream);

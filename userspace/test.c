@@ -4,10 +4,9 @@
 #include "libc/unistd.h"
 
 int main(int argc, char **argv) {
-    /*
-     *  Remember that if you don't allocate it, the kernel will have an error.
-     */
-    // char a = 'a';
-    // write(stdout->fd, &a, 1);
-    fprintf(stdout, "Hello, world!\n");
+    char c;
+    c = fgetc(stdin);
+    while(1) {
+        fputc(c, stdout);
+    }
 }

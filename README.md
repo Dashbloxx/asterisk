@@ -1,7 +1,6 @@
 ![](.assets/banner.png)
 ## About
 Asterisk is an operating system written in C, inspired by MINIX. It uses some code from the discontinued project [soso](https://github.com/ozkl/soso), and currently only supports `i386+` processors.
-Currently, asterisk is heavily developed, and being documented at the same time. Don't expect it to even run a shell. It only runs a program that prints out `Hello, world!`...
 For now, our goal is to get command-line arguments working, as well as commenting and documenting the code as much as possible.
 ## Building
 Read [BUILDING.md](docs/BUILDING.md) for learning how to build Asterisk.
