@@ -327,7 +327,7 @@ ssize_t syscall_recvmsg(int sockfd, struct msghdr *msg, int flags);
 int syscall_getsockopt(int sockfd, int level, int optname, void *optval, socklen_t *optlen);
 int syscall_setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t optlen);
 
-typedef struct FileSystemNode FileSystemNode;
+typedef struct filesystem_node filesystem_node;
 typedef struct FifoBuffer FifoBuffer;
 typedef struct Socket Socket;
 
@@ -340,7 +340,7 @@ typedef ssize_t (*SocketRecv)(Socket* socket, int sockfd, void *buf, size_t len,
 
 typedef struct Socket
 {
-    FileSystemNode* node;
+    filesystem_node* node;
     FifoBuffer* buffer_out;
     FifoBuffer* buffer_in;
     BOOL disconnected;

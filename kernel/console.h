@@ -6,7 +6,7 @@
 
 typedef struct Terminal Terminal;
 
-typedef struct FileSystemNode FileSystemNode;
+typedef struct filesystem_node filesystem_node;
 
 extern Terminal* g_active_terminal;
 
@@ -20,6 +20,6 @@ void console_set_active_terminal(Terminal* terminal);
 
 Terminal* console_get_terminal(uint32_t index);
 
-Terminal* console_get_terminal_by_master(FileSystemNode* master_node);
+Terminal* console_get_terminal_by_master(filesystem_node* master_node);
 
-Terminal* console_get_terminal_by_slave(FileSystemNode* slave_node);
+Terminal* console_get_terminal_by_slave(filesystem_node* slave_node);

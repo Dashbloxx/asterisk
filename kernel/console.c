@@ -32,7 +32,7 @@ void console_initialize(BOOL graphicMode)
     for (int i = 0; i < TERMINAL_COUNT; ++i)
     {
         Terminal* terminal = NULL;
-        FileSystemNode* ttyNode = ttydev_create();
+        filesystem_node* ttyNode = ttydev_create();
         if (ttyNode)
         {
             TtyDev* ttyDev = (TtyDev*)ttyNode->private_node_data;
@@ -120,7 +120,7 @@ void console_set_active_terminal(Terminal* terminal)
     }
 }
 
-Terminal* console_get_terminal_by_master(FileSystemNode* master_node)
+Terminal* console_get_terminal_by_master(filesystem_node* master_node)
 {
     for (int i = 0; i < TERMINAL_COUNT; ++i)
     {
@@ -135,7 +135,7 @@ Terminal* console_get_terminal_by_master(FileSystemNode* master_node)
     return NULL;
 }
 
-Terminal* console_get_terminal_by_slave(FileSystemNode* slave_node)
+Terminal* console_get_terminal_by_slave(filesystem_node* slave_node)
 {
     for (int i = 0; i < TERMINAL_COUNT; ++i)
     {

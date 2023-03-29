@@ -5,4 +5,4 @@
 #include "common.h"
 
 void devfs_initialize();
-FileSystemNode* devfs_register_device(Device* device);
+filesystem_node* devfs_register_device(Device* device);

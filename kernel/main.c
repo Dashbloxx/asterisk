@@ -48,14 +48,14 @@ static void* locate_initrd(struct Multiboot *mbi, uint32_t* size)
     return NULL;
 }
 
-int execute_file(const char *path, char *const argv[], char *const envp[], FileSystemNode* tty)
+int execute_file(const char *path, char *const argv[], char *const envp[], filesystem_node* tty)
 {
     int result = -1;
 
     Process* process = thread_get_current()->owner;
     if (process)
     {
-        FileSystemNode* node = fs_get_node_absolute_or_relative(path, process);
+        filesystem_node* node = fs_get_node_absolute_or_relative(path, process);
         if (node)
         {
             File* f = fs_open(node, 0);

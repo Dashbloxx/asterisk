@@ -13,8 +13,8 @@ typedef struct Ramdisk
 
 static BOOL open(File *file, uint32_t flags);
 static void close(File *file);
-static int32_t read_block(FileSystemNode* node, uint32_t block_number, uint32_t count, uint8_t* buffer);
-static int32_t write_block(FileSystemNode* node, uint32_t block_number, uint32_t count, uint8_t* buffer);
+static int32_t read_block(filesystem_node* node, uint32_t block_number, uint32_t count, uint8_t* buffer);
+static int32_t write_block(filesystem_node* node, uint32_t block_number, uint32_t count, uint8_t* buffer);
 static int32_t ioctl(File *node, int32_t request, void * argp);
 
 BOOL ramdisk_create(const char* devName, uint32_t size)
@@ -54,7 +54,7 @@ static void close(File *file)
 {
 }
 
-static int32_t read_block(FileSystemNode* node, uint32_t block_number, uint32_t count, uint8_t* buffer)
+static int32_t read_block(filesystem_node* node, uint32_t block_number, uint32_t count, uint8_t* buffer)
 {
     Ramdisk* ramdisk = (Ramdisk*)node->private_node_data;
 
@@ -75,7 +75,7 @@ static int32_t read_block(FileSystemNode* node, uint32_t block_number, uint32_t 
     return 0;
 }
 
-static int32_t write_block(FileSystemNode* node, uint32_t block_number, uint32_t count, uint8_t* buffer)
+static int32_t write_block(filesystem_node* node, uint32_t block_number, uint32_t count, uint8_t* buffer)
 {
     Ramdisk* ramdisk = (Ramdisk*)node->private_node_data;
 

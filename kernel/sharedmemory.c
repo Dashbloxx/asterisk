@@ -9,13 +9,13 @@
 static List* g_shm_list = NULL;
 //static Spinlock g_shm_list_lock;
 
-static FileSystemNode* g_shm_root = NULL;
+static filesystem_node* g_shm_root = NULL;
 
-static FileSystemDirent g_dirent;
+static filesystem_dirent g_dirent;
 
 static BOOL sharedmemorydir_open(File *file, uint32_t flags);
-static FileSystemDirent *sharedmemorydir_readdir(FileSystemNode *node, uint32_t index);
-static FileSystemNode *sharedmemorydir_finddir(FileSystemNode *node, char *name);
+static filesystem_dirent *sharedmemorydir_readdir(filesystem_node *node, uint32_t index);
+static filesystem_node *sharedmemorydir_finddir(filesystem_node *node, char *name);
 
 typedef struct MapInfo
 {
@@ -26,7 +26,7 @@ typedef struct MapInfo
 
 typedef struct SharedMemory
 {
-    FileSystemNode* node;
+    filesystem_node* node;
     List* physical_address_list;
     //Spinlock physical_address_list_lock;
     List* mmapped_list;
@@ -61,9 +61,9 @@ static BOOL sharedmemorydir_open(File *file, uint32_t flags)
     return TRUE;
 }
 
-static FileSystemDirent *sharedmemorydir_readdir(FileSystemNode *node, uint32_t index)
+static filesystem_dirent *sharedmemorydir_readdir(filesystem_node *node, uint32_t index)
 {
-    FileSystemDirent* result = NULL;
+    filesystem_dirent* result = NULL;
 
     int counter = 0;
 
@@ -90,9 +90,9 @@ static FileSystemDirent *sharedmemorydir_readdir(FileSystemNode *node, uint32_t 
     return result;
 }
 
-static FileSystemNode *sharedmemorydir_finddir(FileSystemNode *node, char *name)
+static filesystem_node *sharedmemorydir_finddir(filesystem_node *node, char *name)
 {
-    FileSystemNode* result = NULL;
+    filesystem_node* result = NULL;
 
     //spinlock_lock(&g_shm_list_lock);
 
@@ -134,7 +134,7 @@ static void sharedmemory_destroy_if_suitable(SharedMemory* shared_memory)
     }
 }
 
-static int32_t sharedmemory_unlink(FileSystemNode* node, uint32_t flags)
+static int32_t sharedmemory_unlink(filesystem_node* node, uint32_t flags)
 {
     SharedMemory* shared_mem = (SharedMemory*)node->private_node_data;
 
@@ -275,9 +275,9 @@ void sharedmemory_unmap_for_process_all(Process* process)
     list_destroy(process_shared_mapped_list);
 }
 
-FileSystemNode* sharedmemory_get_node(const char* name)
+filesystem_node* sharedmemory_get_node(const char* name)
 {
-    FileSystemNode* result = NULL;
+    filesystem_node* result = NULL;
 
     //spinlock_lock(&g_shm_list_lock);
 
@@ -297,7 +297,7 @@ FileSystemNode* sharedmemory_get_node(const char* name)
     return result;
 }
 
-FileSystemNode* sharedmemory_create(const char* name)
+filesystem_node* sharedmemory_create(const char* name)
 {
     if (sharedmemory_get_node(name) != NULL)
     {
@@ -307,8 +307,8 @@ FileSystemNode* sharedmemory_create(const char* name)
     SharedMemory* shared_mem = (SharedMemory*)kmalloc(sizeof(SharedMemory));
     memset((uint8_t*)shared_mem, 0, sizeof(SharedMemory));
 
-    FileSystemNode* node = (FileSystemNode*)kmalloc(sizeof(FileSystemNode));
-    memset((uint8_t*)node, 0, sizeof(FileSystemNode));
+    filesystem_node* node = (filesystem_node*)kmalloc(sizeof(filesystem_node));
+    memset((uint8_t*)node, 0, sizeof(filesystem_node));
 
     strcpy(node->name, name);
     node->node_type = FT_CHARACTER_DEVICE;

@@ -6,7 +6,7 @@ static File* g_file = NULL;
 
 void log_initialize(const char* file_name)
 {
-    FileSystemNode* node = fs_get_node(file_name);
+    filesystem_node* node = fs_get_node(file_name);
 
     if (node)
     {

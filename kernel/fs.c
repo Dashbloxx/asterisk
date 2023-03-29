@@ -2,7 +2,7 @@
 #include "alloc.h"
 #include "rootfs.h"
 
-FileSystemNode *g_fs_root = NULL; // The root of the filesystem.
+filesystem_node *g_fs_root = NULL; // The root of the filesystem.
 
 #define FILESYSTEM_CAPACITY 10
 
@@ -27,12 +27,12 @@ void fs_initialize()
     fs_mkdir(g_fs_root, "initrd", 0);
 }
 
-FileSystemNode* fs_get_root_node()
+filesystem_node* fs_get_root_node()
 {
     return g_fs_root;
 }
 
-int fs_get_node_path(FileSystemNode *node, char* buffer, uint32_t buffer_size)
+int fs_get_node_path(filesystem_node *node, char* buffer, uint32_t buffer_size)
 {
     if (node == g_fs_root)
     {
@@ -51,7 +51,7 @@ int fs_get_node_path(FileSystemNode *node, char* buffer, uint32_t buffer_size)
 
     char target_path[128];
 
-    FileSystemNode *n = node;
+    filesystem_node *n = node;
     int char_index = 127;
     target_path[char_index] = '\0';
     while (NULL != n)
@@ -200,12 +200,12 @@ uint32_t fs_write(File *file, uint32_t size, uint8_t *buffer)
     return -1;
 }
 
-File *fs_open(FileSystemNode *node, uint32_t flags)
+File *fs_open(filesystem_node *node, uint32_t flags)
 {
     return fs_open_for_process(thread_get_current(), node, flags);
 }
 
-File *fs_open_for_process(Thread* thread, FileSystemNode *node, uint32_t flags)
+File *fs_open_for_process(Thread* thread, filesystem_node *node, uint32_t flags)
 {
     Process* process = NULL;
     if (thread)
@@ -267,7 +267,7 @@ void fs_close(File *file)
     kfree(file);
 }
 
-int32_t fs_unlink(FileSystemNode* node, uint32_t flags)
+int32_t fs_unlink(filesystem_node* node, uint32_t flags)
 {
     if (node->unlink)
     {
@@ -307,7 +307,7 @@ int32_t fs_ftruncate(File* file, int32_t length)
     return -1;
 }
 
-int32_t fs_stat(FileSystemNode *node, struct stat *buf)
+int32_t fs_stat(filesystem_node *node, struct stat *buf)
 {
 #define	__S_IFDIR	0040000	/* Directory.  */
 #define	__S_IFCHR	0020000	/* Character device.  */
@@ -363,7 +363,7 @@ int32_t fs_stat(FileSystemNode *node, struct stat *buf)
     return -1;
 }
 
-FileSystemDirent *fs_readdir(FileSystemNode *node, uint32_t index)
+filesystem_dirent *fs_readdir(filesystem_node *node, uint32_t index)
 {
     //Screen_PrintF("fs_readdir: node->name:%s index:%d\n", node->name, index);
 
@@ -386,7 +386,7 @@ FileSystemDirent *fs_readdir(FileSystemNode *node, uint32_t index)
     return NULL;
 }
 
-FileSystemNode *fs_finddir(FileSystemNode *node, char *name)
+filesystem_node *fs_finddir(filesystem_node *node, char *name)
 {
     //Screen_PrintF("fs_finddir: name:%s\n", name);
 
@@ -409,7 +409,7 @@ FileSystemNode *fs_finddir(FileSystemNode *node, char *name)
     return NULL;
 }
 
-BOOL fs_mkdir(FileSystemNode *node, const char *name, uint32_t flags)
+BOOL fs_mkdir(filesystem_node *node, const char *name, uint32_t flags)
 {
     if ( (node->node_type & FT_MOUNT_POINT) == FT_MOUNT_POINT && node->mount_point != NULL )
     {
@@ -446,7 +446,7 @@ BOOL fs_munmap(File* file, void* address, uint32_t size)
     return FALSE;
 }
 
-FileSystemNode *fs_get_node(const char *path)
+filesystem_node *fs_get_node(const char *path)
 {
     //Screen_PrintF("fs_get_node:%s *0\n", path);
 
@@ -478,7 +478,7 @@ FileSystemNode *fs_get_node(const char *path)
 
     //Screen_PrintF("fs_get_node:%s *1\n", path);
 
-    FileSystemNode* root = fs_get_root_node();
+    filesystem_node* root = fs_get_root_node();
 
     if (path_length == 1)
     {
@@ -487,7 +487,7 @@ FileSystemNode *fs_get_node(const char *path)
 
     int next_index = 0;
 
-    FileSystemNode* node = root;
+    filesystem_node* node = root;
 
     //Screen_PrintF("fs_get_node:%s *2\n", path);
 
@@ -534,9 +534,9 @@ FileSystemNode *fs_get_node(const char *path)
     return node;
 }
 
-FileSystemNode* fs_get_node_absolute_or_relative(const char* path, Process* process)
+filesystem_node* fs_get_node_absolute_or_relative(const char* path, Process* process)
 {
-    FileSystemNode* node = NULL;
+    filesystem_node* node = NULL;
 
     if (process)
     {
@@ -564,9 +564,9 @@ FileSystemNode* fs_get_node_absolute_or_relative(const char* path, Process* proc
     return node;
 }
 
-FileSystemNode* fs_get_node_relative_to_node(const char* path, FileSystemNode* relative_to)
+filesystem_node* fs_get_node_relative_to_node(const char* path, filesystem_node* relative_to)
 {
-    FileSystemNode* node = NULL;
+    filesystem_node* node = NULL;
 
     if (relative_to)
     {

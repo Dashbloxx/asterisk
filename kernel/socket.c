@@ -141,8 +141,8 @@ int syscall_socket(int domain, int type, int protocol)
 
         socket->domain = domain;
 
-        FileSystemNode* node = (FileSystemNode*)kmalloc(sizeof(FileSystemNode));
-        memset((uint8_t*)node, 0, sizeof(FileSystemNode));
+        filesystem_node* node = (filesystem_node*)kmalloc(sizeof(filesystem_node));
+        memset((uint8_t*)node, 0, sizeof(filesystem_node));
 
         socket->last_thread = g_current_thread;
 

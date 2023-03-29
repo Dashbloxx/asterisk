@@ -7,7 +7,7 @@
 
 #define TTYDEV_LINEBUFFER_SIZE 4096
 
-typedef struct FileSystemNode FileSystemNode;
+typedef struct filesystem_node filesystem_node;
 typedef struct FifoBuffer FifoBuffer;
 typedef struct List List;
 typedef struct Thread Thread;
@@ -25,8 +25,8 @@ typedef struct TtyDev TtyDev;
 typedef void (*TtyIOReady)(TtyDev* tty, uint32_t size);
 typedef struct TtyDev
 {
-    FileSystemNode* master_node;
-    FileSystemNode* slave_node;
+    filesystem_node* master_node;
+    filesystem_node* slave_node;
     void* private_data;
     int32_t controlling_process;
     int32_t foreground_process;
@@ -46,6 +46,6 @@ typedef struct TtyDev
 
 } TtyDev;
 
-FileSystemNode* ttydev_create();
+filesystem_node* ttydev_create();
 
 int32_t ttydev_master_read_nonblock(File *file, uint32_t size, uint8_t *buffer);

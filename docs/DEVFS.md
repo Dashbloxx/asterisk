@@ -7,7 +7,7 @@ void devfs_initialize();
 You can only initialize DevFS if `fs_initialize` was called previously.
 To register devices to the DevFS, you can use the following function:
 ```c
-FileSystemNode* devfs_register_device(Device* device);
+filesystem_node* devfs_register_device(Device* device);
 ```
 This will return you the node of the character device that is registered using the device, and therefore it requires a pointer to a struct that is based on the device that you register to the DevFS.
 Here is an example of a device being register to the DevFS (from `framebuffer.c`):

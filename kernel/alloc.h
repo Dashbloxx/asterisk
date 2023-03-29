@@ -8,15 +8,15 @@ void *ksbrk_page(int n);
 void *kmalloc(uint32_t size);
 void kfree(void *v_addr);
 
-void initialize_program_break(Process* process, uint32_t size);
-void *sbrk(Process* process, int n_bytes);
+void initialize_program_break(Process* proc, uint32_t size);
+void *sbrk(Process* proc, int n_bytes);
 
 uint32_t get_kernel_heap_used();
 
-struct MallocHeader
+struct malloc_header
 {
     unsigned long size:31;
     unsigned long used:1;
 } __attribute__ ((packed));
 
-typedef struct MallocHeader MallocHeader;
+typedef struct malloc_header malloc_header;

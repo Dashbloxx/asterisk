@@ -2,4 +2,4 @@
 
 #include "fs.h"
 
-FileSystemNode* rootfs_initialize();
+filesystem_node* rootfs_initialize();

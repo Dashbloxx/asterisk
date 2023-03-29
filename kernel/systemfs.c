@@ -6,16 +6,16 @@
 #include "vmm.h"
 #include "process.h"
 
-static FileSystemNode* g_systemfs_root = NULL;
+static filesystem_node* g_systemfs_root = NULL;
 
 
 static BOOL systemfs_open(File *file, uint32_t flags);
-static FileSystemDirent *systemfs_readdir(FileSystemNode *node, uint32_t index);
-static FileSystemNode *systemfs_finddir(FileSystemNode *node, char *name);
+static filesystem_dirent *systemfs_readdir(filesystem_node *node, uint32_t index);
+static filesystem_node *systemfs_finddir(filesystem_node *node, char *name);
 
 static void create_nodes();
 
-static FileSystemDirent g_dirent;
+static filesystem_dirent g_dirent;
 
 static int32_t systemfs_read_meminfo_totalpages(File *file, uint32_t size, uint8_t *buffer);
 static int32_t systemfs_read_meminfo_usedpages(File *file, uint32_t size, uint8_t *buffer);
@@ -24,16 +24,16 @@ static void systemfs_close_threads_dir(File *file);
 
 void systemfs_initialize()
 {
-    g_systemfs_root = kmalloc(sizeof(FileSystemNode));
-    memset((uint8_t*)g_systemfs_root, 0, sizeof(FileSystemNode));
+    g_systemfs_root = kmalloc(sizeof(filesystem_node));
+    memset((uint8_t*)g_systemfs_root, 0, sizeof(filesystem_node));
 
     g_systemfs_root->node_type = FT_DIRECTORY;
 
-    FileSystemNode* root_fs = fs_get_root_node();
+    filesystem_node* root_fs = fs_get_root_node();
 
     fs_mkdir(root_fs, "system", 0);
 
-    FileSystemNode* system_node = fs_finddir(root_fs, "system");
+    filesystem_node* system_node = fs_finddir(root_fs, "system");
 
     if (system_node)
     {
@@ -56,9 +56,9 @@ void systemfs_initialize()
 
 static void create_nodes()
 {
-    FileSystemNode* node_mem_info = kmalloc(sizeof(FileSystemNode));
+    filesystem_node* node_mem_info = kmalloc(sizeof(filesystem_node));
 
-    memset((uint8_t*)node_mem_info, 0, sizeof(FileSystemNode));
+    memset((uint8_t*)node_mem_info, 0, sizeof(filesystem_node));
 
     strcpy(node_mem_info->name, "meminfo");
     node_mem_info->node_type = FT_DIRECTORY;
@@ -69,8 +69,8 @@ static void create_nodes()
 
     g_systemfs_root->first_child = node_mem_info;
 
-    FileSystemNode* node_mem_info_total_pages = kmalloc(sizeof(FileSystemNode));
-    memset((uint8_t*)node_mem_info_total_pages, 0, sizeof(FileSystemNode));
+    filesystem_node* node_mem_info_total_pages = kmalloc(sizeof(filesystem_node));
+    memset((uint8_t*)node_mem_info_total_pages, 0, sizeof(filesystem_node));
     strcpy(node_mem_info_total_pages->name, "totalpages");
     node_mem_info_total_pages->node_type = FT_FILE;
     node_mem_info_total_pages->open = systemfs_open;
@@ -79,8 +79,8 @@ static void create_nodes()
 
     node_mem_info->first_child = node_mem_info_total_pages;
 
-    FileSystemNode* node_mem_info_used_pages = kmalloc(sizeof(FileSystemNode));
-    memset((uint8_t*)node_mem_info_used_pages, 0, sizeof(FileSystemNode));
+    filesystem_node* node_mem_info_used_pages = kmalloc(sizeof(filesystem_node));
+    memset((uint8_t*)node_mem_info_used_pages, 0, sizeof(filesystem_node));
     strcpy(node_mem_info_used_pages->name, "usedpages");
     node_mem_info_used_pages->node_type = FT_FILE;
     node_mem_info_used_pages->open = systemfs_open;
@@ -91,8 +91,8 @@ static void create_nodes()
 
     //
 
-    FileSystemNode* node_threads = kmalloc(sizeof(FileSystemNode));
-    memset((uint8_t*)node_threads, 0, sizeof(FileSystemNode));
+    filesystem_node* node_threads = kmalloc(sizeof(filesystem_node));
+    memset((uint8_t*)node_threads, 0, sizeof(filesystem_node));
 
     strcpy(node_threads->name, "threads");
     node_threads->node_type = FT_DIRECTORY;
@@ -106,8 +106,8 @@ static void create_nodes()
 
     //
 
-    FileSystemNode* node_pipes = kmalloc(sizeof(FileSystemNode));
-    memset((uint8_t*)node_pipes, 0, sizeof(FileSystemNode));
+    filesystem_node* node_pipes = kmalloc(sizeof(filesystem_node));
+    memset((uint8_t*)node_pipes, 0, sizeof(filesystem_node));
 
     strcpy(node_pipes->name, "pipes");
     node_pipes->node_type = FT_DIRECTORY;
@@ -117,8 +117,8 @@ static void create_nodes()
 
     //
 
-    FileSystemNode* node_shm = kmalloc(sizeof(FileSystemNode));
-    memset((uint8_t*)node_shm, 0, sizeof(FileSystemNode));
+    filesystem_node* node_shm = kmalloc(sizeof(filesystem_node));
+    memset((uint8_t*)node_shm, 0, sizeof(filesystem_node));
 
     strcpy(node_shm->name, "shm");
     node_shm->node_type = FT_DIRECTORY;
@@ -132,11 +132,11 @@ static BOOL systemfs_open(File *file, uint32_t flags)
     return TRUE;
 }
 
-static FileSystemDirent *systemfs_readdir(FileSystemNode *node, uint32_t index)
+static filesystem_dirent *systemfs_readdir(filesystem_node *node, uint32_t index)
 {
     int counter = 0;
 
-    FileSystemNode* child = node->first_child;
+    filesystem_node* child = node->first_child;
 
     //Screen_PrintF("systemfs_readdir-main:%s index:%d\n", node->name, index);
 
@@ -159,9 +159,9 @@ static FileSystemDirent *systemfs_readdir(FileSystemNode *node, uint32_t index)
     return NULL;
 }
 
-static FileSystemNode *systemfs_finddir(FileSystemNode *node, char *name)
+static filesystem_node *systemfs_finddir(filesystem_node *node, char *name)
 {
-    FileSystemNode* child = node->first_child;
+    filesystem_node* child = node->first_child;
     while (NULL != child)
     {
         if (strcmp(name, child->name) == 0)
@@ -280,11 +280,11 @@ static int32_t systemfs_read_thread_file(File *file, uint32_t size, uint8_t *buf
 
 static void clean_thread_nodes(File *file)
 {
-    FileSystemNode* node = file->node->first_child;
+    filesystem_node* node = file->node->first_child;
 
     while (node)
     {
-        FileSystemNode* next = node->next_sibling;
+        filesystem_node* next = node->next_sibling;
 
         kfree(node);
 
@@ -300,14 +300,14 @@ static BOOL systemfs_open_threads_dir(File *file, uint32_t flags)
 
     //And fill again
 
-    FileSystemNode* node_previous = NULL;
+    filesystem_node* node_previous = NULL;
 
     Thread* thread = thread_get_first();
 
     while (NULL != thread)
     {
-        FileSystemNode* node_thread = kmalloc(sizeof(FileSystemNode));
-        memset((uint8_t*)node_thread, 0, sizeof(FileSystemNode));
+        filesystem_node* node_thread = kmalloc(sizeof(filesystem_node));
+        memset((uint8_t*)node_thread, 0, sizeof(filesystem_node));
 
         sprintf(buffer, 16, "%d", thread->threadId);
 

@@ -7,23 +7,23 @@
 
 static List* g_pipe_list = NULL;
 
-static FileSystemNode* g_pipes_root = NULL;
+static filesystem_node* g_pipes_root = NULL;
 
-static FileSystemDirent g_dirent;
+static filesystem_dirent g_dirent;
 
 typedef struct Pipe
 {
     char name[32];
     FifoBuffer* buffer;
-    FileSystemNode* fsNode;
+    filesystem_node* fsNode;
     List* readers;
     List* writers;
     BOOL isBroken;
 } Pipe;
 
 static BOOL pipes_open(File *file, uint32_t flags);
-static FileSystemDirent *pipes_readdir(FileSystemNode *node, uint32_t index);
-static FileSystemNode *pipes_finddir(FileSystemNode *node, char *name);
+static filesystem_dirent *pipes_readdir(filesystem_node *node, uint32_t index);
+static filesystem_node *pipes_finddir(filesystem_node *node, char *name);
 
 void pipe_initialize()
 {
@@ -48,7 +48,7 @@ static BOOL pipes_open(File *file, uint32_t flags)
     return TRUE;
 }
 
-static FileSystemDirent *pipes_readdir(FileSystemNode *node, uint32_t index)
+static filesystem_dirent *pipes_readdir(filesystem_node *node, uint32_t index)
 {
     int counter = 0;
 
@@ -69,7 +69,7 @@ static FileSystemDirent *pipes_readdir(FileSystemNode *node, uint32_t index)
     return NULL;
 }
 
-static FileSystemNode *pipes_finddir(FileSystemNode *node, char *name)
+static filesystem_node *pipes_finddir(filesystem_node *node, char *name)
 {
     list_foreach (n, g_pipe_list)
     {
@@ -311,8 +311,8 @@ BOOL pipe_create(const char* name, uint32_t bufferSize)
     pipe->readers = list_create();
     pipe->writers = list_create();
 
-    pipe->fsNode = (FileSystemNode*)kmalloc(sizeof(FileSystemNode));
-    memset((uint8_t*)pipe->fsNode, 0, sizeof(FileSystemNode));
+    pipe->fsNode = (filesystem_node*)kmalloc(sizeof(filesystem_node));
+    memset((uint8_t*)pipe->fsNode, 0, sizeof(filesystem_node));
     pipe->fsNode->private_node_data = pipe;
     pipe->fsNode->open = pipe_open;
     pipe->fsNode->close = pipe_close;

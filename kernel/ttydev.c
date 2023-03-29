@@ -35,7 +35,7 @@ static BOOL is_erase_character(TtyDev* tty, uint8_t character)
     return FALSE;
 }
 
-FileSystemNode* ttydev_create()
+filesystem_node* ttydev_create()
 {
     TtyDev* tty_dev = kmalloc(sizeof(TtyDev));
     memset((uint8_t*)tty_dev, 0, sizeof(TtyDev));
@@ -100,8 +100,8 @@ FileSystemNode* ttydev_create()
     slave.ioctl = slave_ioctl;
     slave.private_data = tty_dev;
 
-    FileSystemNode* master_node = devfs_register_device(&master);
-    FileSystemNode* slave_node = devfs_register_device(&slave);
+    filesystem_node* master_node = devfs_register_device(&master);
+    filesystem_node* slave_node = devfs_register_device(&slave);
 
     tty_dev->master_node = master_node;
     tty_dev->slave_node = slave_node;

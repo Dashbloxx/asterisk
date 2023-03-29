@@ -12,7 +12,11 @@
 
 static BOOL g_interrupts_were_enabled = FALSE;
 
-// Write a byte out to the specified port.
+/*
+ *  The following functions `outb`, `outw`, `inb`, and `inw` are used to communicate with hardware from the CPU. Very useful if we want
+ *  to create drivers, and other stuff.
+ */
+
 void outb(uint16_t port, uint8_t value)
 {
     asm volatile ("outb %1, %0" : : "dN" (port), "a" (value));
@@ -36,6 +40,12 @@ uint16_t inw(uint16_t port)
     asm volatile ("inw %1, %0" : "=a" (ret) : "dN" (port));
     return ret;
 }
+
+/*
+ *  The following functions `memcpy`, `memset`, `memmove`, `memcmp`, `strcmp`, `strncmp`, `strcpy`, `strcpy_nonnull`, `strncpy`,
+ *  `strncpy_null`, `strcat`, `strlen`, and `str_first_index_of`, are used for manipulating (NOT managing) chunks of memory, and
+ *  messing with strings.
+ */
 
 // Copy len bytes from src to dest.
 void* memcpy(uint8_t *dest, const uint8_t *src, uint32_t len)
@@ -274,7 +284,7 @@ int atoi(char *str)
     return result;
 }
 
-void itoa (char *buf, int base, int d)
+void itoa(char *buf, int base, int d)
 {
     char *p = buf;
     char *p1, *p2;
@@ -317,13 +327,18 @@ void itoa (char *buf, int base, int d)
     }
 }
 
+/*
+ *  The following functions & objects are used to print out text, and/or to halt the CPU.
+ */
+
+/* This could be placed in the `common.h` file, but I just decided to leave this here since nothing else uses it */
 typedef enum 
 {
     PF_NONE = 0,
     PF_REPLACE_NEWLINE_RN = 1
-} SprintfFlags;
+} sprintf_flags;
 
-int sprintf_va(char *buffer, uint32_t buffer_size, SprintfFlags flags, const char *format, __builtin_va_list vl)
+int sprintf_va(char *buffer, uint32_t buffer_size, sprintf_flags flags, const char *format, __builtin_va_list vl)
 {
     char c;
     char buf[20];
@@ -485,6 +500,10 @@ void panic_assert(const char *file, uint32_t line, const char *desc)
 
     halt();
 }
+
+/*
+ *  The following functions are useful for getting the value of a register using inline assembly.
+ */
 
 uint32_t read_esp()
 {

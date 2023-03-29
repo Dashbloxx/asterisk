@@ -285,7 +285,7 @@ int syscall_open(const char *pathname, int flags)
     Process* process = thread_get_current()->owner;
     if (process)
     {
-        FileSystemNode* node = fs_get_node_absolute_or_relative(pathname, process);
+        filesystem_node* node = fs_get_node_absolute_or_relative(pathname, process);
         if (node)
         {
             File* file = fs_open(node, flags);
@@ -587,7 +587,7 @@ int syscall_stat(const char *path, struct stat *buf)
     Process* process = thread_get_current()->owner;
     if (process)
     {
-        FileSystemNode* node = fs_get_node_absolute_or_relative(path, process);
+        filesystem_node* node = fs_get_node_absolute_or_relative(path, process);
 
         if (node)
         {
@@ -748,7 +748,7 @@ int syscall_execute(const char *path, char *const argv[], char *const envp[])
     Process* process = thread_get_current()->owner;
     if (process)
     {
-        FileSystemNode* node = fs_get_node_absolute_or_relative(path, process);
+        filesystem_node* node = fs_get_node_absolute_or_relative(path, process);
         if (node)
         {
             File* f = fs_open(node, 0);
@@ -818,8 +818,8 @@ int syscall_execute_on_tty(const char *path, char *const argv[], char *const env
     Process* process = thread_get_current()->owner;
     if (process)
     {
-        FileSystemNode* node = fs_get_node_absolute_or_relative(path, process);
-        FileSystemNode* tty_node = fs_get_node_absolute_or_relative(tty_path, process);
+        filesystem_node* node = fs_get_node_absolute_or_relative(path, process);
+        filesystem_node* tty_node = fs_get_node_absolute_or_relative(tty_path, process);
         if (node && tty_node)
         {
             File* f = fs_open(node, 0);
@@ -881,7 +881,7 @@ int syscall_execve(const char *path, char *const argv[], char *const envp[])
 
     Process* calling_process = thread_get_current()->owner;
 
-    FileSystemNode* node = fs_get_node(path);
+    filesystem_node* node = fs_get_node(path);
     if (node)
     {
         File* f = fs_open(node, 0);
@@ -1091,7 +1091,7 @@ int syscall_unmount(const char *target)//non-posix
         return -EFAULT;
     }
 
-    FileSystemNode* targetNode = fs_get_node(target);
+    filesystem_node* targetNode = fs_get_node(target);
 
     if (targetNode)
     {
@@ -1144,7 +1144,7 @@ int syscall_mkdir(const char *path, uint32_t mode)
 
     //Screen_PrintF("mkdir: parent:[%s] name:[%s]\n", parentPath, name);
 
-    FileSystemNode* target_node = fs_get_node(parent_path);
+    filesystem_node* target_node = fs_get_node(parent_path);
 
     if (target_node)
     {
@@ -1192,13 +1192,13 @@ int syscall_getdents(int fd, char *buf, int nbytes)
                 int byte_counter = 0;
 
                 int index = 0;
-                FileSystemDirent* dirent = fs_readdir(file->node, index);
+                filesystem_dirent* dirent = fs_readdir(file->node, index);
 
-                while (NULL != dirent && (byte_counter + sizeof(FileSystemDirent) <= nbytes))
+                while (NULL != dirent && (byte_counter + sizeof(filesystem_dirent) <= nbytes))
                 {
-                    memcpy((uint8_t*)buf + byte_counter, (uint8_t*)dirent, sizeof(FileSystemDirent));
+                    memcpy((uint8_t*)buf + byte_counter, (uint8_t*)dirent, sizeof(filesystem_dirent));
 
-                    byte_counter += sizeof(FileSystemDirent);
+                    byte_counter += sizeof(filesystem_dirent);
 
                     index += 1;
                     dirent = fs_readdir(file->node, index);
@@ -1240,11 +1240,11 @@ int syscall_asterisk_read_dir(int fd, void *dirent, int index)
 
             if (file)
             {
-                FileSystemDirent* dirent_fs = fs_readdir(file->node, index);
+                filesystem_dirent* dirent_fs = fs_readdir(file->node, index);
 
                 if (dirent_fs)
                 {
-                    memcpy((uint8_t*)dirent, (uint8_t*)dirent_fs, sizeof(FileSystemDirent));
+                    memcpy((uint8_t*)dirent, (uint8_t*)dirent_fs, sizeof(filesystem_dirent));
 
                     return 1;
                 }
@@ -1300,7 +1300,7 @@ int syscall_chdir(const char *path)
     Process* process = thread_get_current()->owner;
     if (process)
     {
-        FileSystemNode* node = fs_get_node_absolute_or_relative(path, process);
+        filesystem_node* node = fs_get_node_absolute_or_relative(path, process);
 
         if (node)
         {
@@ -1543,7 +1543,7 @@ int syscall_statx(int dirfd, const char *pathname, int flags, unsigned int mask,
     {
         int path_len = strlen(pathname);
 
-        FileSystemNode* node = NULL;
+        filesystem_node* node = NULL;
 
         if (path_len > 0)
         {
@@ -1610,7 +1610,7 @@ int syscall_shm_open(const char *name, int oflag, int mode)
         return -EFAULT;
     }
 
-    FileSystemNode* node = NULL;
+    filesystem_node* node = NULL;
 
     if ((oflag & O_CREAT) == O_CREAT)
     {
@@ -1643,7 +1643,7 @@ int syscall_unlink(const char *name)
 
     Process* process = g_current_thread->owner;
 
-    FileSystemNode* node = fs_get_node_absolute_or_relative(name, process);
+    filesystem_node* node = fs_get_node_absolute_or_relative(name, process);
 
     if (NULL == node)
     {
@@ -1695,7 +1695,7 @@ int syscall_ftruncate(int fd, int size)
 //For simplicity, we return the same key as an identifier for now!
 int syscall_shmget(int32_t key, size_t size, int flag)
 {
-    FileSystemNode* node = NULL;
+    filesystem_node* node = NULL;
 
     //printkf("shmget(key:%d, size:%d, flag:%d)\n", key, size, flag);
 
@@ -1761,7 +1761,7 @@ void * syscall_shmat(int shmid, const void *shmaddr, int shmflg)
         return (void*)-EINVAL;
     }
 
-    FileSystemNode* node = NULL;
+    filesystem_node* node = NULL;
 
     //printkf("shmat(shmid:%d, shmaddr:%x, shmflg:%d)\n", shmid, shmaddr, shmflg);
 
@@ -1807,7 +1807,7 @@ int syscall_posix_openpt(int flags)
     Process* process = thread_get_current()->owner;
     if (process)
     {
-        FileSystemNode* node = ttydev_create();
+        filesystem_node* node = ttydev_create();
         if (node)
         {
             TtyDev* tty_dev = (TtyDev*)node->private_node_data;
@@ -1848,7 +1848,7 @@ int syscall_ptsname_r(int fd, char *buf, int buflen)
             {
                 TtyDev* tty_dev = file->node->private_node_data;
 
-                FileSystemNode* slave_node = tty_dev->slave_node;
+                filesystem_node* slave_node = tty_dev->slave_node;
 
                 int result = fs_get_node_path(slave_node, buf, buflen);
 

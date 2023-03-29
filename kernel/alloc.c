@@ -5,7 +5,7 @@
 #include "log.h"
 #include "serial.h"
 
-#define KMALLOC_MINSIZE		16
+#define KMALLOC_MINSIZE 16
 
 extern uint32_t *g_kernel_page_directory;
 
@@ -22,7 +22,7 @@ void initialize_kernel_heap()
 
 void *ksbrk_page(int n)
 {
-    struct MallocHeader *chunk;
+    struct malloc_header *chunk;
     uint32_t p_addr;
     int i;
 
@@ -31,7 +31,7 @@ void *ksbrk_page(int n)
         return (char *) -1;
     }
 
-    chunk = (struct MallocHeader *) g_kernel_heap;
+    chunk = (struct malloc_header *) g_kernel_heap;
 
     for (i = 0; i < n; i++)
     {
@@ -62,14 +62,14 @@ void *kmalloc(uint32_t size)
     }
 
     unsigned long realsize;
-    struct MallocHeader *chunk, *other;
+    struct malloc_header *chunk, *other;
 
-    if ((realsize = sizeof(struct MallocHeader) + size) < KMALLOC_MINSIZE)
+    if ((realsize = sizeof(struct malloc_header) + size) < KMALLOC_MINSIZE)
     {
         realsize = KMALLOC_MINSIZE;
     }
 
-    chunk = (struct MallocHeader *) KERN_HEAP_BEGIN;
+    chunk = (struct malloc_header *) KERN_HEAP_BEGIN;
     while (chunk->used || chunk->size < realsize)
     {
         if (chunk->size == 0)
@@ -81,9 +81,9 @@ void *kmalloc(uint32_t size)
             return 0;
         }
 
-        chunk = (struct MallocHeader *)((char *)chunk + chunk->size);
+        chunk = (struct malloc_header *)((char *)chunk + chunk->size);
 
-        if (chunk == (struct MallocHeader *) g_kernel_heap)
+        if (chunk == (struct malloc_header *) g_kernel_heap)
         {
             if ((int)(ksbrk_page((realsize / PAGESIZE_4K) + 1)) < 0)
             {
@@ -92,7 +92,7 @@ void *kmalloc(uint32_t size)
                 return 0;
             }
         }
-        else if (chunk > (struct MallocHeader *) g_kernel_heap)
+        else if (chunk > (struct malloc_header *) g_kernel_heap)
         {
             printkf("\nPANIC: kmalloc(): chunk on %x while heap limit is on %x !\nSystem halted\n", chunk, g_kernel_heap);
 
@@ -109,7 +109,7 @@ void *kmalloc(uint32_t size)
     }
     else
     {
-        other = (struct MallocHeader *)((char *) chunk + realsize);
+        other = (struct malloc_header *)((char *) chunk + realsize);
         other->size = chunk->size - realsize;
         other->used = 0;
 
@@ -119,7 +119,7 @@ void *kmalloc(uint32_t size)
 
     g_kernel_heap_used += realsize;
 
-    return (char *) chunk + sizeof(struct MallocHeader);
+    return (char *) chunk + sizeof(struct malloc_header);
 }
 
 void kfree(void *v_addr)
@@ -129,29 +129,29 @@ void kfree(void *v_addr)
         return;
     }
 
-    struct MallocHeader *chunk, *other;
+    struct malloc_header *chunk, *other;
 
-    chunk = (struct MallocHeader *)((uint32_t)v_addr - sizeof(struct MallocHeader));
+    chunk = (struct malloc_header *)((uint32_t)v_addr - sizeof(struct malloc_header));
     chunk->used = 0;
 
     g_kernel_heap_used -= chunk->size;
 
     //Merge free block with next free block
-    while ((other = (struct MallocHeader *)((char *)chunk + chunk->size))
-           && other < (struct MallocHeader *)g_kernel_heap
+    while ((other = (struct malloc_header *)((char *)chunk + chunk->size))
+           && other < (struct malloc_header *)g_kernel_heap
            && other->used == 0)
     {
         chunk->size += other->size;
     }
 }
 
-static void sbrk_page(Process* process, int page_count)
+static void sbrk_page(Process* proc, int page_count)
 {
     if (page_count > 0)
     {
         for (int i = 0; i < page_count; ++i)
         {
-            if ((process->brk_next_unallocated_page_begin + PAGESIZE_4K) > (char*)(MEMORY_END - PAGESIZE_4K))
+            if ((proc->brk_next_unallocated_page_begin + PAGESIZE_4K) > (char*)(MEMORY_END - PAGESIZE_4K))
             {
                 return;
             }
@@ -164,11 +164,11 @@ static void sbrk_page(Process* process, int page_count)
                 return;
             }
 
-            vmm_add_page_to_pd(process->brk_next_unallocated_page_begin, p_addr, PG_USER | PG_OWNED);
+            vmm_add_page_to_pd(proc->brk_next_unallocated_page_begin, p_addr, PG_USER | PG_OWNED);
 
-            SET_PAGEFRAME_USED(process->mmapped_virtual_memory, PAGE_INDEX_4K((uint32_t)process->brk_next_unallocated_page_begin));
+            SET_PAGEFRAME_USED(proc->mmapped_virtual_memory, PAGE_INDEX_4K((uint32_t)proc->brk_next_unallocated_page_begin));
 
-            process->brk_next_unallocated_page_begin += PAGESIZE_4K;
+            proc->brk_next_unallocated_page_begin += PAGESIZE_4K;
         }
     }
     else if (page_count < 0)
@@ -177,38 +177,38 @@ static void sbrk_page(Process* process, int page_count)
 
         for (int i = 0; i < page_count; ++i)
         {
-            if (process->brk_next_unallocated_page_begin - PAGESIZE_4K >= process->brk_begin)
+            if (proc->brk_next_unallocated_page_begin - PAGESIZE_4K >= proc->brk_begin)
             {
-                process->brk_next_unallocated_page_begin -= PAGESIZE_4K;
+                proc->brk_next_unallocated_page_begin -= PAGESIZE_4K;
 
                 //This also releases the page frame
-                vmm_remove_page_from_pd(process->brk_next_unallocated_page_begin);
+                vmm_remove_page_from_pd(proc->brk_next_unallocated_page_begin);
 
-                SET_PAGEFRAME_UNUSED(process->mmapped_virtual_memory, (uint32_t)process->brk_next_unallocated_page_begin);
+                SET_PAGEFRAME_UNUSED(proc->mmapped_virtual_memory, (uint32_t)proc->brk_next_unallocated_page_begin);
             }
         }
     }
 }
 
-void initialize_program_break(Process* process, uint32_t size)
+void initialize_program_break(Process* proc, uint32_t size)
 {
-    process->brk_begin = (char*) USER_OFFSET;
-    process->brk_end = process->brk_begin;
-    process->brk_next_unallocated_page_begin = process->brk_begin;
+    proc->brk_begin = (char*) USER_OFFSET;
+    proc->brk_end = proc->brk_begin;
+    proc->brk_next_unallocated_page_begin = proc->brk_begin;
 
     //Userland programs (their code, data,..) start from USER_OFFSET
     //Lets allocate some space for them by moving program break.
 
-    sbrk(process, size);
+    sbrk(proc, size);
 }
 
-void *sbrk(Process* process, int n_bytes)
+void *sbrk(Process* proc, int n_bytes)
 {
-    char* previous_break = process->brk_end;
+    char* previous_break = proc->brk_end;
 
     if (n_bytes > 0)
     {
-        int remainingInThePage = process->brk_next_unallocated_page_begin - process->brk_end;
+        int remainingInThePage = proc->brk_next_unallocated_page_begin - proc->brk_end;
 
         if (n_bytes > remainingInThePage)
         {
@@ -221,25 +221,25 @@ void *sbrk(Process* process, int n_bytes)
                 return (void*)-1;
             }
 
-            sbrk_page(process, neededNewPageCount);
+            sbrk_page(proc, neededNewPageCount);
         }
     }
     else if (n_bytes < 0)
     {
-        char* currentPageBegin = process->brk_next_unallocated_page_begin - PAGESIZE_4K;
+        char* currentPageBegin = proc->brk_next_unallocated_page_begin - PAGESIZE_4K;
 
-        int remainingInThePage = process->brk_end - currentPageBegin;
+        int remainingInThePage = proc->brk_end - currentPageBegin;
 
         if (-n_bytes > remainingInThePage)
         {
             int bytesInPreviousPages = -n_bytes - remainingInThePage;
             int neededNewPageCount = ((bytesInPreviousPages-1) / PAGESIZE_4K) + 1;
 
-            sbrk_page(process, -neededNewPageCount);
+            sbrk_page(proc, -neededNewPageCount);
         }
     }
 
-    process->brk_end += n_bytes;
+    proc->brk_end += n_bytes;
 
     return previous_break;
 }

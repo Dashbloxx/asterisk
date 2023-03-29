@@ -3,14 +3,14 @@
 
 static BOOL rootfs_open(File *node, uint32_t flags);
 static void rootfs_close(File *file);
-static FileSystemNode *rootfs_finddir(FileSystemNode *node, char *name);
-static struct FileSystemDirent *rootfs_readdir(FileSystemNode *node, uint32_t index);
-static BOOL rootfs_mkdir(FileSystemNode *node, const char *name, uint32_t flags);
+static filesystem_node *rootfs_finddir(filesystem_node *node, char *name);
+static struct filesystem_dirent *rootfs_readdir(filesystem_node *node, uint32_t index);
+static BOOL rootfs_mkdir(filesystem_node *node, const char *name, uint32_t flags);
 
-FileSystemNode* rootfs_initialize()
+filesystem_node* rootfs_initialize()
 {
-    FileSystemNode* root = (FileSystemNode*)kmalloc(sizeof(FileSystemNode));
-    memset((uint8_t*)root, 0, sizeof(FileSystemNode));
+    filesystem_node* root = (filesystem_node*)kmalloc(sizeof(filesystem_node));
+    memset((uint8_t*)root, 0, sizeof(filesystem_node));
     root->node_type = FT_DIRECTORY;
     root->open = rootfs_open;
     root->close = rootfs_close;
@@ -21,7 +21,7 @@ FileSystemNode* rootfs_initialize()
     return root;
 }
 
-static FileSystemDirent g_dirent;
+static filesystem_dirent g_dirent;
 
 static BOOL rootfs_open(File *node, uint32_t flags)
 {
@@ -33,9 +33,9 @@ static void rootfs_close(File *file)
 
 }
 
-static struct FileSystemDirent *rootfs_readdir(FileSystemNode *node, uint32_t index)
+static struct filesystem_dirent *rootfs_readdir(filesystem_node *node, uint32_t index)
 {
-    FileSystemNode *n = node->first_child;
+    filesystem_node *n = node->first_child;
     uint32_t i = 0;
     while (NULL != n)
     {
@@ -54,9 +54,9 @@ static struct FileSystemDirent *rootfs_readdir(FileSystemNode *node, uint32_t in
     return NULL;
 }
 
-static FileSystemNode *rootfs_finddir(FileSystemNode *node, char *name)
+static filesystem_node *rootfs_finddir(filesystem_node *node, char *name)
 {
-    FileSystemNode *n = node->first_child;
+    filesystem_node *n = node->first_child;
     while (NULL != n)
     {
         if (strcmp(name, n->name) == 0)
@@ -69,9 +69,9 @@ static FileSystemNode *rootfs_finddir(FileSystemNode *node, char *name)
     return NULL;
 }
 
-static BOOL rootfs_mkdir(FileSystemNode *node, const char *name, uint32_t flags)
+static BOOL rootfs_mkdir(filesystem_node *node, const char *name, uint32_t flags)
 {
-    FileSystemNode *n = node->first_child;
+    filesystem_node *n = node->first_child;
     while (NULL != n)
     {
         if (strcmp(name, n->name) == 0)
@@ -81,8 +81,8 @@ static BOOL rootfs_mkdir(FileSystemNode *node, const char *name, uint32_t flags)
         n = n->next_sibling;
     }
 
-    FileSystemNode* new_node = (FileSystemNode*)kmalloc(sizeof(FileSystemNode));
-    memset((uint8_t*)new_node, 0, sizeof(FileSystemNode));
+    filesystem_node* new_node = (filesystem_node*)kmalloc(sizeof(filesystem_node));
+    memset((uint8_t*)new_node, 0, sizeof(filesystem_node));
     strcpy(new_node->name, name);
     new_node->node_type = FT_DIRECTORY;
     new_node->open = rootfs_open;
@@ -98,7 +98,7 @@ static BOOL rootfs_mkdir(FileSystemNode *node, const char *name, uint32_t flags)
     }
     else
     {
-        FileSystemNode *n = node->first_child;
+        filesystem_node *n = node->first_child;
         while (NULL != n->next_sibling)
         {
             n = n->next_sibling;

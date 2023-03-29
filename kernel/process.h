@@ -61,9 +61,9 @@ struct Process
 
     uint8_t mmapped_virtual_memory[RAM_AS_4K_PAGES / 8];
 
-    FileSystemNode* tty;
+    filesystem_node* tty;
 
-    FileSystemNode* working_directory;
+    filesystem_node* working_directory;
 
     Process* parent;
 
@@ -145,9 +145,9 @@ typedef void (*Function0)();
 
 void tasking_initialize();
 void thread_create_kthread(Function0 func);
-Process* process_create_from_elf_data(const char* name, uint8_t* elf_data, char *const argv[], char *const envp[], Process* parent, FileSystemNode* tty);
-Process* process_create_from_function(const char* name, Function0 func, char *const argv[], char *const envp[], Process* parent, FileSystemNode* tty);
-Process* process_create_ex(const char* name, uint32_t process_id, uint32_t thread_id, Function0 func, uint8_t* elf_data, char *const argv[], char *const envp[], Process* parent, FileSystemNode* tty);
+Process* process_create_from_elf_data(const char* name, uint8_t* elf_data, char *const argv[], char *const envp[], Process* parent, filesystem_node* tty);
+Process* process_create_from_function(const char* name, Function0 func, char *const argv[], char *const envp[], Process* parent, filesystem_node* tty);
+Process* process_create_ex(const char* name, uint32_t process_id, uint32_t thread_id, Function0 func, uint8_t* elf_data, char *const argv[], char *const envp[], Process* parent, filesystem_node* tty);
 void thread_destroy(Thread* thread);
 void process_destroy(Process* process);
 void process_change_state(Process* process, ThreadState state);
@@ -160,7 +160,7 @@ void wait_for_schedule();
 int32_t process_get_empty_fd(Process* process);
 int32_t process_add_file(Process* process, File* file);
 int32_t process_remove_file(Process* process, File* file);
-File* process_find_file(Process* process, FileSystemNode* node);
+File* process_find_file(Process* process, filesystem_node* node);
 Thread* thread_get_by_id(uint32_t thread_id);
 Thread* thread_get_previous(Thread* thread);
 Thread* thread_get_first();
