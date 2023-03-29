@@ -193,6 +193,9 @@ int kmain(struct Multiboot *mboot_ptr)
 
     printkf("System started!\n");
 
+    /* Print out the sublogo of Asterisk */
+    printkf("    d8888b. .d888b. .d8888P     dP     \nk:        `88 Y8' `8P 88'     8b. 88 .d8 \nk:     aaad8' d8bad8b 88baaa.  `8b88d8'  \nk:        `88 88` `88 88` `88  .8P88Y8.  \nk:        .88 8b. .88 8b. .d8 8P' 88 `Y8 \nk:    d88888P Y88888P `Y888P'     dP\n");
+
     char* argv[] = {"shell", NULL};
     char* envp[] = {"HOME=/", "PATH=/initrd", NULL};
 

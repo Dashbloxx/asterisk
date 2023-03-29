@@ -1,5 +1,5 @@
 LIBC_OBJ = libc/syscall.o libc/string.o libc/stdio.o libc/math.o libc/stdlib.o libc/errno.o libc/crt0.o
-OBJ = $(LIBC_OBJ) sh.o cat.o
+OBJ = $(LIBC_OBJ) test.o
 
 CC = i686-elf-gcc
 LD = i686-elf-ld
@@ -7,8 +7,7 @@ CFLAGS = -nostdinc -std=gnu99 -ffreestanding -O2
 LDFLAGS = -Tlink.ld
 
 all: $(OBJ)
-	$(LD) $(LDFLAGS) -o bin/sh $(LIBC_OBJ) sh.o
-	$(LD) $(LDFLAGS) -o bin/cat $(LIBC_OBJ) cat.o
+	$(LD) $(LDFLAGS) -o bin/test $(LIBC_OBJ) test.o
 
 libc/syscall.o: libc/syscall.c
 	$(CC) $(CFLAGS) -c libc/syscall.c -o libc/syscall.o
@@ -31,11 +30,8 @@ libc/crt0.o: libc/crt0.c
 libc/errno.o: libc/errno.c
 	$(CC) $(CFLAGS) -c libc/errno.c -o libc/errno.o
 
-sh.o: sh.c
-	$(CC) $(CFLAGS) -c sh.c -o sh.o
-
-cat.o: cat.c
-	$(CC) $(CFLAGS) -c cat.c -o cat.o
+test.o: test.c
+	$(CC) $(CFLAGS) -c test.c -o test.o
 
 clean:
 	rm *.o

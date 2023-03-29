@@ -99,7 +99,7 @@ int syscall_getdents(int fd, char *buf, int nbytes);
 int syscall_getcwd(char *buf, size_t size);
 int syscall_chdir(const char *path);
 int syscall_manage_pipe(const char *pipe_name, int operation, int data);
-int syscall_asterisk_read_dir(int fd, void *dirent, int index);
+int syscall_read_dir(int fd, void *dirent, int index);
 uint32_t syscall_get_uptime_ms();
 int syscall_sleep_ms(int ms);
 int syscall_execute_on_tty(const char *path, char *const argv[], char *const envp[], const char *tty_path);
@@ -160,7 +160,7 @@ void syscalls_initialize()
     g_syscall_table[SYS_getcwd] = syscall_getcwd;
     g_syscall_table[SYS_chdir] = syscall_chdir;
     g_syscall_table[SYS_manage_pipe] = syscall_manage_pipe;
-    g_syscall_table[SYS_asterisk_read_dir] = syscall_asterisk_read_dir;
+    g_syscall_table[SYS_read_dir] = syscall_read_dir;
     g_syscall_table[SYS_get_uptime_ms] = syscall_get_uptime_ms;
     g_syscall_table[SYS_sleep_ms] = syscall_sleep_ms;
     g_syscall_table[SYS_execute_on_tty] = syscall_execute_on_tty;
@@ -1224,7 +1224,7 @@ int syscall_getdents(int fd, char *buf, int nbytes)
     return -1;//on error
 }
 
-int syscall_asterisk_read_dir(int fd, void *dirent, int index)
+int syscall_read_dir(int fd, void *dirent, int index)
 {
     if (!check_user_access(dirent))
     {

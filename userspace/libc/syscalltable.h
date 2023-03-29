@@ -28,7 +28,7 @@ enum
     SYS_getcwd,
     SYS_chdir,
     SYS_manage_pipe,
-    SYS_asterisk_read_dir,
+    SYS_read_dir,
     SYS_get_uptime_ms,
     SYS_sleep_ms,
     SYS_execute_on_tty,
