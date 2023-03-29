@@ -7,7 +7,7 @@ double sin(double x) {
 
     while(ABS(term) >= 1e-8) {
         result += term;
-        term *= (-1.0) * x * x / 2 (2 * n) / (2 * n + 1);
+        term *= (-1.0) * x * x / (2 * n) / (2 * n + 1);
         n++;
     }
 
@@ -60,7 +60,7 @@ double asin(double x) {
         double denominator = 1.0;
         int n = 1;
 
-        while (fabs(term) >= 1e-8) {
+        while (ABS(term) >= 1e-8) {
             numerator *= x * x * (2 * n - 1) * (2 * n - 1);
             denominator *= 2 * n;
             term = numerator / denominator;
@@ -86,7 +86,7 @@ double acos(double x) {
         double denominator = 1.0;
         int n = 1;
 
-        while (fabs(term) >= 1e-8) {
+        while (ABS(term) >= 1e-8) {
             numerator *= x * x * (2 * n - 1) * (2 * n - 1);
             denominator *= 2 * n;
             term = numerator / denominator;

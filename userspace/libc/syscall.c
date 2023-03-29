@@ -127,7 +127,7 @@ int wait(int *status)
 
 int execute_on_tty(const char *path, char *const argv[], char *const envp[], const char *tty_path)
 {
-    return __syscall(SYS_execute_on_tty, path, argv, envp, tty_path);
+    return syscall4(SYS_execute_on_tty, path, argv, envp, tty_path);
 }
 
 int write(int file, char *ptr, int len)
@@ -145,60 +145,37 @@ int execute(const char *path, char *const argv[], char *const envp[])
     return syscall3(SYS_execute, (int)path, (int)argv, (int)envp);
 }
 
-/*int executep(const char *filename, char *const argv[], char *const envp[])
+int getthreads(thread_info* threads, unsigned int max_count, unsigned int flags)
 {
-    const char* path = getenv("PATH");
+    return syscall3(SYS_getthreads, threads, max_count, flags);
+}
 
-    if (path)
-    {
-        const char* path2 = path;
+int getprocs(proc_info* procs, unsigned int max_count, unsigned int flags)
+{
+    return syscall3(SYS_getprocs, procs, max_count, flags);
+}
 
-        char* bb = path2;
+int manage_pipe(const char *pipe_name, int operation, int data)
+{
+    return syscall3(SYS_manage_pipe, pipe_name, operation, data);
+}
 
-        char single[128];
-        while (bb != NULL)
-        {
-            char* token = strstr(bb, ":");
+void sleep_ms(unsigned int ms)
+{
+    syscall1(SYS_sleep_ms, ms);
+}
 
-            if (NULL == token)
-            {
-                int l = strlen(bb);
-                if (l > 0)
-                {
-                    token = bb + l;
-                }
-            }
+int manage_message(int command, message* msg)
+{
+    return syscall2(SYS_manage_message, command, (int)msg);
+}
 
-            if (token)
-            {
-                int len = token - bb;
+int read_dir(int fd, void *dirent, int index)
+{
+    return syscall3(SYS_asterisk_read_dir, fd, dirent, index);
+}
 
-                if (len > 0)
-                {
-                    strncpy(single, bb, len);
-                    single[len] = '\0';
-
-                    //printf("%d:[%s]\n", len, single);
-
-                    strcat(single, "/");
-                    strcat(single, filename);
-
-                    int result = execute(single, argv, envp);
-
-                    if (result > 0)
-                    {
-                        return result;
-                    }
-                }
-
-                bb = token + 1;
-            }
-            else
-            {
-                break;
-            }
-        }
-    }
-
-    return -1;
-}*/
+unsigned int get_uptime_ms()
+{
+    return syscall0(SYS_get_uptime_ms);
+}
