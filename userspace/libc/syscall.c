@@ -276,3 +276,63 @@ int syscall_llseek(unsigned int fd, unsigned int offset_high, unsigned int offse
 {
     return syscall5(SYS_llseek, fd, offset_high, offset_low, result, whence);
 }
+
+int statx(int dirfd, const char *pathname, int flags, unsigned int mask, struct statx *statxbuf)
+{
+    return syscall5(SYS_statx, dirfd, pathname, flags, mask, statxbuf);
+}
+
+int clock_gettime64(int clockid, struct timespec *tp)
+{
+    return syscall2(SYS_clock_gettime64, clockid, tp);
+}
+
+int clock_settime64(int clockid, const struct timespec *tp)
+{
+    return syscall2(SYS_clock_settime64, clockid, tp);
+}
+
+int clock_getres64(int clockid, struct timespec *res)
+{
+    return syscall2(SYS_clock_getres64, clockid, res);
+}
+
+int shmget(int key, size_t size, int flag)
+{
+    return syscall3(SYS_shmget, key, size, flag);
+}
+
+void * shmat(int shmid, const void *shmaddr, int shmflg)
+{
+    return syscall3(SYS_shmat, shmid, shmaddr, shmflg);
+}
+
+int shmdt(const void *shmaddr)
+{
+    return syscall1(SYS_shmdt, shmaddr);
+}
+
+int nanosleep(struct timespec *req, struct timespec *rem)
+{
+    return syscall2(SYS_nanosleep, req, rem);
+}
+
+int mount(const char *source, const char *target, const char *fs_type, unsigned long flags, void *data)
+{
+    return syscall5(SYS_mount, source, target, fs_type, flags, data);
+}
+
+int unmount(const char *target)
+{
+    return syscall1(SYS_unmount, target);
+}
+
+int mkdir(const char *path, uint32_t mode)
+{
+    return syscall2(SYS_mkdir, path, mode);
+}
+
+int rmdir(const char *path)
+{
+    return syscall1(SYS_rmdir, path);
+}

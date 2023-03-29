@@ -59,24 +59,55 @@ struct iovec {
 
 struct stat
 {
-    uint16_t/*dev_t      */ st_dev;     /* ID of device containing file */
-    uint16_t/*ino_t      */ st_ino;     /* inode number */
-    uint32_t/*mode_t     */ st_mode;    /* protection */
-    uint16_t/*nlink_t    */ st_nlink;   /* number of hard links */
-    uint16_t/*uid_t      */ st_uid;     /* user ID of owner */
-    uint16_t/*gid_t      */ st_gid;     /* group ID of owner */
-    uint16_t/*dev_t      */ st_rdev;    /* device ID (if special file) */
-    uint32_t/*off_t      */ st_size;    /* total size, in bytes */
+    unsigned short/*dev_t      */ st_dev;     /* ID of device containing file */
+    unsigned short/*ino_t      */ st_ino;     /* inode number */
+    unsigned int/*mode_t     */ st_mode;    /* protection */
+    unsigned short/*nlink_t    */ st_nlink;   /* number of hard links */
+    unsigned short/*uid_t      */ st_uid;     /* user ID of owner */
+    unsigned short/*gid_t      */ st_gid;     /* group ID of owner */
+    unsigned short/*dev_t      */ st_rdev;    /* device ID (if special file) */
+    unsigned int/*off_t      */ st_size;    /* total size, in bytes */
 
-    uint32_t/*time_t     */ st_atime;
-    uint32_t/*long       */ st_spare1;
-    uint32_t/*time_t     */ st_mtime;
-    uint32_t/*long       */ st_spare2;
-    uint32_t/*time_t     */ st_ctime;
-    uint32_t/*long       */ st_spare3;
-    uint32_t/*blksize_t  */ st_blksize;
-    uint32_t/*blkcnt_t   */ st_blocks;
-    uint32_t/*long       */ st_spare4[2];
+    unsigned int/*time_t     */ st_atime;
+    unsigned int/*long       */ st_spare1;
+    unsigned int/*time_t     */ st_mtime;
+    unsigned int/*long       */ st_spare2;
+    unsigned int/*time_t     */ st_ctime;
+    unsigned int/*long       */ st_spare3;
+    unsigned int/*blksize_t  */ st_blksize;
+    unsigned int/*blkcnt_t   */ st_blocks;
+    unsigned int/*long       */ st_spare4[2];
+};
+
+struct timespec
+{
+    time_t tv_sec;        /* seconds */
+    unsigned int tv_nsec;       /* nanoseconds */
+};
+
+struct statx {
+    unsigned int stx_mask;
+    unsigned int stx_blksize;
+    unsigned long stx_attributes;
+    unsigned int stx_nlink;
+    unsigned int stx_uid;
+    unsigned int stx_gid;
+    unsigned short stx_mode;
+    unsigned short pad1;
+    unsigned long stx_ino;
+    unsigned long stx_size;
+    unsigned long stx_blocks;
+    unsigned long stx_attributes_mask;
+    struct {
+        long tv_sec;
+        unsigned int tv_nsec;
+        int pad;
+    } stx_atime, stx_btime, stx_ctime, stx_mtime;
+    unsigned int stx_rdev_major;
+    unsigned int stx_rdev_minor;
+    unsigned int stx_dev_major;
+    unsigned int stx_dev_minor;
+    unsigned long spare[14];
 };
 
 /* These functions make it easier to define functions that call syscalls */
@@ -193,3 +224,27 @@ int syscall_set_tid_address(void* p);
 int syscall_exit_group(int status);
 
 int syscall_llseek(unsigned int fd, unsigned int offset_high, unsigned int offset_low, long *result, unsigned int whence);
+
+int statx(int dirfd, const char *pathname, int flags, unsigned int mask, struct statx *statxbuf);
+
+int clock_gettime64(int clockid, struct timespec *tp);
+
+int clock_settime64(int clockid, const struct timespec *tp);
+
+int clock_getres64(int clockid, struct timespec *res);
+
+int shmget(int key, size_t size, int flag);
+
+void * shmat(int shmid, const void *shmaddr, int shmflg);
+
+int shmdt(const void *shmaddr);
+
+int nanosleep(struct timespec *req, struct timespec *rem);
+
+int mount(const char *source, const char *target, const char *fs_type, unsigned long flags, void *data);
+
+int unmount(const char *target);
+
+int mkdir(const char *path, unsigned int mode);
+
+int rmdir(const char *path);
