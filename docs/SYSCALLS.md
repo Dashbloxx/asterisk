@@ -21,3 +21,5 @@ write(fd, "Hello, world!\n");
 read(fd);
 close(fd);
 ```
+### `SYS_read` & `SYS_write`
+The `read` syscall allows you to read from a file, using the file descriptor returned from the `open` syscall. The `write` syscall allows you to write to a file, using the file descriptor returned from the `close` syscall. If the file is closed, and you still use the file descriptor given to you by `open` to write or read to it, an error could occur.
