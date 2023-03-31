@@ -2,6 +2,13 @@
 #include "common.h"
 #include "process.h"
 
+/*
+ *  This file defines ELF-related functions. ELF stands for Executable and Linkable Format.
+ *  The functions here allow us to check if an ELF binary is valid (it checks the first four characters, with the last 3 ones being "ELF") and load the start of a program
+ *  that is encoded in ELF format.
+ */
+
+/* Return true if ELF data contains 0x0F, and ELF in the start of the ELF binary... */
 BOOL elf_is_valid(const char *elf_data)
 {
     Elf32_Ehdr *hdr = (Elf32_Ehdr *) elf_data;

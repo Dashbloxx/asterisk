@@ -6,6 +6,11 @@
 #include "list.h"
 #include "spinlock.h"
 
+/*
+ *  DevFS, also known as device filesystem, allows processes and/or the user to send data and/or recieve data from files in the `/dev` directory, which contains
+ *  special files which represent hardware.
+ */
+
 static filesystem_node* g_dev_root = NULL;
 
 static List* g_device_list = NULL;
@@ -17,6 +22,7 @@ static filesystem_node *devfs_finddir(filesystem_node *node, char *name);
 
 static filesystem_dirent g_dirent;
 
+/* Initialize DevFS, and create the `/dev` directory. If the directory isn't created, then make a kernel panic... */
 void devfs_initialize()
 {
     g_dev_root = kmalloc(sizeof(filesystem_node));
@@ -48,6 +54,7 @@ void devfs_initialize()
     spinlock_init(&g_device_list_lock);
 }
 
+/* Not implemented yet... */
 static BOOL devfs_open(File *node, uint32_t flags)
 {
     return TRUE;

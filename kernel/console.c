@@ -27,6 +27,9 @@ static int32_t console_ioctl(File *file, int32_t request, void * argp);
 static uint8_t get_character_for_scancode(KeyModifier modifier, uint8_t scancode);
 static void process_scancode(uint8_t scancode);
 
+/*
+ *  Initialize the console, and then register a character device that represents it.
+ */
 void console_initialize(BOOL graphicMode)
 {
     for (int i = 0; i < TERMINAL_COUNT; ++i)
@@ -55,6 +58,7 @@ void console_initialize(BOOL graphicMode)
 }
 
 
+/* Send a character to the console by it's keyboard scancode... */
 void console_send_key(uint8_t scancode)
 {
     process_scancode(scancode);
@@ -70,11 +74,13 @@ void console_send_key(uint8_t scancode)
 
 }
 
+/* Not implemented yet... */
 static BOOL console_open(File *file, uint32_t flags)
 {
     return TRUE;
 }
 
+/* Not implemented yet... */
 static void console_close(File *file)
 {
     
