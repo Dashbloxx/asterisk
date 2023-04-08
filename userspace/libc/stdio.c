@@ -127,6 +127,99 @@ unsigned int fread(void *ptr, unsigned int size, unsigned int count, FILE *strea
     return bytes_read / size;
 }
 
+/* Print formatted text to a file... */
+int fprintf(FILE *stream, const char *format, ...) {
+    va_list args;
+    va_start(args, format);
+
+    int fd = stream->fd;
+    if (fd < 0) {
+        return -1;
+    }
+
+    char buffer[4096];
+    int buffer_pos = 0;
+
+    int result = 0;
+    for (; *format != '\0'; format++) {
+        if (*format == '%') {
+            format++;
+            if (*format == 'd') {
+                int val = va_arg(args, int);
+                int digits = 0;
+                if (val == 0) {
+                    buffer[buffer_pos++] = '0';
+                    digits++;
+                }
+                else {
+                    int tmp = val;
+                    while (tmp != 0) {
+                        tmp /= 10;
+                        digits++;
+                    }
+                    tmp = val;
+                    for (int i = digits - 1; i >= 0; i--) {
+                        buffer[buffer_pos + i] = '0' + (tmp % 10);
+                        tmp /= 10;
+                    }
+                }
+                buffer_pos += digits;
+            }
+            else if (*format == 's') {
+                const char *str = va_arg(args, const char *);
+                int len = strlen(str);
+                if (len > 4096 - buffer_pos) {
+                    // If the remaining buffer is not enough, flush it first
+                    result += write(fd, buffer, buffer_pos);
+                    if (result < 0) {
+                        return -1;
+                    }
+                    buffer_pos = 0;
+                    if (len > 4096) {
+                        // If the string is too long, write it directly to the file descriptor
+                        result += write(fd, str, len);
+                        if (result < 0) {
+                            return -1;
+                        }
+                    }
+                }
+                else {
+                    // Copy the string to the buffer
+                    memcpy(buffer + buffer_pos, str, len);
+                    buffer_pos += len;
+                }
+            }
+            else {
+                // Unsupported format specifier, return -1
+                return -1;
+            }
+        }
+        else {
+            // Copy the character to the buffer
+            buffer[buffer_pos++] = *format;
+            if (buffer_pos == 4096) {
+                // Flush the buffer if it's full
+                result += write(fd, buffer, buffer_pos);
+                if (result < 0) {
+                    return -1;
+                }
+                buffer_pos = 0;
+            }
+        }
+    }
+
+    // Flush the remaining buffer
+    if (buffer_pos > 0) {
+        result += write(fd, buffer, buffer_pos);
+        if (result < 0) {
+            return -1;
+        }
+    }
+
+    va_end(args);
+    return result;
+}
+
 /*
  *  Functions related to terminal I/O...
  */

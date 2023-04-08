@@ -47,6 +47,9 @@ unsigned int fwrite(const void *ptr, unsigned int size, unsigned int count, FILE
 /* Read from file using `FILE` type... */
 unsigned int fread(void *ptr, unsigned int size, unsigned int count, FILE *stream);
 
+/* Print formatted text to a file... */
+int fprintf(FILE *stream, const char *format, ...);
+
 /*
  *  Functions related to terminal I/O...
  */

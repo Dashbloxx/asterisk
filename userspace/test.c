@@ -10,4 +10,5 @@
 
 int main(int argc, char **argv) {
     printf("Hello, world!\n");
+    fprintf(stdout, "Hello, world!\n");
 }
