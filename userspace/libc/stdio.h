@@ -7,39 +7,21 @@
 #define O_WRONLY 1
 #define O_RDWR 2
 
+/*
+ *  This struct contains all the values that you'll usually find in the `FILE` struct type. Well, the type is actually `file_t`, but
+ *  then theres a macro that defines `FILE` as `file_t`...
+ */
 typedef struct {
-    /*
-     *  The file descriptor. This integer is unique for each open file.
-     */
-    int fd;
-    /*
-     *  Data that has been read or written to the file.
-     */
-    char *buffer;
-    /*
-     *  Hold the address of the next character to be read or written.
-     */
-    char *ptr;
-    /*
-     *  "This is an integer representing the number of characters left in the buffer"
-     *      -ChatGPT
-     */
-    int buffer_size;
-    /*
-     *  "This is an integer representing the buffering mode. There are three possible values: _IONBF (no buffering), _IOLBF (line buffering), or _IOFBF (full
-     *  buffering)."
-     *      -ChatGPT
-     */
-    int buffer_mode;
-    /*
-     *  This is the mode in which we're reading, writing, or something else.
-     */
-    int mode;
-    /*
-     *  Contains an error code, if an error happened during the process of opening, closing, writing, or reading of a file.
-     */
-    int error;
-} FILE;
+    int fd; /* Contains a unique integer that represents the file. Usually this integer can be returned by the `open` syscall... */
+    int mode; /* This contains the mode in which the file is opened... */
+    int error; /* This is to contain an error code, if an error happens... */
+    unsigned char *buffer; /* The buffer is stored in RAM, and is to have the file's contents replicated into this buffer... */
+    unsigned int buffer_size; /* This contains the size that the buffer should be. */
+    unsigned int position; /* The current position in file, whether it's being read or written to... */
+} file_t;
+
+/* Let's define `FILE` the right way. If we want it capitalized, let's use a macro to do it! */
+#define FILE file_t
 
 /*
  *  These files represent the current TTY that the process is running in. Useful for just printing to the terminal, printing errors to the terminal, and recieving
@@ -53,14 +35,17 @@ extern FILE *stdout;
  *  Functions related to file I/O...
  */
 
+/* Open a file and return a FILE pointer... */
 FILE *fopen(const char *filename, const char *mode);
-void fclose(FILE *file);
-size_t fwrite(const void *ptr, size_t size, size_t count, FILE *stream);
-void fread(void *ptr, size_t size, size_t count, FILE *stream);
-int fputc(int c, FILE *stream);
-int fgetc(FILE *stream);
-char *fgets(char *str, int n, FILE *stream);
-int fprintf(FILE *stream, const char *format, ...);
+
+/* Close a file by it's `FILE` struct... */
+int fclose(FILE *file);
+
+/* Write to a file by it's `FILE` struct... */
+unsigned int fwrite(const void *ptr, unsigned int size, unsigned int count, FILE *stream);
+
+/* Read from file using `FILE` type... */
+unsigned int fread(void *ptr, unsigned int size, unsigned int count, FILE *stream);
 
 /*
  *  Functions related to terminal I/O...
@@ -69,4 +54,4 @@ int fprintf(FILE *stream, const char *format, ...);
 int putc(int c);
 int getc();
 int printf(const char *format, ...);
-char *gets(char *str, int n);
+char *gets(char *s);

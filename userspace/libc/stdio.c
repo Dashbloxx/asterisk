@@ -13,136 +13,118 @@ FILE *stdout;
  *  Functions related to file I/O...
  */
 
+/* Open a file and return a FILE pointer... */
 FILE *fopen(const char *filename, const char *mode) {
-    FILE *fp = malloc(sizeof(FILE));
-    if(mode == "r") {
-        fp->fd = open(filename, O_RDONLY);
+    if(strcmp(mode, "r")) {
+        FILE *fp;
+        int fd = open(filename, O_RDONLY, mode);
+        /* Check if `open` returned an error (-1). If not, just set the file struct's `fd` to what `open` returned. */
+        if(fd != -1) {
+            fp->fd = fd;
+        }
+        else {
+            return NULL;
+        }
+        /* Now, if everything went fine, we can return the file struct... */
+        return fp;
     }
-    else if(mode = "w") {
-        fp->fd = open(filename, O_WRONLY);
+    else if(strcmp(mode, "w")) {
+        FILE *fp;
+        /* This time, we ask `open` to make the file write-only, and to create it if it doesn't exist... */
+        int fd = open(filename, O_WRONLY | O_CREAT, mode);
+        /* Check if `open` returned an error (-1). If not, just set the file struct's `fd` to what `open` returned. */
+        if(fd != -1) {
+            fp->fd = fd;
+        }
+        else {
+            return NULL;
+        }
+        /* Now, if everything went fine, we can return the file struct... */
+        return fp;
     }
-    else if(mode == "r+") {
-        fp->fd = open(filename, O_RDWR);
+    else if(strcmp(mode, "r+")) {
+        FILE *fp;
+        /* This time, we ask `open` to make the file write-only, and to create it if it doesn't exist... */
+        int fd = open(filename, O_RDWR, mode);
+        /* Check if `open` returned an error (-1). If not, just set the file struct's `fd` to what `open` returned. */
+        if(fd != -1) {
+            fp->fd = fd;
+        }
+        else {
+            return NULL;
+        }
+        /* Now, if everything went fine, we can return the file struct... */
+        return fp;
     }
-    return fp;
+    else if(strcmp(mode, "w+")) {
+        FILE *fp;
+        /* This time, we ask `open` to make the file write-only, and to create it if it doesn't exist... */
+        int fd = open(filename, O_RDWR | O_CREAT, mode);
+        /* Check if `open` returned an error (-1). If not, just set the file struct's `fd` to what `open` returned. */
+        if(fd != -1) {
+            fp->fd = fd;
+        }
+        else {
+            return NULL;
+        }
+        /* Now, if everything went fine, we can return the file struct... */
+        return fp;
+    }
+    else {
+        return NULL;
+    }
 }
 
-void fclose(FILE *file) {
-    close(file->fd);
+/* Close a file by it's `FILE` struct... */
+int fclose(FILE *file) {
+    return close(file->fd);
 }
 
-size_t fwrite(const void *ptr, size_t size, size_t count, FILE *stream) {
-    int write_output = write(stream->fd, ptr, count);
-    return count;
-}
+/* Write to a file by it's `FILE` struct... */
+unsigned int fwrite(const void *ptr, unsigned int size, unsigned int count, FILE *stream) {
+    unsigned int total_bytes_written = 0;
 
-void fread(void *ptr, size_t size, size_t count, FILE *stream) {
-    read(stream->fd, ptr, count);
-}
+    /* Calculate the amount of bytes that are to be written... */
+    unsigned int num_bytes_to_write = size * count;
 
-int fputc(int c, FILE *stream) {
-    unsigned char ch = (unsigned char)c;
-    int result = write(stream->fd, &ch, 1);
-    return result;
-}
+    int bytes_written = write(stream->fd, ptr, num_bytes_to_write);
 
-int fgetc(FILE *stream) {
-    unsigned char c;
-    int result = read(stream->fd, &c, 1);
-
-    if (result != 1) {
+    /* Return an error of the amount if bytes written are less than zero... */
+    if (bytes_written < 0) {
         return -1;
     }
 
-    return c;
+    /* Update and return the amount of bytes that were written... */
+    total_bytes_written += bytes_written;
+    return total_bytes_written;
 }
 
-char *fgets(char *str, int n, FILE *stream) {
-    int i = 0;
-    int c;
+/* Read from file using `FILE` type... */
+unsigned int fread(void *ptr, unsigned int size, unsigned int count, FILE *stream) {
+    /* Calculate the amount of total bytes by multiplying the size of items by count of items... */
+    unsigned int total_bytes = size * count;
+    unsigned int bytes_read = 0;
+    char *buffer = (char *) ptr;
 
-    while (i < n - 1) {
-        c = fgetc(stream);
-        if (c == -1) {
+    /* Get unique number that represents file... */
+    int fd = stream->fd;
+
+    while (bytes_read < total_bytes) {
+        unsigned int remaining_bytes = total_bytes - bytes_read;
+        int result = read(fd, buffer + bytes_read, remaining_bytes);
+
+        if (result < 0) {
             break;
-        } else if (c == '\n') {
-            str[i++] = c;
+        }
+
+        bytes_read += result;
+
+        if (result == 0) {
             break;
-        } else {
-            str[i++] = c;
         }
     }
 
-    str[i] = '\0';
-
-    if (i == 0 && c == -1) {
-        return NULL;
-    }
-
-    return str;
-}
-
-int fprintf(FILE *stream, const char *format, ...) {
-    va_list args;
-    va_start(args, format); // initialize the variable argument list
-
-    int n = 0; // number of characters written
-    char c;
-    while ((c = *format++) != '\0') {
-        if (c == '%') {
-            c = *format++; // read the next character after '%'
-            if (c == '\0') {
-                break;
-            }
-            if (c != 's' && c != 'd' && c != 'c') {
-                // unsupported format specifier
-                return -1;
-            }
-            if (c == 's') {
-                char *s = va_arg(args, char *);
-                while (*s != '\0') {
-                    if (fputc(*s, stream) == -1) {
-                        return -1; // error writing character
-                    }
-                    s++;
-                    n++;
-                }
-            } else if (c == 'd') {
-                int d = va_arg(args, int);
-                char buffer[20]; // large enough to hold any int
-                int i = 0;
-                if (d < 0) {
-                    buffer[i++] = '-';
-                    d = -d;
-                }
-                do {
-                    buffer[i++] = (d % 10) + '0';
-                    d /= 10;
-                } while (d > 0);
-                while (--i >= 0) {
-                    if (fputc(buffer[i], stream) == -1) {
-                        return -1; // error writing character
-                    }
-                    n++;
-                }
-            } else if (c == 'c') {
-                char ch = va_arg(args, int);
-                if (fputc(ch, stream) == -1) {
-                    return -1; // error writing character
-                }
-                n++;
-            }
-        } else {
-            if (fputc(c, stream) == -1) {
-                return -1; // error writing character
-            }
-            n++;
-        }
-    }
-
-    va_end(args); // cleanup the variable argument list
-
-    return n; // return number of characters written
+    return bytes_read / size;
 }
 
 /*
@@ -168,88 +150,78 @@ int getc() {
 
 int printf(const char *format, ...) {
     va_list args;
-    va_start(args, format); // initialize the variable argument list
+    va_start(args, format);
+    int chars_written = 0;
 
-    int n = 0; // number of characters written
-    char c;
-    while ((c = *format++) != '\0') {
-        if (c == '%') {
-            c = *format++; // read the next character after '%'
-            if (c == '\0') {
-                break;
-            }
-            if (c != 's' && c != 'd' && c != 'c') {
-                // unsupported format specifier
-                return -1;
-            }
-            if (c == 's') {
-                char *s = va_arg(args, char *);
-                while (*s != '\0') {
-                    if (fputc(*s, stdout) == -1) {
-                        return -1; // error writing character
+    while (*format != '\0') {
+        if (*format == '%') {
+            format++;
+
+            // Handle format specifier
+            switch (*format) {
+                case 'c': {
+                    char c = (char) va_arg(args, int);
+                    chars_written += write(1, &c, 1);
+                    break;
+                }
+                case 's': {
+                    char *str = va_arg(args, char *);
+                    chars_written += write(1, str, strlen(str));
+                    break;
+                }
+                case 'd': {
+                    int num = va_arg(args, int);
+                    char buffer[20];
+                    int i = 0;
+                    if (num == 0) {
+                        buffer[i++] = '0';
                     }
-                    s++;
-                    n++;
-                }
-            } else if (c == 'd') {
-                int d = va_arg(args, int);
-                char buffer[20]; // large enough to hold any int
-                int i = 0;
-                if (d < 0) {
-                    buffer[i++] = '-';
-                    d = -d;
-                }
-                do {
-                    buffer[i++] = (d % 10) + '0';
-                    d /= 10;
-                } while (d > 0);
-                while (--i >= 0) {
-                    if (fputc(buffer[i], stdout) == -1) {
-                        return -1; // error writing character
+                    else if (num < 0) {
+                        chars_written += write(1, "-", 1);
+                        num = -num;
                     }
-                    n++;
+                    while (num > 0) {
+                        buffer[i++] = (num % 10) + '0';
+                        num /= 10;
+                    }
+                    buffer[i] = '\0';
+
+                    // Reverse the buffer
+                    for (int j = 0, k = i - 1; j < k; j++, k--) {
+                        char temp = buffer[j];
+                        buffer[j] = buffer[k];
+                        buffer[k] = temp;
+                    }
+
+                    chars_written += write(1, buffer, strlen(buffer));
+                    break;
                 }
-            } else if (c == 'c') {
-                char ch = va_arg(args, int);
-                if (fputc(ch, stdout) == -1) {
-                    return -1; // error writing character
-                }
-                n++;
+                default:
+                    // Unknown format specifier, ignore it
+                    break;
             }
+
         } else {
-            if (fputc(c, stdout) == -1) {
-                return -1; // error writing character
-            }
-            n++;
+            // Regular character
+            chars_written += write(1, format, 1);
         }
+
+        format++;
     }
 
-    va_end(args); // cleanup the variable argument list
-
-    return n; // return number of characters written
+    va_end(args);
+    return chars_written;
 }
 
-char *gets(char *str, int n) {
+char *gets(char *s) {
+    char c;
     int i = 0;
-    int c;
 
-    while (i < n - 1) {
-        c = fgetc(stdin);
-        if (c == -1) {
-            break;
-        } else if (c == '\n') {
-            str[i++] = c;
-            break;
-        } else {
-            str[i++] = c;
-        }
+    while (read(0, &c, 1) == 1 && c != '\n') {
+        s[i++] = c;
     }
 
-    str[i] = '\0';
+    s[i] = '\0';
 
-    if (i == 0 && c == -1) {
-        return NULL;
-    }
-
-    return str;
+    return s;
 }
