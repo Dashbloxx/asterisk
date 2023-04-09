@@ -2,6 +2,7 @@
 #include "stdint.h"
 #include "stdbool.h"
 #include "stdlib.h"
+#include "sys/types.h"
 
 size_t strlen(const char *s1) {
     size_t i = 0;
@@ -11,6 +12,22 @@ size_t strlen(const char *s1) {
 
 int strcmp(const char *s1, const char *s2) {
     return strncmp(s1, s2, SIZE_MAX);
+}
+
+size_t strcspn(const char *s, const char *reject) {
+    size_t len = 0;
+    char c;
+    const char *p;
+
+    while ((c = *s++) != '\0') {
+        p = reject;
+        while (*p != '\0') {
+            if (c == *p++)
+                return len;
+        }
+        len++;
+    }
+    return len;
 }
 
 int strncmp(const char *s1, const char *s2, size_t n) {

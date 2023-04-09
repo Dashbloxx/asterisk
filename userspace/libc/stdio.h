@@ -47,6 +47,12 @@ unsigned int fwrite(const void *ptr, unsigned int size, unsigned int count, FILE
 /* Read from file using `FILE` type... */
 unsigned int fread(void *ptr, unsigned int size, unsigned int count, FILE *stream);
 
+/* Get a string from a file... */
+char *fgets(char *str, int n, FILE *stream);
+
+/* Flush output... */
+int fflush(FILE *stream);
+
 /* Print formatted text to a file... */
 int fprintf(FILE *stream, const char *format, ...);
 

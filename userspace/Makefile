@@ -1,5 +1,5 @@
 LIBC_OBJ = libc/syscall.o libc/string.o libc/stdio.o libc/math.o libc/stdlib.o libc/errno.o libc/crt0.o
-OBJ = $(LIBC_OBJ) test.o
+OBJ = $(LIBC_OBJ) test.o sh.o
 
 CC = i686-elf-gcc
 LD = i686-elf-ld
@@ -8,6 +8,7 @@ LDFLAGS = -Tlink.ld
 
 all: $(OBJ)
 	$(LD) $(LDFLAGS) -o bin/test $(LIBC_OBJ) test.o
+	$(LD) $(LDFLAGS) -o bin/sh $(LIBC_OBJ) sh.o
 
 libc/syscall.o: libc/syscall.c
 	$(CC) $(CFLAGS) -c libc/syscall.c -o libc/syscall.o

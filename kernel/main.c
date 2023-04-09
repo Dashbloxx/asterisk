@@ -222,11 +222,11 @@ int kmain(struct Multiboot *mboot_ptr)
             /*
              *  Run a shell for each open TTY...
              */
-            execute_file("/initrd/shell", argv, envp, fs_get_node("/dev/ptty1"));
-            execute_file("/initrd/shell", argv, envp, fs_get_node("/dev/ptty2"));
-            execute_file("/initrd/shell", argv, envp, fs_get_node("/dev/ptty3"));
-            execute_file("/initrd/shell", argv, envp, fs_get_node("/dev/ptty4"));
-            execute_file("/initrd/shell", argv, envp, fs_get_node("/dev/ptty7"));
+            execute_file("/initrd/sh", argv, envp, fs_get_node("/dev/ptty1"));
+            execute_file("/initrd/sh", argv, envp, fs_get_node("/dev/ptty2"));
+            execute_file("/initrd/sh", argv, envp, fs_get_node("/dev/ptty3"));
+            execute_file("/initrd/sh", argv, envp, fs_get_node("/dev/ptty4"));
+            execute_file("/initrd/sh", argv, envp, fs_get_node("/dev/ptty7"));
 
             /*
              *  Let's run our logging service on the COM1 serial port so that we can see some logs through QEMU!

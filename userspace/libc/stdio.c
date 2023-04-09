@@ -127,6 +127,52 @@ unsigned int fread(void *ptr, unsigned int size, unsigned int count, FILE *strea
     return bytes_read / size;
 }
 
+/* Get a string from a file... */
+char *fgets(char *str, int n, FILE *stream) {
+    char *p;
+    int bytes_read;
+
+    p = str;
+    while (--n > 0 && (bytes_read = fread(p, 1, 1, stream)) > 0) {
+        if (*p++ == '\n') {
+            break;
+        }
+    }
+    *p = '\0';
+    if (p == str || bytes_read == 0) {
+        return NULL;
+    }
+    return str;
+}
+
+/* Flush output... */
+int fflush(FILE *stream) {
+    int result = 0;
+
+    /* If the file is not opened in write mode, there is nothing to flush */
+    if ((stream->mode & O_WRONLY) == 0 && (stream->mode & O_RDWR) == 0) {
+        return 0;
+    }
+
+    /* Write the contents of the buffer to the file */
+    if (stream->buffer != NULL) {
+        ssize_t bytes_written = write(stream->fd, stream->buffer, stream->position);
+        if (bytes_written == -1) {
+            stream->error = errno;
+            result = -1;
+        } else {
+            stream->position = 0;
+        }
+    }
+
+    /* Clear the buffer */
+    if (stream->buffer != NULL) {
+        memset(stream->buffer, 0, stream->buffer_size);
+    }
+
+    return result;
+}
+
 /* Print formatted text to a file... */
 int fprintf(FILE *stream, const char *format, ...) {
     va_list args;

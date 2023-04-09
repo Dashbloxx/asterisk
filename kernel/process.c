@@ -1165,7 +1165,9 @@ void schedule(TimerInt_Registers* registers)
             fifobuffer_dequeue(ready_thread->signals, &signal, 1);
             ready_thread->pending_signal_count = fifobuffer_get_size(ready_thread->signals);
 
+#ifdef DEBUG
             printkf("Signal %d proccessing for pid:%d in scheduler!\n", (uint32_t)signal, ready_thread->owner->pid);
+#endif
 
             //TODO: call signal handlers
 
@@ -1176,8 +1178,9 @@ void schedule(TimerInt_Registers* registers)
             case SIGSEGV:
             case SIGINT:
             case SIGILL:
+#ifdef DEBUG
                 printkf("Killing pid:%d in scheduler!\n", ready_thread->owner->pid);
-            
+#endif
                 process_destroy(ready_thread->owner);
 
                 ready_thread = look_threads(g_first_thread);

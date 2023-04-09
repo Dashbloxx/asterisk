@@ -1,10 +1,12 @@
 #pragma once
 
 #include "stdint.h"
+#include "sys/types.h"
 
 size_t strlen(const char *s1);
 int strcmp(const char *s1, const char *s2);
 int strncmp(const char *s1, const char *s2, size_t n);
+size_t strcspn(const char *s, const char *reject);
 char *strcpy(char *dst, const char *src);
 char *strtok(char *str, const char *delim);
 char* strstr(const char* haystack, const char* needle);

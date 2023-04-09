@@ -5,6 +5,11 @@
 	},
 	"files.associations": {
 		"stdint.h": "c",
-		"random": "c"
+		"random": "c",
+		"string.h": "c",
+		"unistd.h": "c",
+		"types.h": "c",
+		"syscall.h": "c",
+		"cstdlib": "c"
 	}
 }
