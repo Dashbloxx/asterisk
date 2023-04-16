@@ -56,7 +56,7 @@ int main() {
         // }
 
         char *envp[] = { NULL };
-        execve(args[0], args, envp);
+        execute(args[0], args, envp);
     }
 
     return 0;
