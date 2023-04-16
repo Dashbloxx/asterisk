@@ -165,3 +165,76 @@ void* memcpy(uint8_t *dest, const uint8_t *src, uint32_t len)
 
     return dest;
 }
+
+int strtol(const char *nptr, char **endptr, int base) {
+    /* Skip any leading whitespace */
+    while (isspace(*nptr)) {
+        ++nptr;
+    }
+
+    /* Check for the sign */
+    int sign = 1;
+    if (*nptr == '+') {
+        ++nptr;
+    } else if (*nptr == '-') {
+        sign = -1;
+        ++nptr;
+    }
+
+    /* Determine the base */
+    if (base == 0) {
+        /* Auto-detect the base */
+        if (*nptr == '0') {
+            ++nptr;
+            if (*nptr == 'x' || *nptr == 'X') {
+                base = 16;
+                ++nptr;
+            } else {
+                base = 8;
+            }
+        } else {
+            base = 10;
+        }
+    } else if (base == 16) {
+        /* Skip the "0x" or "0X" prefix */
+        if (*nptr == '0' && (*(nptr + 1) == 'x' || *(nptr + 1) == 'X')) {
+            nptr += 2;
+        }
+    }
+
+    /* Parse the digits */
+    int value = 0;
+    while (isalnum(*nptr)) {
+        int digit;
+        if (isdigit(*nptr)) {
+            digit = *nptr - '0';
+        } else if (isupper(*nptr)) {
+            digit = *nptr - 'A' + 10;
+        } else {
+            digit = *nptr - 'a' + 10;
+        }
+        if (digit >= base) {
+            /* Invalid digit */
+            break;
+        }
+        value = value * base + digit;
+        ++nptr;
+    }
+
+    /* Update the end pointer */
+    if (endptr != NULL) {
+        *endptr = (char *)nptr;
+    }
+
+    /* Check for errors, this will be uncommented once errno is implemented... */
+    // if (errno != 0) {
+    //     return 0;
+    // }
+    // if (value > LONG_MAX) {
+    //     errno = ERANGE;
+    //     return sign == 1 ? LONG_MAX : LONG_MIN;
+    // }
+
+    /* Return the result */
+    return sign * value;
+}

@@ -64,3 +64,6 @@ int putc(int c);
 int getc();
 int printf(const char *format, ...);
 char *gets(char *s);
+
+/* All printf variations will be implemented without using another printf variation... */
+int snprintf(char *str, unsigned int size, const char *format, ...);

@@ -4,6 +4,6 @@
 
 #define NULL ((void *)0)
 
-void *malloc(size_t size);
+void *malloc(unsigned int size);
 void free(void *ptr);
 void __init_libc();

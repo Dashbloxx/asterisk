@@ -16,3 +16,4 @@ char *strncat(char *s1, const char *s2, size_t n);
 void *memset(void *b, int c, int len);
 void itoa(char *buf, int base, int d);
 void* memcpy(uint8_t *dest, const uint8_t *src, uint32_t len);
+int strtol(const char *nptr, char **endptr, int base);

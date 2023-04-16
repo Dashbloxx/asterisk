@@ -1,4 +1,4 @@
-LIBC_OBJ = libc/syscall.o libc/string.o libc/stdio.o libc/math.o libc/stdlib.o libc/errno.o libc/crt0.o
+LIBC_OBJ = libc/syscall.o libc/string.o libc/stdio.o libc/math.o libc/stdlib.o libc/ctype.o libc/errno.o libc/unistd.o libc/crt0.o
 OBJ = $(LIBC_OBJ) test.o sh.o
 
 CC = i686-elf-gcc
@@ -28,8 +28,14 @@ libc/stdlib.o: libc/stdlib.c
 libc/crt0.o: libc/crt0.c
 	$(CC) $(CFLAGS) -c libc/crt0.c -o libc/crt0.o
 
-libc/errno.o: libc/errno.c
-	$(CC) $(CFLAGS) -c libc/errno.c -o libc/errno.o
+libc/unistd.o: libc/unistd.c
+	$(CC) $(CFLAGS) -c libc/unistd.c -o libc/unistd.o
+
+libc/crt0.o: libc/crt0.c
+	$(CC) $(CFLAGS) -c libc/crt0.c -o libc/crt0.o
+
+libc/ctype.o: libc/ctype.c
+	$(CC) $(CFLAGS) -c libc/ctype.c -o libc/ctype.o
 
 test.o: test.c
 	$(CC) $(CFLAGS) -c test.c -o test.o

@@ -10,6 +10,7 @@
 		"unistd.h": "c",
 		"types.h": "c",
 		"syscall.h": "c",
-		"cstdlib": "c"
+		"cstdlib": "c",
+		"stdlib.h": "c"
 	}
 }

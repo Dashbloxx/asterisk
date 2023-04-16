@@ -6,7 +6,7 @@
 #define BLOCK_SIZE sizeof(struct block)
 
 struct block {
-    size_t size;
+    unsigned int size;
     struct block *next;
     int free;
 };
@@ -14,7 +14,7 @@ struct block {
 struct block *head = NULL;
 struct block *tail = NULL;
 
-void *malloc(size_t size) {
+void *malloc(unsigned int size) {
     struct block *curr;
     void *ptr;
 

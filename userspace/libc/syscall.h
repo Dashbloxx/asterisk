@@ -3,6 +3,7 @@
 #include "limits.h"
 #include "time.h"
 #include "sys/types.h"
+#include "sys/stat.h"
 #include "stdlib.h"
 
 #define O_RDONLY 0
@@ -55,28 +56,6 @@ typedef struct message
 struct iovec {
     void  *iov_base;    /* Starting address */
     size_t iov_len;     /* Number of bytes to transfer */
-};
-
-struct stat
-{
-    unsigned short/*dev_t      */ st_dev;     /* ID of device containing file */
-    unsigned short/*ino_t      */ st_ino;     /* inode number */
-    unsigned int/*mode_t     */ st_mode;    /* protection */
-    unsigned short/*nlink_t    */ st_nlink;   /* number of hard links */
-    unsigned short/*uid_t      */ st_uid;     /* user ID of owner */
-    unsigned short/*gid_t      */ st_gid;     /* group ID of owner */
-    unsigned short/*dev_t      */ st_rdev;    /* device ID (if special file) */
-    unsigned int/*off_t      */ st_size;    /* total size, in bytes */
-
-    unsigned int/*time_t     */ st_atime;
-    unsigned int/*long       */ st_spare1;
-    unsigned int/*time_t     */ st_mtime;
-    unsigned int/*long       */ st_spare2;
-    unsigned int/*time_t     */ st_ctime;
-    unsigned int/*long       */ st_spare3;
-    unsigned int/*blksize_t  */ st_blksize;
-    unsigned int/*blkcnt_t   */ st_blocks;
-    unsigned int/*long       */ st_spare4[2];
 };
 
 struct timespec

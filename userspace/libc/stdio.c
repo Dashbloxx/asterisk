@@ -4,6 +4,7 @@
 #include "stdint.h"
 #include "stdarg.h"
 #include "errno.h"
+#include "string.h"
 
 FILE *stderr;
 FILE *stdin;
@@ -156,7 +157,7 @@ int fflush(FILE *stream) {
 
     /* Write the contents of the buffer to the file */
     if (stream->buffer != NULL) {
-        ssize_t bytes_written = write(stream->fd, stream->buffer, stream->position);
+        int bytes_written = write(stream->fd, stream->buffer, stream->position);
         if (bytes_written == -1) {
             stream->error = errno;
             result = -1;
@@ -363,4 +364,84 @@ char *gets(char *s) {
     s[i] = '\0';
 
     return s;
+}
+
+/* All printf variations will be implemented without using another printf variation... */
+int snprintf(char *str, unsigned int size, const char *format, ...) {
+    /* Create the argument list */
+    va_list ap;
+    va_start(ap, format);
+
+    /* Print the formatted string to the buffer */
+    unsigned int i = 0;
+    for (; i < size - 1 && *format != '\0'; ++i, ++format) {
+        if (*format == '%') {
+            /* Handle the format specifier */
+            ++format; /* Skip the '%' character */
+
+            /* Parse the field width and precision */
+            int width = 0, precision = -1;
+            if (*format >= '0' && *format <= '9') {
+                width = strtol(format, (char **)&format, 10);
+            }
+            if (*format == '.') {
+                ++format; /* Skip the '.' character */
+                if (*format >= '0' && *format <= '9') {
+                    precision = strtol(format, (char **)&format, 10);
+                }
+            }
+
+            /* Handle the format conversion */
+            switch (*format) {
+                case 's': {
+                    const char *s = va_arg(ap, const char *);
+                    if (s == NULL) {
+                        s = "(null)";
+                    }
+                    while (*s != '\0' && (precision < 0 || precision-- > 0)) {
+                        str[i++] = *s++;
+                        if (i == size - 1) {
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case 'd': {
+                    int d = va_arg(ap, int);
+                    if (d < 0) {
+                        d = -d;
+                        str[i++] = '-';
+                    }
+                    char buffer[32];
+                    unsigned int j = 0;
+                    do {
+                        buffer[j++] = (d % 10) + '0';
+                        d /= 10;
+                    } while (d > 0);
+                    while (j-- > 0 && (precision < 0 || precision-- > 0)) {
+                        str[i++] = buffer[j];
+                        if (i == size - 1) {
+                            break;
+                        }
+                    }
+                    break;
+                }
+                default:
+                    /* Unsupported format specifier */
+                    break;
+            }
+        } else {
+            /* Copy the literal character */
+            str[i] = *format;
+        }
+    }
+
+    /* Null-terminate the buffer */
+    str[i] = '\0';
+
+    /* Clean up the argument list */
+    va_end(ap);
+
+    /* Return the number of characters printed */
+    return i;
 }
