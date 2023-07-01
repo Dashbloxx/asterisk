@@ -14,7 +14,7 @@
 #include "spinlock.h"
 #include "signal.h"
 
-typedef enum ThreadState
+typedef enum
 {
     TS_RUN,
     TS_WAITIO,
@@ -22,16 +22,10 @@ typedef enum ThreadState
     TS_SLEEP,
     TS_SELECT,
     TS_SUSPEND,
-    TS_CRITICAL,        //When a driver is in spinlock.
-
-    TS_UNINTERRUPTIBLE, //Not recommended to be used. Other threads cannot be scheduled to. Timer continues to work.
-
-    TS_DEAD,            //This means a bug in the kernel code (could be a driver) caused a fault to the thread which is in CRITICAL or UNINTERRUPTIBLE state
-                        //the fault handler did not kill the thread but changed its state to DEAD.
-                        //So that the bug can be traced. 
-
-    
-} ThreadState;
+    TS_CRITICAL,
+    TS_UNINTERRUPTIBLE,
+    TS_DEAD,
+} thread_state_t;
 
 typedef enum SelectState
 {
@@ -110,7 +104,7 @@ struct Thread
     FifoBuffer* signals;//no need to lock as this always accessed in interrupts disabled
     uint32_t pending_signal_count;
 
-    ThreadState state;
+    thread_state_t state;
     void* state_privateData;
 
     Process* owner;
@@ -150,12 +144,12 @@ Process* process_create_from_function(const char* name, Function0 func, char *co
 Process* process_create_ex(const char* name, uint32_t process_id, uint32_t thread_id, Function0 func, uint8_t* elf_data, char *const argv[], char *const envp[], Process* parent, filesystem_node* tty);
 void thread_destroy(Thread* thread);
 void process_destroy(Process* process);
-void process_change_state(Process* process, ThreadState state);
-void thread_change_state(Thread* thread, ThreadState state, void* private_data);
+void process_change_state(Process* process, thread_state_t state);
+void thread_change_state(Thread* thread, thread_state_t state, void* private_data);
 void thread_resume(Thread* thread);
 BOOL thread_signal(Thread* thread, uint8_t signal);
 BOOL process_signal(uint32_t pid, uint8_t signal);
-void thread_state_to_string(ThreadState state, uint8_t* buffer, uint32_t buffer_size);
+void thread_state_to_string(thread_state_t state, uint8_t* buffer, uint32_t buffer_size);
 void wait_for_schedule();
 int32_t process_get_empty_fd(Process* process);
 int32_t process_add_file(Process* process, File* file);

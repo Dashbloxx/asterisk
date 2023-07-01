@@ -12,11 +12,6 @@ initrd:
 clean:
 	make -C kernel clean
 
-iso:
-	cp kernel.bin bootdisk-root/boot/
-	cp initrd.fat bootdisk-root/boot/
-	grub-mkrescue -o asterisk.iso bootdisk-root
-
 userspace:
 	make -C userspace all
 

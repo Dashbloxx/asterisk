@@ -672,7 +672,7 @@ void process_destroy(Process* process)
     vmm_destroy_page_directory_with_memory(physical_pd);
 }
 
-void process_change_state(Process* process, ThreadState state)
+void process_change_state(Process* process, thread_state_t state)
 {
     Thread* thread = g_first_thread;
 
@@ -687,7 +687,7 @@ void process_change_state(Process* process, ThreadState state)
     }
 }
 
-void thread_change_state(Thread* thread, ThreadState state, void* private_data)
+void thread_change_state(Thread* thread, thread_state_t state, void* private_data)
 {
     thread->state = state;
     thread->state_privateData = private_data;
@@ -754,7 +754,7 @@ BOOL process_signal(uint32_t pid, uint8_t signal)
     return FALSE;
 }
 
-void thread_state_to_string(ThreadState state, uint8_t* buffer, uint32_t buffer_size)
+void thread_state_to_string(thread_state_t state, uint8_t* buffer, uint32_t buffer_size)
 {
     if (buffer_size < 1)
     {
