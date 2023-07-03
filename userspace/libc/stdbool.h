@@ -1,6 +1,6 @@
 #pragma once
 
-#define true 1
-#define false 0
-
-typedef unsigned int bool;
+typedef enum {
+    true = 1,
+    false = 0
+} bool;
