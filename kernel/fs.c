@@ -237,7 +237,7 @@ File *fs_open_for_process(Thread* thread, filesystem_node *node, uint32_t flags)
             if (fd < 0)
             {
                 //TODO: sett errno max files opened already
-                printkf("Maxfiles opened already!!\n");
+                kprintf("Maxfiles opened already!!\n");
 
                 fs_close(file);
                 file = NULL;

@@ -74,7 +74,7 @@ void *kmalloc(uint32_t size)
     {
         if (chunk->size == 0)
         {
-            printkf("\nPANIC: kmalloc(): corrupted chunk on %x with null size (heap %x) !\nSystem halted\n", chunk, g_kernel_heap);
+            kprintf("\nPANIC: kmalloc(): corrupted chunk on %x with null size (heap %x) !\nSystem halted\n", chunk, g_kernel_heap);
 
             PANIC("kmalloc()");
 
@@ -94,7 +94,7 @@ void *kmalloc(uint32_t size)
         }
         else if (chunk > (struct malloc_header *) g_kernel_heap)
         {
-            printkf("\nPANIC: kmalloc(): chunk on %x while heap limit is on %x !\nSystem halted\n", chunk, g_kernel_heap);
+            kprintf("\nPANIC: kmalloc(): chunk on %x while heap limit is on %x !\nSystem halted\n", chunk, g_kernel_heap);
 
             PANIC("kmalloc()");
 

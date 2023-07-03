@@ -2,4 +2,4 @@
 
 #include "terminal.h"
 
-void fbterminal_setup(Terminal* terminal);
+void fbterminal_setup(terminal_t* terminal);

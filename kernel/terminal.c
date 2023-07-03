@@ -8,10 +8,15 @@
 
 static void master_read_ready(TtyDev* tty, uint32_t size);
 
-Terminal* terminal_create(TtyDev* tty, BOOL graphic_mode)
+/*
+ *  Create a terminal instance. Setting graphic mode to true will create a framebuffer terminal,
+ *  while setting graphic mode to false will just set up VGA-text mode. Serial terminals are
+ *  planned to be implemented.
+ */
+terminal_t* terminal_create(TtyDev* tty, BOOL graphic_mode)
 {
-    Terminal* terminal = kmalloc(sizeof(Terminal));
-    memset((uint8_t*)terminal, 0, sizeof(Terminal));
+    terminal_t* terminal = kmalloc(sizeof(terminal_t));
+    memset((uint8_t*)terminal, 0, sizeof(terminal_t));
 
     terminal->tty = tty;
     if (graphic_mode)
@@ -39,7 +44,7 @@ Terminal* terminal_create(TtyDev* tty, BOOL graphic_mode)
     return terminal;
 }
 
-void terminal_destroy(Terminal* terminal)
+void terminal_destroy(terminal_t* terminal)
 {
     fs_close(terminal->opened_master);
 
@@ -47,7 +52,7 @@ void terminal_destroy(Terminal* terminal)
     kfree(terminal);
 }
 
-void terminal_print(Terminal* terminal, int row, int column, const char* text)
+void terminal_print(terminal_t* terminal, int row, int column, const char* text)
 {
     if (terminal->disabled)
     {
@@ -66,8 +71,11 @@ void terminal_print(Terminal* terminal, int row, int column, const char* text)
     }
 }
 
-//One line
-void terminal_scroll_up(Terminal* terminal)
+/*
+ *  This function will shift all text up by 1 line, meaning that the top line gets erased and the
+ *  bottom line becomes blank.
+ */
+void terminal_scroll_up(terminal_t* terminal)
 {
     unsigned char * video_line = terminal->buffer;
     unsigned char * video_line_next = terminal->buffer;
@@ -103,7 +111,7 @@ void terminal_scroll_up(Terminal* terminal)
     }
 }
 
-void terminal_clear(Terminal* terminal)
+void terminal_clear(terminal_t* terminal)
 {
     if (terminal->disabled)
     {
@@ -122,7 +130,7 @@ void terminal_clear(Terminal* terminal)
     terminal_move_cursor(terminal, 0, 0);
 }
 
-void terminal_put_character(Terminal* terminal, uint8_t c)
+void terminal_put_character(terminal_t* terminal, uint8_t c)
 {
     if (terminal->disabled)
     {
@@ -201,7 +209,7 @@ void terminal_put_character(Terminal* terminal, uint8_t c)
     terminal_move_cursor(terminal, terminal->current_line, terminal->current_column + 1);
 }
 
-void terminal_put_text(Terminal* terminal, const uint8_t* text, uint32_t size)
+void terminal_put_text(terminal_t* terminal, const uint8_t* text, uint32_t size)
 {
     if (terminal->disabled)
     {
@@ -218,7 +226,7 @@ void terminal_put_text(Terminal* terminal, const uint8_t* text, uint32_t size)
     }
 }
 
-void terminal_move_cursor(Terminal* terminal, uint16_t line, uint16_t column)
+void terminal_move_cursor(terminal_t* terminal, uint16_t line, uint16_t column)
 {
     if (terminal->disabled)
     {
@@ -244,7 +252,7 @@ void terminal_move_cursor(Terminal* terminal, uint16_t line, uint16_t column)
     terminal->current_column = column;
 }
 
-void terminal_send_key(Terminal* terminal, uint8_t modifier, uint8_t character)
+void terminal_send_key(terminal_t* terminal, uint8_t modifier, uint8_t character)
 {
     if (terminal->disabled)
     {
@@ -361,7 +369,7 @@ void terminal_send_key(Terminal* terminal, uint8_t modifier, uint8_t character)
 
 static void master_read_ready(TtyDev* tty, uint32_t size)
 {
-    Terminal* terminal = (Terminal*)tty->private_data;
+    terminal_t* terminal = (terminal_t*)tty->private_data;
 
     uint8_t characters[128];
     int32_t bytes = 0;

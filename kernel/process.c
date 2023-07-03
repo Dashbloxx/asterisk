@@ -215,18 +215,18 @@ static void copy_argv_env_to_process(uint32_t location, void* elfData, char *con
     char** destination = (char**)location;
     int destination_index = 0;
 
-    //printkf("ARGVENV: destination:%x\n", destination);
+    //kprintf("ARGVENV: destination:%x\n", destination);
 
     int argv_count = get_string_array_item_count(argv);
     int envp_count = get_string_array_item_count(envp);
 
-    //printkf("ARGVENV: argv_count:%d envp_count:%d\n", argv_count, envp_count);
+    //kprintf("ARGVENV: argv_count:%d envp_count:%d\n", argv_count, envp_count);
 
     char* string_table = (char*)location + sizeof(char*) * (argv_count + envp_count + 3) + AUX_VECTOR_SIZE_BYTES;
 
     uint32_t aux_vector_location = location + sizeof(char*) * (argv_count + envp_count + 2);
 
-    //printkf("ARGVENV: string_table:%x\n", string_table);
+    //kprintf("ARGVENV: string_table:%x\n", string_table);
 
     for (int i = 0; i < argv_count; ++i)
     {
@@ -261,7 +261,7 @@ static void fill_auxilary_vector(uint32_t location, void* elf_data)
 {
     Elf32_auxv_t* auxv = (Elf32_auxv_t*)location;
 
-    //printkf("auxv:%x\n", auxv);
+    //kprintf("auxv:%x\n", auxv);
 
     memset((uint8_t*)auxv, 0, AUX_VECTOR_SIZE_BYTES);
 
@@ -354,7 +354,7 @@ Process* process_create_ex(const char* name, uint32_t process_id, uint32_t threa
 
     if (image_data_end_in_memory <= USER_OFFSET)
     {
-        printkf("Could not start the process. Image's memory location is wrong! %s\n", name);
+        kprintf("Could not start the process. Image's memory location is wrong! %s\n", name);
         return NULL;
     }
 
@@ -459,7 +459,7 @@ Process* process_create_ex(const char* name, uint32_t process_id, uint32_t threa
 
     uint32_t size_in_memory = image_data_end_in_memory - USER_OFFSET;
 
-    //printkf("image size_in_memory:%d\n", size_in_memory);
+    //kprintf("image size_in_memory:%d\n", size_in_memory);
 
     initialize_program_break(process, size_in_memory);
 
@@ -535,7 +535,7 @@ Process* process_create_ex(const char* name, uint32_t process_id, uint32_t threa
     {
         uint32_t start_location = elf_load((char*)elf_data);
 
-        //printkf("process start location:%x\n", start_location);
+        //kprintf("process start location:%x\n", start_location);
 
         /*
          *  If the start location isn't 0 or less, then set the thread's EIP register (used to store the address of the next instruction in memory) to the
@@ -588,7 +588,7 @@ void thread_destroy(Thread* thread)
     }
     else
     {
-        printkf("Could not find previous thread for thread %d\n", thread->threadId);
+        kprintf("Could not find previous thread for thread %d\n", thread->threadId);
         PANIC("This should not be happened!\n");
     }
 }
@@ -1166,7 +1166,7 @@ void schedule(TimerInt_Registers* registers)
             ready_thread->pending_signal_count = fifobuffer_get_size(ready_thread->signals);
 
 #ifdef DEBUG
-            printkf("Signal %d proccessing for pid:%d in scheduler!\n", (uint32_t)signal, ready_thread->owner->pid);
+            kprintf("Signal %d proccessing for pid:%d in scheduler!\n", (uint32_t)signal, ready_thread->owner->pid);
 #endif
 
             //TODO: call signal handlers
@@ -1179,7 +1179,7 @@ void schedule(TimerInt_Registers* registers)
             case SIGINT:
             case SIGILL:
 #ifdef DEBUG
-                printkf("Killing pid:%d in scheduler!\n", ready_thread->owner->pid);
+                kprintf("Killing pid:%d in scheduler!\n", ready_thread->owner->pid);
 #endif
                 process_destroy(ready_thread->owner);
 

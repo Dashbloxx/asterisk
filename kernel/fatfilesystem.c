@@ -43,7 +43,7 @@ void fatfs_initialize()
 
 static BOOL mount(const char* source_path, const char* target_path, uint32_t flags, void *data)
 {
-    printkf("fat mount source: %s\n", source_path);
+    kprintf("fat mount source: %s\n", source_path);
 
     filesystem_node* node = fs_get_node(source_path);
     if (node && node->node_type == FT_BLOCK_DEVICE)
@@ -53,7 +53,7 @@ static BOOL mount(const char* source_path, const char* target_path, uint32_t fla
         {
             if (target_node->node_type == FT_DIRECTORY)
             {
-                printkf("fat mount target: %s\n", target_path);
+                kprintf("fat mount target: %s\n", target_path);
 
                 int32_t volume = -1;
                 for (int32_t v = 0; v < FF_VOLUMES; ++v)
@@ -647,7 +647,7 @@ DRESULT disk_ioctl (
             dr = RES_OK;
             fs_close(f);
         }
-        printkf("disk_ioctl GET_SECTOR_COUNT: %d\n", value);
+        kprintf("disk_ioctl GET_SECTOR_COUNT: %d\n", value);
         break;
     case GET_BLOCK_SIZE:
         f = fs_open(g_mounted_block_devices[pdrv], 0);
@@ -658,7 +658,7 @@ DRESULT disk_ioctl (
             dr = RES_OK;
             fs_close(f);
         }
-        printkf("disk_ioctl GET_BLOCK_SIZE: %d\n", value);
+        kprintf("disk_ioctl GET_BLOCK_SIZE: %d\n", value);
         *(DWORD*)buff = value;
         dr = RES_OK;
         break;

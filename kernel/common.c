@@ -435,7 +435,7 @@ int sprintf(char* buffer, uint32_t buffer_size, const char *format, ...)
     return result;
 }
 
-void printkf(const char *format, ...)
+void kprintf(const char *format, ...)
 {
     char buffer[1024];
     buffer[0] = 'k';
@@ -449,7 +449,7 @@ void printkf(const char *format, ...)
 
     __builtin_va_end(vl);
 
-    Terminal* terminal = NULL;
+    terminal_t* terminal = NULL;
 
     /*
     if (g_current_thread &&
@@ -463,7 +463,7 @@ void printkf(const char *format, ...)
     }
     */
 
-   //Now printkf always prints to first terminal
+   //Now kprintf always prints to first terminal
 
     if (!terminal)
     {
@@ -480,7 +480,7 @@ void panic(const char *message, const char *file, uint32_t line)
 {
     disable_interrupts();
 
-    printkf("PANIC:%s:%d:%s\n", file, line, message);
+    kprintf("PANIC:%s:%d:%s\n", file, line, message);
 
     log_printf("PANIC:%s:%d:%s\r\n", file, line, message);
 
@@ -489,14 +489,14 @@ void panic(const char *message, const char *file, uint32_t line)
 
 void warning(const char *message, const char *file, uint32_t line)
 {
-    printkf("WARNING:%s:%d:%s\n", file, line, message);
+    kprintf("WARNING:%s:%d:%s\n", file, line, message);
 }
 
 void panic_assert(const char *file, uint32_t line, const char *desc)
 {
     disable_interrupts();
 
-    printkf("ASSERTION-FAILED:%s:%d:%s\n", file, line, desc);
+    kprintf("ASSERTION-FAILED:%s:%d:%s\n", file, line, desc);
 
     halt();
 }

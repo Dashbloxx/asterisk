@@ -14,8 +14,8 @@
 
 #define VT_ACTIVATE	0x5606
 
-static Terminal* g_terminals[TERMINAL_COUNT];
-Terminal* g_active_terminal = NULL;
+static terminal_t* g_terminals[TERMINAL_COUNT];
+terminal_t* g_active_terminal = NULL;
 
 static uint8_t g_key_modifier = 0;
 
@@ -34,7 +34,7 @@ void console_initialize(BOOL graphicMode)
 {
     for (int i = 0; i < TERMINAL_COUNT; ++i)
     {
-        Terminal* terminal = NULL;
+        terminal_t* terminal = NULL;
         filesystem_node* ttyNode = ttydev_create();
         if (ttyNode)
         {
@@ -91,7 +91,7 @@ static int32_t console_ioctl(File *file, int32_t request, void * argp)
     if (request == VT_ACTIVATE)
     {
         uint32_t index = (uint32_t)argp - 1;
-        Terminal* terminal = console_get_terminal(index);
+        terminal_t* terminal = console_get_terminal(index);
         if (terminal)
         {
             console_set_active_terminal(terminal);
@@ -109,7 +109,7 @@ void console_set_active_terminal_index(uint32_t index)
     }
 }
 
-void console_set_active_terminal(Terminal* terminal)
+void console_set_active_terminal(terminal_t* terminal)
 {
     g_active_terminal = terminal;
 
@@ -126,11 +126,11 @@ void console_set_active_terminal(Terminal* terminal)
     }
 }
 
-Terminal* console_get_terminal_by_master(filesystem_node* master_node)
+terminal_t* console_get_terminal_by_master(filesystem_node* master_node)
 {
     for (int i = 0; i < TERMINAL_COUNT; ++i)
     {
-        Terminal* terminal = g_terminals[i];
+        terminal_t* terminal = g_terminals[i];
         
         if (terminal->tty->master_node == master_node)
         {
@@ -141,11 +141,11 @@ Terminal* console_get_terminal_by_master(filesystem_node* master_node)
     return NULL;
 }
 
-Terminal* console_get_terminal_by_slave(filesystem_node* slave_node)
+terminal_t* console_get_terminal_by_slave(filesystem_node* slave_node)
 {
     for (int i = 0; i < TERMINAL_COUNT; ++i)
     {
-        Terminal* terminal = g_terminals[i];
+        terminal_t* terminal = g_terminals[i];
         
         if (terminal->tty->slave_node == slave_node)
         {
@@ -156,7 +156,7 @@ Terminal* console_get_terminal_by_slave(filesystem_node* slave_node)
     return NULL;
 }
 
-Terminal* console_get_terminal(uint32_t index)
+terminal_t* console_get_terminal(uint32_t index)
 {
     if (index >= 0 && index < TERMINAL_COUNT)
     {

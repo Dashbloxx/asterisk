@@ -1,11 +1,11 @@
 #include "gfx.h"
 #include "fbterminal.h"
 
-static void fbterminal_refreshTerminal(Terminal* terminal);
-static void fbterminal_addCharacter(Terminal* terminal, uint8_t character);
-static void fbterminal_moveCursor(Terminal* terminal, uint16_t old_line, uint16_t old_column, uint16_t line, uint16_t column);
+static void fbterminal_refreshTerminal(terminal_t* terminal);
+static void fbterminal_addCharacter(terminal_t* terminal, uint8_t character);
+static void fbterminal_moveCursor(terminal_t* terminal, uint16_t old_line, uint16_t old_column, uint16_t line, uint16_t column);
 
-void fbterminal_setup(Terminal* terminal)
+void fbterminal_setup(terminal_t* terminal)
 {
     terminal->tty->winsize.ws_row = gfx_get_height() / 16;
     terminal->tty->winsize.ws_col = gfx_get_width() / 9;
@@ -14,7 +14,7 @@ void fbterminal_setup(Terminal* terminal)
     terminal->move_cursor_function = fbterminal_moveCursor;
 }
 
-static void fbterminal_refreshTerminal(Terminal* terminal)
+static void fbterminal_refreshTerminal(terminal_t* terminal)
 {
     for (uint32_t r = 0; r < terminal->tty->winsize.ws_row; ++r)
     {
@@ -30,12 +30,12 @@ static void fbterminal_refreshTerminal(Terminal* terminal)
     }
 }
 
-static void fbterminal_addCharacter(Terminal* terminal, uint8_t character)
+static void fbterminal_addCharacter(terminal_t* terminal, uint8_t character)
 {
     gfx_put_char_at(character, terminal->current_column, terminal->current_line, 0, 0xFFFFFFFF);
 }
 
-static void fbterminal_moveCursor(Terminal* terminal, uint16_t old_line, uint16_t old_column, uint16_t line, uint16_t column)
+static void fbterminal_moveCursor(terminal_t* terminal, uint16_t old_line, uint16_t old_column, uint16_t line, uint16_t column)
 {
     //restore old place
     uint8_t* character_old = terminal->buffer + (old_line * terminal->tty->winsize.ws_col + old_column) * 2;

@@ -121,7 +121,7 @@ static void sharedmemory_destroy_if_suitable(SharedMemory* shared_memory)
 {
     if (shared_memory->marked_unlink && list_get_count(shared_memory->mmapped_list) == 0)
     {
-        //printkf("DESTORYING sharedmem (pid:%d)\n", g_current_thread->owner->pid);
+        //kprintf("DESTORYING sharedmem (pid:%d)\n", g_current_thread->owner->pid);
 
         list_foreach (e, shared_memory->physical_address_list)
         {
@@ -138,7 +138,7 @@ static int32_t sharedmemory_unlink(filesystem_node* node, uint32_t flags)
 {
     SharedMemory* shared_mem = (SharedMemory*)node->private_node_data;
 
-    //printkf("sharedmemory_unlink(): (pid:%d)\n", g_current_thread->owner->pid);
+    //kprintf("sharedmemory_unlink(): (pid:%d)\n", g_current_thread->owner->pid);
 
     shared_mem->marked_unlink = TRUE;
 

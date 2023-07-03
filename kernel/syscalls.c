@@ -223,7 +223,7 @@ static void handle_syscall(Registers* regs)
 
     if (regs->eax >= SYSCALL_COUNT)
     {
-        printkf("Unknown SYSCALL:%d (pid:%d)\n", regs->eax, process->pid);
+        kprintf("Unknown SYSCALL:%d (pid:%d)\n", regs->eax, process->pid);
         log_printf("Unknown SYSCALL:%d (pid:%d)\r\n", regs->eax, process->pid);
 
         regs->eax = -1;
@@ -234,7 +234,7 @@ static void handle_syscall(Registers* regs)
 
     if (NULL == location)
     {
-        printkf("Unused SYSCALL:%d (pid:%d)\n", regs->eax, process->pid);
+        kprintf("Unused SYSCALL:%d (pid:%d)\n", regs->eax, process->pid);
         log_printf("Unused SYSCALL:%d (pid:%d)\r\n", regs->eax, process->pid);
 
         regs->eax = -1;
@@ -270,7 +270,7 @@ int syscall_printk(const char *str, int num)
         return -EFAULT;
     }
 
-    printkf(str, num);
+    kprintf(str, num);
 
     return 0;
 }
@@ -553,7 +553,7 @@ int syscall_llseek(unsigned int fd, unsigned int offset_high,
     //this syscall is used for large files in 32 bit systems for the offset (offset_high<<32) | offset_low
 
     Process* process = thread_get_current()->owner;
-    //printkf("syscall_llseek() called from process: %d. fd:%d\n", process->pid, fd);
+    //kprintf("syscall_llseek() called from process: %d. fd:%d\n", process->pid, fd);
 
     if (offset_high != 0)
     {
@@ -1415,7 +1415,7 @@ void* syscall_mmap(void *addr, int length, int flags, int prot, int fd, int offs
         {
             int needed_pages = PAGE_COUNT(length);
             uint32_t free_pages = vmm_get_free_page_count();
-            //printkf("alloc from mmap length:%x neededPages:%d freePages:%d\n", length, neededPages, freePages);
+            //kprintf("alloc from mmap length:%x neededPages:%d freePages:%d\n", length, neededPages, freePages);
             if ((uint32_t)needed_pages + 1 > free_pages)
             {
                 return (void*)-1;
@@ -1697,7 +1697,7 @@ int syscall_shmget(int32_t key, size_t size, int flag)
 {
     filesystem_node* node = NULL;
 
-    //printkf("shmget(key:%d, size:%d, flag:%d)\n", key, size, flag);
+    //kprintf("shmget(key:%d, size:%d, flag:%d)\n", key, size, flag);
 
     //Let's simulate shm_open
 
@@ -1763,7 +1763,7 @@ void * syscall_shmat(int shmid, const void *shmaddr, int shmflg)
 
     filesystem_node* node = NULL;
 
-    //printkf("shmat(shmid:%d, shmaddr:%x, shmflg:%d)\n", shmid, shmaddr, shmflg);
+    //kprintf("shmat(shmid:%d, shmaddr:%x, shmflg:%d)\n", shmid, shmaddr, shmflg);
 
     char name[64];
     sprintf(name, 64, "%d", shmid);

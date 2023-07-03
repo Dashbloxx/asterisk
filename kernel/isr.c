@@ -27,8 +27,8 @@ void handle_isr(Registers regs)
     }
     else
     {
-        printkf("unhandled interrupt: %d\n", int_no);
-        printkf("Tick: %d\n", get_system_tick_count());
+        kprintf("unhandled interrupt: %d\n", int_no);
+        kprintf("Tick: %d\n", get_system_tick_count());
         PANIC("unhandled interrupt");
     }
 }
@@ -55,7 +55,7 @@ void handle_irq(Registers regs)
     }
     else
     {
-        //printkf("unhandled IRQ: %d\n", regs.interruptNumber);
+        //kprintf("unhandled IRQ: %d\n", regs.interruptNumber);
     }
     
 }

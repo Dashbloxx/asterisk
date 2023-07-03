@@ -210,5 +210,5 @@ static void handle_mouse_interrupt(Registers *regs)
         spinlock_unlock(&g_readers_lock);
     }
 
-    //printkf("mouse:%d\n", data);
+    //kprintf("mouse:%d\n", data);
 }

@@ -172,7 +172,7 @@ static void set_idt_entry(uint8_t num, uint32_t base, uint16_t sel, uint8_t flag
 
 static void handle_double_fault(Registers *regs)
 {
-    printkf("Double fault!!! Error code:%d\n", regs->errorCode);
+    kprintf("Double fault!!! Error code:%d\n", regs->errorCode);
 
     PANIC("Double fault!!!");
 }

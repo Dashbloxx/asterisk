@@ -92,7 +92,7 @@ int strlen(const char *src);
 int str_first_index_of(const char *src, char c);
 int sprintf(char* buffer, uint32_t buffer_size, const char *format, ...);
 
-void printkf(const char *format, ...);
+void kprintf(const char *format, ...);
 
 int atoi(char *str);
 void itoa(char *buf, int base, int d);

@@ -133,7 +133,7 @@ static void socket_fs_close(File* file)
 
 int syscall_socket(int domain, int type, int protocol)
 {
-    //printkf("socket %d %d %d\n", domain, type, protocol);
+    //kprintf("socket %d %d %d\n", domain, type, protocol);
 
     if (domain >= 0 && domain < DOMAIN_SIZE)
     {

@@ -3,15 +3,16 @@
 #define SCREEN_LINE_COUNT 25
 #define SCREEN_COLUMN_COUNT 80
 
+/* Pointer to memory that represents VGA text-mode in your screen... */
 static uint8_t * g_video_start = (uint8_t*)0xB8000;
 
 static uint8_t g_color = 0x0A;
 
-static void vgaterminal_refresh_terminal(Terminal* terminal);
-static void vgaterminal_add_character(Terminal* terminal, uint8_t character);
-static void vgaterminal_move_cursor(Terminal* terminal, uint16_t oldLine, uint16_t oldColumn, uint16_t line, uint16_t column);
+static void vgaterminal_refresh_terminal(terminal_t* terminal);
+static void vgaterminal_add_character(terminal_t* terminal, uint8_t character);
+static void vgaterminal_move_cursor(terminal_t* terminal, uint16_t oldLine, uint16_t oldColumn, uint16_t line, uint16_t column);
 
-void vgaterminal_setup(Terminal* terminal)
+void vgaterminal_setup(terminal_t* terminal)
 {
     terminal->tty->winsize.ws_row = SCREEN_LINE_COUNT;
     terminal->tty->winsize.ws_col = SCREEN_COLUMN_COUNT;
@@ -35,12 +36,12 @@ static void vgaterminal_set_cursor_visible(BOOL visible)
     outb(0x3D5, cursor);
 }
 
-static void vgaterminal_refresh_terminal(Terminal* terminal)
+static void vgaterminal_refresh_terminal(terminal_t* terminal)
 {
     memcpy(g_video_start, terminal->buffer, SCREEN_LINE_COUNT * SCREEN_COLUMN_COUNT * 2);
 }
 
-static void vgaterminal_add_character(Terminal* terminal, uint8_t character)
+static void vgaterminal_add_character(terminal_t* terminal, uint8_t character)
 {
     uint8_t * video = g_video_start + (terminal->current_line * SCREEN_COLUMN_COUNT + terminal->current_column) * 2;
     
@@ -48,7 +49,7 @@ static void vgaterminal_add_character(Terminal* terminal, uint8_t character)
     *video++ = g_color;
 }
 
-static void vgaterminal_move_cursor(Terminal* terminal, uint16_t oldLine, uint16_t oldColumn, uint16_t line, uint16_t column)
+static void vgaterminal_move_cursor(terminal_t* terminal, uint16_t oldLine, uint16_t oldColumn, uint16_t line, uint16_t column)
 {
     uint16_t cursorLocation = line * SCREEN_COLUMN_COUNT + column;
     outb(0x3D4, 14);                  // Tell the VGA board we are setting the high cursor byte.

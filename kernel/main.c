@@ -139,7 +139,7 @@ int kmain(struct Multiboot *mboot_ptr)
      *  Let's print out when the kernel was built. GCC's preprocessor sets these values right before compiling
      *  the kernel...
      */
-    printkf("Kernel built on %s %s\n", __DATE__, __TIME__);
+    kprintf("Kernel built on %s %s\n", __DATE__, __TIME__);
     
     /*
      *  Let's initialize `systemfs`. See `systemfs.c` & `systemfs.h` for the code regarding systemfs. I am
@@ -168,7 +168,7 @@ int kmain(struct Multiboot *mboot_ptr)
 
     if (0 != mboot_ptr->cmdline)
     {
-        printkf("Kernel cmdline:%s\n", (char*)mboot_ptr->cmdline);
+        kprintf("Kernel cmdline:%s\n", (char*)mboot_ptr->cmdline);
     }
 
     serial_initialize();
@@ -191,10 +191,10 @@ int kmain(struct Multiboot *mboot_ptr)
      */
     net_initialize();
 
-    printkf("System started!\n");
+    kprintf("System started!\n");
 
     /* Print out the sublogo of Asterisk */
-    printkf("    d8888b. .d888b. .d8888P     dP     \nk:        `88 Y8' `8P 88'     8b. 88 .d8 \nk:     aaad8' d8bad8b 88baaa.  `8b88d8'  \nk:        `88 88` `88 88` `88  .8P88Y8.  \nk:        .88 8b. .88 8b. .d8 8P' 88 `Y8 \nk:    d88888P Y88888P `Y888P'     dP\n");
+    kprintf("    d8888b. .d888b. .d8888P     dP     \nk:        `88 Y8' `8P 88'     8b. 88 .d8 \nk:     aaad8' d8bad8b 88baaa.  `8b88d8'  \nk:        `88 88` `88 88` `88  .8P88Y8.  \nk:        .88 8b. .88 8b. .d8 8P' 88 `Y8 \nk:    d88888P Y88888P `Y888P'     dP\n");
 
     char* argv[] = {"shell", NULL};
     char* envp[] = {"HOME=/", "PATH=/initrd", NULL};
@@ -208,10 +208,10 @@ int kmain(struct Multiboot *mboot_ptr)
     }
     else
     {
-        printkf("Initrd found at %x - %x (%d bytes)\n", initrd_location, initrd_end_location, initrd_size);
+        kprintf("Initrd found at %x - %x (%d bytes)\n", initrd_location, initrd_end_location, initrd_size);
         if ((uint32_t)KERN_PD_AREA_BEGIN < (uint32_t)initrd_end_location)
         {
-            printkf("Initrd must reside below %x !!!\n", KERN_PD_AREA_BEGIN);
+            kprintf("Initrd must reside below %x !!!\n", KERN_PD_AREA_BEGIN);
             PANIC("Initrd image is too big!");
         }
         memcpy((uint8_t*)*(uint32_t*)fs_get_node("/dev/ramdisk1")->private_node_data, initrd_location, initrd_size);
