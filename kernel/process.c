@@ -434,7 +434,7 @@ Process* process_create_ex(const char* name, uint32_t process_id, uint32_t threa
     {
         //TODO: unlock below when the old TTY system removed
         /*
-        TtyDev* ttyDev = (TtyDev*)process->tty->private_node_data;
+        ttydev_t* ttyDev = (ttydev_t*)process->tty->private_node_data;
 
         if (ttyDev->controllingProcess == -1)
         {

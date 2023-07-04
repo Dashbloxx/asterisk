@@ -25,7 +25,6 @@
 #include "mouse.h"
 #include "sleep.h"
 #include "console.h"
-#include "terminal.h"
 #include "socket.h"
 
 extern uint32_t _start;
@@ -227,11 +226,6 @@ int kmain(struct Multiboot *mboot_ptr)
             execute_file("/initrd/sh", argv, envp, fs_get_node("/dev/ptty3"));
             execute_file("/initrd/sh", argv, envp, fs_get_node("/dev/ptty4"));
             execute_file("/initrd/sh", argv, envp, fs_get_node("/dev/ptty7"));
-
-            /*
-             *  Let's run our logging service on the COM1 serial port so that we can see some logs through QEMU!
-             */
-            execute_file("/initrd/log", argv, envp, fs_get_node("/dev/com1"));
         }
         else
         {

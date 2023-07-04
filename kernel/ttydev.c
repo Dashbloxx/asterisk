@@ -25,7 +25,7 @@ static int32_t slave_ioctl(File *file, int32_t request, void * argp);
 
 static uint32_t g_name_generator = 0;
 
-static BOOL is_erase_character(TtyDev* tty, uint8_t character)
+static BOOL is_erase_character(ttydev_t* tty, uint8_t character)
 {
     if (character == tty->term.c_cc[VERASE])
     {
@@ -37,8 +37,8 @@ static BOOL is_erase_character(TtyDev* tty, uint8_t character)
 
 filesystem_node* ttydev_create()
 {
-    TtyDev* tty_dev = kmalloc(sizeof(TtyDev));
-    memset((uint8_t*)tty_dev, 0, sizeof(TtyDev));
+    ttydev_t* tty_dev = kmalloc(sizeof(ttydev_t));
+    memset((uint8_t*)tty_dev, 0, sizeof(ttydev_t));
 
     tty_dev->controlling_process = -1;
     tty_dev->foreground_process = -1;
@@ -109,7 +109,7 @@ filesystem_node* ttydev_create()
     return master_node;
 }
 
-static void wake_slave_readers(TtyDev* tty)
+static void wake_slave_readers(ttydev_t* tty)
 {
     spinlock_lock(&tty->slave_readers_lock);
     list_foreach(n, tty->slave_readers)
@@ -135,7 +135,7 @@ static void master_close(File *file)
 
 static BOOL master_read_rest_ready(File *file)
 {
-    TtyDev* tty = (TtyDev*)file->node->private_node_data;
+    ttydev_t* tty = (ttydev_t*)file->node->private_node_data;
 
     if (spinlock_try_lock(&tty->buffer_master_read_lock))
     {
@@ -158,7 +158,7 @@ static int32_t master_read(File *file, uint32_t size, uint8_t *buffer)
 
     if (size > 0)
     {
-        TtyDev* tty = (TtyDev*)file->node->private_node_data;
+        ttydev_t* tty = (ttydev_t*)file->node->private_node_data;
 
         
         while (TRUE)
@@ -195,7 +195,7 @@ int32_t ttydev_master_read_nonblock(File *file, uint32_t size, uint8_t *buffer)
 {
     if (size > 0)
     {
-        TtyDev* tty = (TtyDev*)file->node->private_node_data;
+        ttydev_t* tty = (ttydev_t*)file->node->private_node_data;
 
         int read_size = 0;
         if (spinlock_try_lock(&tty->buffer_master_read_lock))
@@ -221,7 +221,7 @@ static BOOL master_write_test_ready(File *file)
     return TRUE;
 }
 
-static BOOL override_character_master_write(TtyDev* tty, uint8_t* character)
+static BOOL override_character_master_write(ttydev_t* tty, uint8_t* character)
 {
     BOOL result = TRUE;
 
@@ -264,7 +264,7 @@ static int32_t master_write(File *file, uint32_t size, uint8_t *buffer)
         return -1;
     }
 
-    TtyDev* tty = (TtyDev*)file->node->private_node_data;
+    ttydev_t* tty = (ttydev_t*)file->node->private_node_data;
 
     fifobuffer_clear(tty->buffer_echo);
 
@@ -439,7 +439,7 @@ static void slave_close(File *file)
 
 static int32_t slave_ioctl(File *file, int32_t request, void * argp)
 {
-    TtyDev* tty = (TtyDev*)file->node->private_node_data;
+    ttydev_t* tty = (ttydev_t*)file->node->private_node_data;
 
 
     if (file->node != g_current_thread->owner->tty)
@@ -533,7 +533,7 @@ static int32_t slave_ioctl(File *file, int32_t request, void * argp)
 
 static BOOL slave_read_test_ready(File *file)
 {
-    TtyDev* tty = (TtyDev*)file->node->private_node_data;
+    ttydev_t* tty = (ttydev_t*)file->node->private_node_data;
 
     if (spinlock_try_lock(&tty->buffer_master_write_lock))
     {
@@ -565,7 +565,7 @@ static int32_t slave_read(File *file, uint32_t size, uint8_t *buffer)
 
     if (size > 0)
     {
-        TtyDev* tty = (TtyDev*)file->node->private_node_data;
+        ttydev_t* tty = (ttydev_t*)file->node->private_node_data;
 
         
         while (TRUE)
@@ -625,7 +625,7 @@ static BOOL slave_write_test_ready(File *file)
     return TRUE;
 }
 
-static uint32_t process_slave_write(TtyDev* tty, uint32_t size, uint8_t *buffer)
+static uint32_t process_slave_write(ttydev_t* tty, uint32_t size, uint8_t *buffer)
 {
     uint32_t written = 0;
 
@@ -681,7 +681,7 @@ static int32_t slave_write(File *file, uint32_t size, uint8_t *buffer)
         return -1;
     }
 
-    TtyDev* tty = (TtyDev*)file->node->private_node_data;
+    ttydev_t* tty = (ttydev_t*)file->node->private_node_data;
 
     enable_interrupts();
 

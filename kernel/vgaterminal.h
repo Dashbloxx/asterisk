@@ -1,5 +1,3 @@
 #pragma once
 
-#include "terminal.h"
-
-void vgaterminal_setup(terminal_t* terminal);
+void vga_putc(terminal_t *terminal, char character);

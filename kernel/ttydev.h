@@ -20,10 +20,10 @@ typedef struct winsize_t
     uint16_t ws_ypixel;	/* vertical size, pixels */
 } winsize_t;
 
-typedef struct TtyDev TtyDev;
+typedef struct ttydev_t ttydev_t;
 
-typedef void (*TtyIOReady)(TtyDev* tty, uint32_t size);
-typedef struct TtyDev
+typedef void (*TtyIOReady)(ttydev_t* tty, uint32_t size);
+typedef struct ttydev_t
 {
     filesystem_node* master_node;
     filesystem_node* slave_node;
@@ -44,7 +44,7 @@ typedef struct TtyDev
     uint32_t line_buffer_index;
     struct termios term;
 
-} TtyDev;
+} ttydev_t;
 
 filesystem_node* ttydev_create();
 

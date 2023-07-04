@@ -1,16 +1,15 @@
 #pragma once
 
 #include "common.h"
+#include "terminal.h"
 
 #define TERMINAL_COUNT 10
-
-typedef struct terminal_t terminal_t;
 
 typedef struct filesystem_node filesystem_node;
 
 extern terminal_t* g_active_terminal;
 
-void console_initialize(BOOL graphicMode);
+void console_initialize();
 
 void console_send_key(uint8_t scancode);
 

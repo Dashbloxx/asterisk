@@ -11,6 +11,7 @@
 #include "termios.h"
 #include "keymap.h"
 #include "console.h"
+#include "ttydev.h"
 
 #define VT_ACTIVATE	0x5606
 
@@ -30,7 +31,7 @@ static void process_scancode(uint8_t scancode);
 /*
  *  Initialize the console, and then register a character device that represents it.
  */
-void console_initialize(BOOL graphicMode)
+void console_initialize()
 {
     for (int i = 0; i < TERMINAL_COUNT; ++i)
     {
@@ -38,9 +39,9 @@ void console_initialize(BOOL graphicMode)
         filesystem_node* ttyNode = ttydev_create();
         if (ttyNode)
         {
-            TtyDev* ttyDev = (TtyDev*)ttyNode->private_node_data;
+            ttydev_t* ttydev = (ttydev_t*)ttyNode->private_node_data;
         
-            terminal = terminal_create(ttyDev, graphicMode);
+            terminal = terminal_create(ttydev);
         }
         
         g_terminals[i] = terminal;
@@ -61,7 +62,7 @@ void console_initialize(BOOL graphicMode)
 /* Send a character to the console by it's keyboard scancode... */
 void console_send_key(uint8_t scancode)
 {
-    process_scancode(scancode);
+    /*process_scancode(scancode);
 
     uint8_t character = get_character_for_scancode(g_key_modifier, scancode);
 
@@ -70,7 +71,7 @@ void console_send_key(uint8_t scancode)
     if (character > 0 && keyRelease == 0)
     {
         terminal_send_key(g_active_terminal, g_key_modifier, character);
-    }
+    }*/
 
 }
 
@@ -114,16 +115,6 @@ void console_set_active_terminal(terminal_t* terminal)
     g_active_terminal = terminal;
 
     gfx_fill(0xFFFFFFFF);
-
-    if (g_active_terminal->refresh_function)
-    {
-        g_active_terminal->refresh_function(g_active_terminal);
-    }
-
-    if (g_active_terminal->move_cursor_function)
-    {
-        g_active_terminal->move_cursor_function(g_active_terminal, g_active_terminal->current_line, g_active_terminal->current_column, g_active_terminal->current_line, g_active_terminal->current_column);
-    }
 }
 
 terminal_t* console_get_terminal_by_master(filesystem_node* master_node)

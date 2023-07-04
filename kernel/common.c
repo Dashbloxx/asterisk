@@ -1,9 +1,9 @@
 #include "common.h"
 #include "serial.h"
 #include "console.h"
-#include "terminal.h"
 #include "process.h"
 #include "log.h"
+#include "terminal.h"
 
 /*
  *  The files `common.c` & `common.h` contains basic utility functions that help with string manipulation, or basic input/output
@@ -449,7 +449,7 @@ void kprintf(const char *format, ...)
 
     __builtin_va_end(vl);
 
-    terminal_t* terminal = NULL;
+    terminal_t *terminal = NULL;
 
     /*
     if (g_current_thread &&
@@ -457,7 +457,7 @@ void kprintf(const char *format, ...)
         g_current_thread->owner->tty
         )
     {
-        TtyDev* tty = (TtyDev*)g_current_thread->owner->tty->private_node_data;
+        ttydev_t* tty = (ttydev_t*)g_current_thread->owner->tty->private_node_data;
 
         terminal = console_get_terminal_by_master(tty->master_node);
     }
@@ -472,7 +472,9 @@ void kprintf(const char *format, ...)
 
     if (terminal)
     {
-        terminal_put_text(terminal, (uint8_t*)buffer, 1024);
+        for(int i = 0; buffer[i] != '\0'; i++) {
+            terminal->terminal_send(terminal, buffer[i]);
+        }
     }
 }
 

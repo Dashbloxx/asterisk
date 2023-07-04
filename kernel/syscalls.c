@@ -1810,7 +1810,7 @@ int syscall_posix_openpt(int flags)
         filesystem_node* node = ttydev_create();
         if (node)
         {
-            TtyDev* tty_dev = (TtyDev*)node->private_node_data;
+            ttydev_t* tty_dev = (ttydev_t*)node->private_node_data;
             tty_dev->controlling_process = process->pid;
             tty_dev->foreground_process = process->pid;
 
@@ -1846,7 +1846,7 @@ int syscall_ptsname_r(int fd, char *buf, int buflen)
 
             if (file)
             {
-                TtyDev* tty_dev = file->node->private_node_data;
+                ttydev_t* tty_dev = file->node->private_node_data;
 
                 filesystem_node* slave_node = tty_dev->slave_node;
 
