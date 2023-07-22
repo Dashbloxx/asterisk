@@ -211,7 +211,7 @@ void syscalls_initialize()
     g_syscall_table[SYS_getprocs] = syscall_getprocs;
 
     // Register our syscall handler.
-    interrupt_register (0x80, &handle_syscall);
+    interrupt_register(0x80, &handle_syscall);
 }
 
 static void handle_syscall(Registers* regs)

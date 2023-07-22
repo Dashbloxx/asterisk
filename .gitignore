@@ -1,5 +1,6 @@
-asterisk.iso
-kernel.bin
-kernel/*.o
-userspace/*.o
-.i686-elf
+/asterisk.iso
+/kernel.bin
+/kernel/*.o
+/userspace/*.o
+/.i686-elf
+/initrd.fat

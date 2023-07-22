@@ -92,7 +92,7 @@ int execute_file(const char *path, char *const argv[], char *const envp[], files
 
 /*
  *  Here we're using the multiboot protocol, which most bootloaders support. Multiboot allows us to have the
- *  bootloader fetch us some information (which we can't get as the kernel) while jumping to the kernel.
+ *  bootloader fetch us some information (which we can't get as the kernel) before jumping to the kernel.
  */
 int kmain(struct Multiboot *mboot_ptr)
 {
@@ -130,19 +130,19 @@ int kmain(struct Multiboot *mboot_ptr)
     }
 
     /*
-     *  Let's initialize the console, and while doing that let's pass whether or not graphics are available
+     *  Initialize the console, and while doing that let's pass whether or not graphics are available
      *  to the console, so that it can do it's own thing. See `console.c` & `console.h`...
      */
     console_initialize(graphics_mode);
 
     /*
-     *  Let's print out when the kernel was built. GCC's preprocessor sets these values right before compiling
+     *  Print when the kernel was built. GCC's preprocessor sets these values right before compiling
      *  the kernel...
      */
     kprintf("Kernel built on %s %s\n", __DATE__, __TIME__);
     
     /*
-     *  Let's initialize `systemfs`. See `systemfs.c` & `systemfs.h` for the code regarding systemfs. I am
+     *  Iinitialize `systemfs`. See `systemfs.c` & `systemfs.h` for the code regarding systemfs. I am
      *  still reading this code, and will later document what it does.
      */
     systemfs_initialize();
@@ -174,7 +174,6 @@ int kmain(struct Multiboot *mboot_ptr)
     serial_initialize();
 
     log_initialize("/dev/com1");
-    //log_initialize("/dev/ptty9");
 
     log_printf("Kernel built on %s %s\r\n", __DATE__, __TIME__);
 
@@ -193,7 +192,7 @@ int kmain(struct Multiboot *mboot_ptr)
 
     kprintf("System started!\n");
 
-    /* Print out the sublogo of Asterisk */
+    /* Print Asterisk's sublogo... */
     kprintf("    d8888b. .d888b. .d8888P     dP     \nk:        `88 Y8' `8P 88'     8b. 88 .d8 \nk:     aaad8' d8bad8b 88baaa.  `8b88d8'  \nk:        `88 88` `88 88` `88  .8P88Y8.  \nk:        .88 8b. .88 8b. .d8 8P' 88 `Y8 \nk:    d88888P Y88888P `Y888P'     dP\n");
 
     char* argv[] = {"shell", NULL};
@@ -222,16 +221,11 @@ int kmain(struct Multiboot *mboot_ptr)
             /*
              *  Run a shell for each open TTY...
              */
-            execute_file("/initrd/sh", argv, envp, fs_get_node("/dev/ptty1"));
-            execute_file("/initrd/sh", argv, envp, fs_get_node("/dev/ptty2"));
-            execute_file("/initrd/sh", argv, envp, fs_get_node("/dev/ptty3"));
-            execute_file("/initrd/sh", argv, envp, fs_get_node("/dev/ptty4"));
-            execute_file("/initrd/sh", argv, envp, fs_get_node("/dev/ptty7"));
-
-            /*
-             *  Let's run our logging service on the COM1 serial port so that we can see some logs through QEMU!
-             */
-            execute_file("/initrd/log", argv, envp, fs_get_node("/dev/com1"));
+            execute_file("/initrd/test", argv, envp, fs_get_node("/dev/ptty1"));
+            execute_file("/initrd/test", argv, envp, fs_get_node("/dev/ptty2"));
+            execute_file("/initrd/test", argv, envp, fs_get_node("/dev/ptty3"));
+            execute_file("/initrd/test", argv, envp, fs_get_node("/dev/ptty4"));
+            execute_file("/initrd/test", argv, envp, fs_get_node("/dev/ptty7"));
         }
         else
         {
