@@ -10,8 +10,8 @@ static uint32_t g_bytes_per_pixel = 0;
 static uint32_t g_pitch = 0;
 static uint32_t* g_pixels = NULL;
 
-extern char _binary_font_psf_start;
-extern char _binary_font_psf_end;
+extern char _binary_kernel_font_psf_start;
+extern char _binary_kernel_font_psf_end;
 
 static uint16_t *g_unicode = NULL;
 
@@ -74,7 +74,7 @@ void gfx_put_char_at(
     uint32_t fg, uint32_t bg)
 {
     /* cast the address to PSF header struct */
-    PSF_font *font = (PSF_font*)&_binary_font_psf_start;
+    PSF_font *font = (PSF_font*)&_binary_kernel_font_psf_start;
     /* we need to know how many bytes encode one row */
     int bytesperline=(font->width+7)/8;
     /* unicode translation */
@@ -84,7 +84,7 @@ void gfx_put_char_at(
     /* get the glyph for the character. If there's no
        glyph for a given character, we'll display the first glyph. */
     unsigned char *glyph =
-     (unsigned char*)&_binary_font_psf_start +
+     (unsigned char*)&_binary_kernel_font_psf_start +
      font->headersize +
      (c>0&&c<font->numglyph?c:0)*font->bytesperglyph;
     /* calculate the upper left corner on screen where we want to display.

@@ -3,7 +3,7 @@ LOOP=`losetup -f`
 sudo losetup $LOOP initrd.fat
 sudo mkfs.vfat $LOOP
 sudo mount $LOOP /mnt
-cp -r userspace/bin/* /mnt
+cp -r initrd/* /mnt
 sudo umount /mnt
 sudo losetup -d $LOOP
 sync
