@@ -18,4 +18,4 @@ When I took code from [soso](https://github.com/ozkl/soso), I also took some cod
 * [rilysh](https://github.com/rilysh) [for this](https://github.com/ozkl/soso/pull/10)
 * [sk-io](https://github.com/sk-io) [for this](https://github.com/ozkl/soso/pull/9)
 ## License
-Asterisk is licensed under the BSD-2-Clause license.
+Some parts of Asterisk are licenesed under the BSD-2-Clause license, while others are licensed under `All Rights Reserved` (those parts are most likely written by me). This `All Rights Reserved` license will be replaced soon with a licenes that I choose as I am still deciding on what license I should usually use.
