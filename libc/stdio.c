@@ -6,7 +6,6 @@
  *  8P' 88 `Y8  
  *      dP      
  *
- *  BSD 2-Clause License
  *  Copyright (c) 2023 Nexuss
  *  All rights reserved.
  */
@@ -141,22 +140,18 @@ unsigned int fread(void *ptr, unsigned int size, unsigned int count, FILE *strea
     return bytes_read / size;
 }
 
-/* Get a string from a file... */
-char *fgets(char *str, int n, FILE *stream) {
-    char *p;
-    int bytes_read;
+/* Get a single character from a file... */
+int fgetc(FILE* stream) {
+    char ch;
+    ssize_t bytes_read = read(stream->fd, &ch, stream->position++);
 
-    p = str;
-    while (--n > 0 && (bytes_read = fread(p, 1, 1, stream)) > 0) {
-        if (*p++ == '\n') {
-            break;
-        }
+    if (bytes_read == 0) {
+        return EOF; // End-of-file
+    } else if (bytes_read < 0) {
+        return EOF; // Read error
+    } else {
+        return (int)ch; // Return the character as an integer
     }
-    *p = '\0';
-    if (p == str || bytes_read == 0) {
-        return NULL;
-    }
-    return str;
 }
 
 /* Flush output... */

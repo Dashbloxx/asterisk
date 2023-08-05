@@ -6,7 +6,6 @@
  *  8P' 88 `Y8  
  *      dP      
  *
- *  BSD 2-Clause License
  *  Copyright (c) 2023 Nexuss
  *  All rights reserved.
  */
@@ -14,7 +13,6 @@
 #pragma once
 
 #include "limits.h"
-#include "time.h"
 #include "sys/types.h"
 #include "sys/stat.h"
 #include "stdlib.h"

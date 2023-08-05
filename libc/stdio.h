@@ -6,7 +6,6 @@
  *  8P' 88 `Y8  
  *      dP      
  *
- *  BSD 2-Clause License
  *  Copyright (c) 2023 Nexuss
  *  All rights reserved.
  */
@@ -60,8 +59,7 @@ unsigned int fwrite(const void *ptr, unsigned int size, unsigned int count, FILE
 /* Read from file using `FILE` type... */
 unsigned int fread(void *ptr, unsigned int size, unsigned int count, FILE *stream);
 
-/* Get a string from a file... */
-char *fgets(char *str, int n, FILE *stream);
+int fgetc(FILE* stream);
 
 /* Flush output... */
 int fflush(FILE *stream);
@@ -80,3 +78,5 @@ char *gets(char *s);
 
 /* All printf variations will be implemented without using another printf variation... */
 int snprintf(char *str, unsigned int size, const char *format, ...);
+
+#define EOF -1

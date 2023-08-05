@@ -6,7 +6,6 @@
  *  8P' 88 `Y8  
  *      dP      
  *
- *  BSD 2-Clause License
  *  Copyright (c) 2023 Nexuss
  *  All rights reserved.
  */
