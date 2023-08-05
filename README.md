@@ -5,9 +5,9 @@ For now, our goal is to get command-line arguments working, as well as commentin
 ## Building
 Read [BUILDING.md](docs/BUILDING.md) for learning how to build Asterisk.
 ## Testing
-After building the kernel and making the CD-ROM image, you can test Asterisk:
+After building the kernel and making the initrd image, you can test Asterisk:
 ```
-make test
+qemu-system-i386 -kernel kernel.bin -initrd initrd.fat
 ```
 ## Screenshot
 ![](.assets/screenshot0.png)

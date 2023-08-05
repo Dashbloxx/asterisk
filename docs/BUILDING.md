@@ -4,7 +4,7 @@ Building Asterisk is actually not a hard process. First you build the kernel, an
 ## Building the toolchain
 In order to build the project successfully, we need a cross compiler, which generates code for the targeted platform. Building the toolchain is fairly easy, and all you have to do is run the following command in the root directory of this project:
 ```
-make toolchain
+scripts/i686-elf-toolchain.sh
 ```
 Building the toolchain may take a while, but not too much. After that is done, you will want to add the toolchain to the PATH environment variable:
 ```
@@ -14,28 +14,27 @@ Add the command above to the end of `~/.bashrc` if you haven't yet, so that you 
 ## Building the kernel
 After you have the toolchain built & setted up correctly, building the kernel will be even easier. To build the kernel, simply run the following command in the root directory of the repo:
 ```
-make kernel
+make -f kernel.mk
 ```
 This builds the kernel, which can be found in the root directory of the project/repo as `kernel.bin`.
+## Building the libc
+Asterisk comes with a custom standard C library, so you'll need that to build it's userland binaries unless if you are porting newlib to Asterisk. To build Asterisk's standard C library, just run:
+```
+make -f libc.mk
+```
 ## Building the userspace programs
 Building the userspace binaries/programs is as easy as building the kernel. All you need to do is run the following command in the root directory of the project/repo:
 ```
-make userspace
+make -f userland.mk
 ```
 ## Making the initrd (Initial RAMDisk)
 The initrd is the filesystem that the kernel loads for basic programs, (in the future it may be simple programs/drivers that help load the persistent filesystem). To build the initrd, you will need sudo privileges, and will need to make sure that theres a directory in the root of your filesystem called `mnt`. After that, simply run the following command in the root directory of the project/repo:
 ```
-sudo make initrd
+sudo scripts/initrd.sh
 ```
 ## Testing Asterisk
 Now, you can test Asterisk using QEMU by running the following command in the root directory of your repo/project:
 ```
-make test
+qemu-system-i386 -kernel kernel.bin -initrd initrd.fat
 ```
-The only issue, is that the framebuffer is not available. If you want access to the framebuffer, then you will need to build a CD-ROM image, because when building the CD-ROM image, it comes with the GRUB bootloader, which supplies us with help setting up video-related stuff.
-## Building a bootable CD-ROM image
-To build a bootable CD-ROM image (which can be tested with real hardware!), simply run the following command in the root directory of this repo/project:
-```
-make iso
-```
-You will get a file named `asterisk.iso`, which you can flash to a CD, DVD, or a USB drive. Flashing these CD-ROM images to a USB drive will be documented later aswell as testing on real hardware.
+If you want to test Asterisk on real hardware, you can get a bootloader like [GRUB](https://www.gnu.org/software/grub/) or [limine](https://limine-bootloader.org/). Making a bootable USB drive that can run Asterisk will be documented later.
