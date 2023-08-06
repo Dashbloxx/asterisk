@@ -10,35 +10,35 @@
  *  All rights reserved.
  */
 
-#include "unistd.h"
-#include "sys/stat.h"
-#include "syscall.h"
+#include <unistd.h>
+#include <syscall.h>
+#include <stdarg.h>
 
-int access(const char *path, int mode) {
-    struct stat sb;
+int open(const char *name, int flags, ...)
+{
+    unsigned short mode = 0;
 
-    // Get file information
-    if (stat(path, &sb) == -1) {
-        // File does not exist
-        return -1;
+    if (((flags & O_CREAT) == O_CREAT))
+    {
+        va_list args;
+        va_start(args, flags);
+        mode = (unsigned short)(va_arg(args, int));
+        va_end(args);
     }
+    return syscall(SYS_open, name, flags, mode);
+}
 
-    // Check if file has requested permissions
-    switch (mode) {
-        case F_OK:
-            // File exists
-            return 0;
-        case X_OK:
-            // Check execute permission
-            return (sb.st_mode & S_IXUSR) ? 0 : -1;
-        case W_OK:
-            // Check write permission
-            return (sb.st_mode & S_IWUSR) ? 0 : -1;
-        case R_OK:
-            // Check read permission
-            return (sb.st_mode & S_IRUSR) ? 0 : -1;
-        default:
-            // Invalid mode
-            return -1;
-    }
+int read(int file, char *ptr, int len)
+{
+    return syscall(SYS_read, file, ptr, len);
+}
+
+int write(int file, char *ptr, int len)
+{
+    return syscall(SYS_write, file, ptr, len);
+}
+
+int close(int file)
+{
+    return syscall(SYS_close, file);
 }

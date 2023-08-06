@@ -12,8 +12,21 @@
 
 #pragma once
 
-#include "stdint.h"
-#include "sys/types.h"
+#include <stddef.h>
+#include <stdint.h>
+
+#define isalpha(a) ((((unsigned)(a)|32)-'a') < 26)
+#define isdigit(a) (((unsigned)(a)-'0') < 10)
+#define islower(a) (((unsigned)(a)-'a') < 26)
+#define isupper(a) (((unsigned)(a)-'A') < 26)
+#define isprint(a) (((unsigned)(a)-0x20) < 0x5f)
+#define isgraph(a) (((unsigned)(a)-0x21) < 0x5e)
+#define isspace(a) (a == ' ' || (unsigned)a-'\t' < 5)
+#define iscntrl(a) ((unsigned)a < 0x20 || a == 0x7f)
+#define tolower(a) ((a)|0x20)
+#define toupper(a) ((a)&0x5f)
+#define isalnum(c) (((c) >= 'A' && (c) <= 'Z') || ((c) >= 'a' && (c) <= 'z') || ((c) >= '0' && (c) <= '9'))
+
 
 size_t strlen(const char *s1);
 int strcmp(const char *s1, const char *s2);

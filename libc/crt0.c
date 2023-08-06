@@ -10,9 +10,7 @@
  *  All rights reserved.
  */
 
-#include "syscall.h"
-#include "syscalltable.h"
-#include "stdio.h"
+#include <syscall.h>
 
 #define COUNT_OF(x) ((sizeof(x)/sizeof(0[x])) / ((unsigned int)(!(sizeof(x) % sizeof(0[x])))))
 
@@ -25,9 +23,13 @@
 
 extern int main(int argc, char* argv[]);
 
+void _exit()
+{
+    syscall(SYS_exit);
+}
+
 void _start() {
     char** const argvenv = (char**)(USER_STACK);
-    __init_libc();
     main(COUNT_OF(argvenv), argvenv);
     _exit();
 }

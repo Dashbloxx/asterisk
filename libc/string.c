@@ -10,11 +10,9 @@
  *  All rights reserved.
  */
 
-#include "string.h"
-#include "stdint.h"
-#include "stdbool.h"
-#include "stdlib.h"
-#include "sys/types.h"
+#include <stddef.h>
+#include <stdint.h>
+#include <string.h>
 
 size_t strlen(const char *s1) {
     size_t i = 0;

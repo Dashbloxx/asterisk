@@ -10,13 +10,8 @@
  *  All rights reserved.
  */
 
-#include <stdio.h>
-
-/*
- *  This program used to check if the different features of the operating system work correctly...
- */
+#include <unistd.h>
 
 int main(int argc, char **argv) {
-    printf("Hello, world!\n");
-    fprintf(stdout, "Hello, world!\n");
+    write(1, "Hello, world!\n", 14);
 }
