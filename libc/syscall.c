@@ -51,6 +51,11 @@ int syscall(int num, ...)
                      : "=a"(a)
                      : "0"(num), "b"(va_arg(args, int)), "c"(va_arg(args, int)), "d"(va_arg(args, int)), "S"(va_arg(args, int)), "D"(va_arg(args, int)));
         break;
+    case 6:
+        asm volatile("int $0x80"
+                     : "=a"(a)
+                     : "0"(num), "b"(va_arg(args, int)), "c"(va_arg(args, int)), "d"(va_arg(args, int)), "S"(va_arg(args, int)), "D"(va_arg(args, int)), "m"(va_arg(args, int)));
+        break;
     default:
         return -1;
         break;
